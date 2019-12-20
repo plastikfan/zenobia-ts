@@ -1,12 +1,10 @@
 
-import { expect, assert, use } from 'chai';
+import { expect, use } from 'chai';
 import dirtyChai = require('dirty-chai');
 use(dirtyChai);
-import * as R from 'ramda';
 import * as xp from 'xpath-ts';
-import 'xmldom-ts';
+import 'xmldom-ts'; // brings DOMParser into scope
 const parser = new DOMParser();
-const { functify } = require('jinxed');
 
 describe('node-js environment', () => {
   context('dom api availability', () => {
@@ -25,9 +23,10 @@ describe('node-js environment', () => {
 
       // According to established wisdom, this test should fail because the dom api
       // is not available in the Node.js runtime ...
+      // But I think the reason why this works is because xmldom-ts brings the dom api
+      // to Node.js at run-time, using the declarations defined by the dom api (lib.dom.d.ts)
       //
       expect(commandsNode).to.be.instanceof(Node);
     });
-
   });
 });
