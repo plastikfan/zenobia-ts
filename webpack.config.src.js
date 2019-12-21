@@ -18,14 +18,12 @@ module.exports = env => {
       rules: [
         {
           test: /\.tsx?$/,
-          use: [
-            {
-              loader: 'ts-loader',
-              options: {
-                configFile: 'tsconfig.src.json'
-              }
+          use: [{
+            loader: 'ts-loader',
+            options: {
+              configFile: 'tsconfig.src.json'
             }
-          ]
+          }]
         },
         {
           test: /\.json$/,
@@ -34,7 +32,7 @@ module.exports = env => {
       ]
     },
     plugins: [
-      new webpack.DefinePlugin({ 'process.env.NODE_ENV': '"production"' }),
+      new webpack.DefinePlugin({ 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV) }),
       new webpack.BannerPlugin({
         banner: '#!/usr/bin/env node',
         raw: true
@@ -51,6 +49,7 @@ module.exports = env => {
       sourceMapFilename: 'zenobia-bundle.js.map',
       path: path.join(__dirname, 'dist'),
       libraryTarget: 'commonjs'
-    }
+    },
+    devtool: 'inline-source-map'
   };
 };

@@ -17,10 +17,6 @@ module.exports = env => {
     module: {
       rules: [
         {
-          test: /\.xml$/i,
-          use: 'raw-loader'
-        },
-        {
           test: /\.tsx?$/,
           use: [{
             loader: 'ts-loader',
@@ -31,12 +27,16 @@ module.exports = env => {
         },
         {
           test: /\.json$/,
-          loader: 'json-loader'
+          use: 'json-loader'
+        },
+        {
+          test: /\.xml$/i,
+          use: 'raw-loader'
         }
       ]
     },
     plugins: [
-      new webpack.DefinePlugin({ 'process.env.NODE_ENV': '"development"' }),
+      new webpack.DefinePlugin({ 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV) }),
       new webpack.BannerPlugin({
         banner: '#!/usr/bin/env node',
         raw: true
