@@ -3,8 +3,8 @@ import { expect, use } from 'chai';
 import dirtyChai = require('dirty-chai');
 use(dirtyChai);
 import * as xp from 'xpath-ts';
-import 'xmldom-ts'; // brings DOMParser into scope
-const parser = new DOMParser();
+import { DOMParserImpl as dom } from 'xmldom-ts';
+const parser = new dom();
 
 describe('node-js environment', () => {
   context('dom api availability', () => {
