@@ -73,6 +73,7 @@
   "homepage": "https://github.com/plastikfan/zenobia-ts#readme",
   "dependencies": {
     "@types/ramda": "^0.26.36",
+    "jaxom-ts": "0.0.12",
     "jinxed": "0.0.2",
     "ramda": "^0.26.1",
     "xmldom-ts": "^0.3.1",
