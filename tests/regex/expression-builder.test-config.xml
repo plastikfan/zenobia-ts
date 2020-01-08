@@ -1,0 +1,261 @@
+<?xml version="1.0"?>
+<Application name="pez" comment="regex101.com is your friend">
+  <Expressions name="field-type-expressions">
+    <Expression name="person's-name-expression" eg="Ted O'Neill">
+      <Pattern><![CDATA[[a-zA-Z\s']+]]></Pattern>
+    </Expression>
+
+    <Expression name="content-person's-name-expression" eg="Ted O'Neill">
+      <Pattern><![CDATA[[a-zA-Z\-']+]]></Pattern>
+    </Expression>
+
+    <Expression name="person's-forename-expression" eg="Ted">
+      <Pattern><![CDATA[[a-zA-Z']+]]></Pattern>
+    </Expression>
+
+    <Expression name="album's-name-expression" eg="The Devil's 1st Daughter!">
+      <Pattern><![CDATA[[a-zA-Z0-9\s\'\.!]+]]></Pattern>
+    </Expression>
+
+    <Expression name="content-album-name-expression" eg="The-Devil's-1st-Daughter!">
+      <Pattern><![CDATA[[a-zA-Z0-9\-\'\.!]+]]></Pattern>
+    </Expression>
+
+    <Expression name="meta-body-album's-name-expression" eg="the-devil's-1st-daughter!">
+      <Pattern><![CDATA[[a-z0-9\-\'\.!]+]]></Pattern>
+    </Expression>
+
+    <Expression name="alpha-num-expression" eg="abc123">
+      <Pattern><![CDATA[[a-zA-Z0-9]+]]></Pattern>
+    </Expression>
+
+    <Expression name="mini-salutation-expression" eg="v">
+      <Pattern><![CDATA[[ve]+]]></Pattern>
+    </Expression>
+
+    <Expression name="salutation-expression" eg="Vol">
+      <Pattern><![CDATA[[Vol|vol|Ed|ed]]]></Pattern>
+    </Expression>
+
+    <Expression name="label-code-expression" eg="99">
+      <Pattern><![CDATA[a-zA-Z0-9{1,8}]]]></Pattern>
+    </Expression>
+
+    <Expression name="content-item-no-expression">
+      <Pattern><![CDATA[\d{1,4}]]></Pattern>
+    </Expression>
+  </Expressions>
+
+  <Expressions name="common-snippets-expressions">
+    <Expression name="spaced-dash-expression" eg=" - ">
+      <Pattern><![CDATA[\s*-\s*]]></Pattern>
+    </Expression>
+
+    <Expression name="spaced-dash-tilde-expression" eg=" ~ ">
+      <Pattern><![CDATA[\s*[-~]\s*]]></Pattern>
+    </Expression>
+
+    <Expression name="common-album-expression">
+      <Pattern eg="MOVIE"><![CDATA[(?:MOVIE)?]]></Pattern>
+      <Pattern eg=" - " link="spaced-dash-expression"/>
+      <Pattern><![CDATA[(?<primaryname>]]></Pattern>
+      <Pattern eg="Neo Trinity" link="person's-name-expression"/>
+      <Pattern><![CDATA[)]]></Pattern>
+      <Pattern><![CDATA[(?:\(]]></Pattern>
+      <Pattern><![CDATA[(?<akaname>]]></Pattern>
+      <Pattern link="person's-name-expression"/>
+      <Pattern><![CDATA[)]]></Pattern>
+      <Pattern><![CDATA[\))?]]></Pattern>
+      <Pattern eg=" - " link="spaced-dash-expression"/>
+      <Pattern><![CDATA[(?:(?<header>]]></Pattern>
+      <Pattern eg="Sentinels" link="alpha-num-expression"/>
+      <Pattern eg=", "><![CDATA[,\s*)?]]></Pattern>
+      <Pattern><![CDATA[(?<prefix>]]></Pattern>
+      <Pattern eg="Vol" link="salutation-expression"/>
+      <Pattern><![CDATA[)]]></Pattern>
+      <Pattern><![CDATA[\s+]]></Pattern>
+      <Pattern><![CDATA[(?<setcode>]]></Pattern>
+      <Pattern eg="99" link="label-code-expression"/>
+      <Pattern><![CDATA[)]]></Pattern>
+      <Pattern eg=" - " link="spaced-dash-expression"/>
+      <Pattern><![CDATA[)?]]></Pattern>
+      <Pattern><![CDATA[(?<galleryname>]]></Pattern>
+      <Pattern eg="The One That Got Away" link="album's-name-expression"/>
+      <Pattern><![CDATA[)]]></Pattern>
+      <Pattern eg="~ Alice &amp; Bob &amp; Carol &amp; Dana" link="members-expression" />
+      <Pattern><![CDATA[$]]></Pattern>
+    </Expression>
+
+    <Expression name="members-expression">
+      <Pattern><![CDATA[(?:]]></Pattern>
+      <Pattern eg=" ~ " link="spaced-dash-tilde-expression"/>
+      <Pattern><![CDATA[(?<member1>]]></Pattern>
+      <Pattern eg="" link="person's-name-expression"/>
+      <Pattern><![CDATA[)(?:\s*&\s*]]></Pattern>
+      <Pattern><![CDATA[(?<member2>]]></Pattern>
+      <Pattern eg="" link="person's-name-expression"/>
+      <Pattern><![CDATA[)(?:\s*&\s*]]></Pattern>
+      <Pattern><![CDATA[(?<member3>]]></Pattern>
+      <Pattern eg="" link="person's-name-expression"/>
+      <Pattern><![CDATA[)(?:\s*&\s*]]></Pattern>
+      <Pattern><![CDATA[(?<member4>]]></Pattern>
+      <Pattern eg="" link="person's-name-expression"/>
+      <Pattern><![CDATA[)?)?)?)?)?]]></Pattern>
+    </Expression>
+  </Expressions>
+
+  <Expressions name="date-expressions">
+    <Expression name="iso-date-expression" eg="2016-06-23">
+      <Pattern><![CDATA[(?<year>\d{4})-(?<mm>\d{2})-(?<dd>\d{2})\d]]></Pattern>
+    </Expression>
+
+    <Expression name="missing-date-expression">
+      <Pattern><![CDATA[9999-00-00]]></Pattern>
+    </Expression>
+
+    <Expression name="y2k-years-expression">
+      <Pattern><![CDATA[(?<year>20[0-2]\d)]]></Pattern>
+    </Expression>
+
+    <Expression name="mm-month-no-expression">
+      <Pattern><![CDATA[(?<mm>[0|1]\d)]]></Pattern>
+    </Expression>
+
+    <Expression name="mmm-month-no-expression">
+      <Pattern><![CDATA[(?<mmm>[jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec])]]></Pattern>
+    </Expression>
+
+    <Expression name="day-no-expression">
+      <Pattern><![CDATA[(?<dd>[1-3]|[0-3]\d?)]]></Pattern>
+    </Expression>
+
+    <Expression name="single-digit-day-no-expression">
+      <Pattern><![CDATA[(?<d>[1-3]|[0-3]\d?)]]></Pattern>
+    </Expression>
+
+    <Expression name="staging-date-expression">
+      <Pattern><![CDATA[(?:]]></Pattern>
+      <Pattern link="iso-date-expression"/>
+      <Pattern><![CDATA[|]]></Pattern>
+      <Pattern link="missing-date-expression"/>
+      <Pattern><![CDATA[)]]></Pattern>
+    </Expression>
+
+    <Expression name="named-months-expression">
+      <Pattern><![CDATA[(?<mmm>[]]></Pattern>
+      <Pattern><![CDATA[jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|]]></Pattern>
+      <Pattern><![CDATA[january|february|march|april|june|july|august|september|october|november|december|]]></Pattern>
+      <Pattern><![CDATA[sept]]></Pattern>
+      <Pattern><![CDATA[])]]></Pattern>
+    </Expression>
+
+    <Expression name="meta-date-expression">
+      <Pattern eg="2" link="single-digit-day-no-expression"/>
+      <Pattern eg=" " ><![CDATA[\s]]></Pattern>
+      <Pattern eg="jun" link="mmm-month-no-expression"/>
+      <Pattern eg=" " ><![CDATA[\s]]></Pattern>
+      <Pattern eg="2016" link="y2k-years-expression"/>
+    </Expression>
+  </Expressions>
+
+  <Expressions name="media-type-expressions">
+    <Expression name="movie-file-expression" eg="movie.abc.the-matrix.neo.23 jun 2016.mp4">
+      <Pattern><![CDATA[[\.mov|\.avi|\.mp4]$]]></Pattern>
+    </Expression>
+    <Expression name="image-file-expression" eg="the-matrix-001.jpg">
+      <Pattern><![CDATA[[\.jpe?g|\.png|\.gif]$]]></Pattern>
+    </Expression>
+  </Expressions>
+
+  <Expressions name="staging-expressions">
+    <Expression name="short-code-expression">
+      <Pattern link="alpha-num-expression"/>
+    </Expression>
+
+    <Expression name="staging-header-expression">
+      <Pattern eg="ABC" link="short-code-expression"/>
+      <Pattern eg="-"><![CDATA[-(?:]]></Pattern>
+      <Pattern eg="2016" link="y2k-years-expression"/>
+      <Pattern eg="-"><![CDATA[-]]></Pattern>
+      <Pattern eg="06" link="mm-month-no-expression"/>
+      <Pattern eg="-"><![CDATA[-]]></Pattern>
+      <Pattern eg="23" link="day-no-expression"/>
+      <Pattern eg="|"><![CDATA[|]]></Pattern>
+      <Pattern eg="9999-00-00" link="missing-date-expression"/>
+      <Pattern><![CDATA[)]]></Pattern>
+      <Pattern eg=" - " link="spaced-dash-expression"/>
+    </Expression>
+
+    <Expression name="staging-album-expression"
+      eg="ABC-2016-06-23 - MOVIE - Neo Trinity - Sentinels, Vol 99 - The One That Got Away ~ Tampa &amp; Mae">
+      <Pattern eg="ABC-2016-06-23 - " link="staging-header-expression"/>
+      <Pattern eg="Sentinels, Vol 99 - The One That Got Away ~ Tampa &amp; Mae" link="common-album-expression"/>
+
+      <Yield name="staging-album-yield" open="{" close="}">
+        <Placeholder ordinal="mandatory"><![CDATA[{short}-{year}-{mm-month}-{dd-day}]]></Placeholder>
+        <Placeholder contains-content="*.mov,*.avi,*.mp4"><![CDATA[ - MOVIE]]></Placeholder>
+        <Placeholder ordinal="mandatory"><![CDATA[ - ]]></Placeholder>
+        <Placeholder ordinal="mandatory"><![CDATA[{star-name}]]></Placeholder>
+        <Placeholder is-present="aka-name"><![CDATA[({aka-name}) - ]]></Placeholder>
+        <Placeholder is-present="header"><![CDATA[{header}, ]]></Placeholder>
+        <Placeholder is-present="prefix,setcode"><![CDATA[{prefix} {setcode} - ]]></Placeholder>
+        <Placeholder ordinal="mandatory"><![CDATA[{galleryname}]]></Placeholder>
+        <Placeholder is-present="member1"><![CDATA[ ~ {member1}]]></Placeholder>
+        <Placeholder is-present="member2"><![CDATA[ & {member2}]]></Placeholder>
+        <Placeholder is-present="member3"><![CDATA[ & {member3}]]></Placeholder>
+        <Placeholder is-present="member4"><![CDATA[ & {member4}]]></Placeholder>
+      </Yield>
+    </Expression>
+  </Expressions>
+
+  <Expressions name="archive-expressions">
+    <Expression name="archive-album-expression">
+      <Pattern eg="MOVIE - Neo Trinity - Sentinels, Vol 99 - The One That Got Away ~ Tampa &amp; Mae"
+        link="common-album-expression"/>
+    </Expression>
+  </Expressions>
+
+  <Expressions name="content-expressions">
+    <Expression name="meta-salutation-expression">
+      <Pattern eg="_"><![CDATA[^_?]]></Pattern>
+      <Pattern eg="cover" csv="meta-csv"><![CDATA[cover|clean]]></Pattern>
+      <Pattern eg="."><![CDATA[\.]]></Pattern>
+      <Pattern eg="movie."><![CDATA[(movie.)?]]></Pattern>
+    </Expression>
+
+    <Expression name="meta-body-expression" eg="abc.the-one-that-got-away.neo_v99.23 jun 2016.jpg">
+      <Pattern eg="abc" link="short-code-expression"/>
+      <Pattern eg="."><![CDATA[\.]]></Pattern>
+      <Pattern eg="the-one-that-got-away" link="meta-body-album's-name-expression"/>
+      <Pattern eg="."><![CDATA[\.]]></Pattern>
+      <Pattern eg="neo" link="person's-forename-expression"/>
+      <Pattern eg="_"><![CDATA[_]]></Pattern>
+      <Pattern><![CDATA[(?<mini>]]></Pattern>
+      <Pattern eg="s" link="mini-salutation-expression"/>
+      <Pattern><![CDATA[)]]></Pattern>
+      <Pattern eg="99" link="label-code-expression"/>
+      <Pattern eg="."><![CDATA[\.]]></Pattern>
+      <Pattern eg="99" link="meta-date-expression"/>
+      <Pattern eg="."><![CDATA[\.]]></Pattern>
+      <Pattern><![CDATA[(?<filesuffix>]]></Pattern>
+      <Pattern eg=".jpg" link="image-file-expression"/>
+      <Pattern><![CDATA[)]]></Pattern>
+    </Expression>
+
+    <Expression name="meta-file-expression" eg="cover.movie.abc.the-one-that-got-away.neo_v99.23 jun 2016.jpg">
+      <Pattern link="meta-salutation-expression"/>
+      <Pattern link="meta-body-expression"/>
+      <Yield name="meta-file-yield" open="{" close="}">
+        <Placeholder ordinal="mandatory"><![CDATA[{meta}.]]></Placeholder>
+        <Placeholder is-present="movie"><![CDATA[movie.]]></Placeholder>
+        <Placeholder ordinal="mandatory"><![CDATA[{short}.]]></Placeholder>
+        <Placeholder ordinal="mandatory"><![CDATA[{galleryname}.]]></Placeholder>
+        <Placeholder ordinal="mandatory"><![CDATA[{metaforename}_]]></Placeholder>
+        <Placeholder is-present="mini,label-code"><![CDATA[{mini}]]></Placeholder>
+        <Placeholder is-present="mini,label-code"><![CDATA[{label-code}.]]></Placeholder>
+        <Placeholder is-present="meta-date"><![CDATA[{meta-date}.]]></Placeholder>
+        <Placeholder ordinal="mandatory"><![CDATA[{filesuffix}]]></Placeholder>
+      </Yield>
+    </Expression>
+  </Expressions>
+</Application>
