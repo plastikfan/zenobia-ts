@@ -90,21 +90,22 @@ export function buildNamedCommand (converter: jaxom.IConverter, commandName: str
  * @returns {*}
  */
 export function buildCommands (converter: jaxom.IConverter, commandsNode: Node): any {
-  const concreteCommands = xp.select(
-    './/Command[not(@abstract)]',
-    commandsNode
-  ) as Node[];
+  const concreteCommands = xp.select('.//Command[not(@abstract)]', commandsNode);
 
-  if (concreteCommands) {
-    if (concreteCommands.length === 0) {
-      throw new Error('Bad configuration: No Commands found');
+  if (concreteCommands instanceof Array) {
+    if (concreteCommands) {
+      if (concreteCommands.length === 0) {
+        throw new Error('Bad configuration: No Commands found');
+      }
+
+      const commands = R.map((commandNode: Node) => {
+        return postBuildCommand(converter.build(commandNode, parseInfo));
+      }, concreteCommands);
+
+      return commands;
     }
-
-    const commands = R.map((cmdNode: Node) => {
-      return postBuildCommand(converter.build(cmdNode, parseInfo));
-    }, concreteCommands);
-
-    return commands;
+  } else {
+    throw new Error(``);
   }
 }
 
@@ -171,7 +172,7 @@ export function normaliseCommandArguments (command: types.StringIndexableObj): t
 
 /**
  * @function resolveCommandArguments
- * @description Any ArgumentRefs withtin the Command are resolved into Argument's using
+ * @description Any ArgumentRefs within the Command are resolved into Argument's using
  * the argument definitions provided in info.
  *
  * @export
