@@ -1,6 +1,6 @@
 {
   "name": "zenobia-ts",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "The regular expression based file management library",
   "main": "./dist/zenobia-bundle.js",
   "types": "./dist/index.d.ts",
