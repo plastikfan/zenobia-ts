@@ -114,197 +114,7 @@ const ComplexNormalisedArgumentDefs = {
   }
 };
 
-describe('command-builder', () => {
-  let converter: jaxom.IConverter;
-
-  beforeEach(() => {
-    converter = new jaxom.XpathConverter();
-  });
-
-  describe('command-builder: buildCommands (deeper check)', () => {
-    //
-  });
-
-  describe('command-builder: normaliseCommands (deeper check)', () => {
-    const data = `<?xml version="1.0"?>
-      <Application name="pez">
-        <Cli>
-          <Commands>
-            <Command name="base-command" abstract="true" source="filesystem-source">
-              <Arguments>
-                <ArgumentRef name="loglevel"/>
-                <ArgumentRef name="logfile"/>
-              </Arguments>
-              <ArgumentGroups>
-                <Conflicts>
-                  <ArgumentRef name="loglevel"/>
-                  <ArgumentRef name="logfile"/>
-                </Conflicts>
-              </ArgumentGroups>
-            </Command>
-            <Command name="domain-command" abstract="true">
-              <Arguments>
-                <ArgumentRef name="name"/>
-                <ArgumentRef name="labelname"/>
-                <ArgumentRef name="incname"/>
-                <ArgumentRef name="studioname"/>
-                <ArgumentRef name="header"/>
-                <ArgumentRef name="producer"/>
-                <ArgumentRef name="director"/>
-              </Arguments>
-              <ArgumentGroups>
-                <Conflicts>
-                  <ArgumentRef name="name"/>
-                  <ArgumentRef name="labelname"/>
-                </Conflicts>
-                <Implies>
-                  <ArgumentRef name="incname"/>
-                  <ArgumentRef name="studioname"/>
-                </Implies>
-                <Conflicts>
-                  <ArgumentRef name="header"/>
-                  <ArgumentRef name="producer"/>
-                  <ArgumentRef name="director"/>
-                </Conflicts>
-              </ArgumentGroups>
-            </Command>
-            <Command name="uni-command" abstract="true">
-              <Arguments>
-                <ArgumentRef name="path"/>
-                <ArgumentRef name="filesys"/>
-                <ArgumentRef name="tree"/>
-              </Arguments>
-            </Command>
-            <Command name="rename"
-              describe="Rename albums according to arguments specified (write)."
-              inherits="base-command,domain-command,uni-command">
-              <Arguments>
-                <ArgumentRef name="with"/>
-                <ArgumentRef name="put"/>
-              </Arguments>
-            </Command>
-          </Commands>
-        </Cli>
-      </Application>`;
-    let document: Node;
-    let commandsNode: Node;
-
-    beforeEach(() => {
-      document = parser.parseFromString(data);
-      const selectResult = xp.select(
-        '/Application/Cli/Commands',
-        document,
-        true
-      );
-      if (selectResult instanceof Node) {
-        commandsNode = selectResult;
-      } else {
-        assert.fail("Couldn't get Commands Node");
-      }
-    });
-
-  }); // command-builder: normaliseCommands (deeper check)
-
-  describe('command-builder: normaliseCommands (deeper check) (resolveArguments) [COMPLEX]', () => {
-    const data = `<?xml version="1.0"?>
-      <Application name="pez">
-        <Cli>
-          <Commands>
-            <Command name="base-command" abstract="true" source="filesystem-source">
-              <Arguments>
-                <ArgumentRef name="loglevel"/>
-                <ArgumentRef name="logfile"/>
-              </Arguments>
-              <ArgumentGroups>
-                <Conflicts>
-                  <ArgumentRef name="loglevel"/>
-                  <ArgumentRef name="logfile"/>
-                </Conflicts>
-              </ArgumentGroups>
-            </Command>
-            <Command name="domain-command" abstract="true">
-              <Arguments>
-                <ArgumentRef name="name"/>
-                <ArgumentRef name="incname"/>
-                <ArgumentRef name="studioname"/>
-                <ArgumentRef name="labelname"/>
-                <ArgumentRef name="header"/>
-                <ArgumentRef name="producer"/>
-                <ArgumentRef name="director"/>
-              </Arguments>
-              <ArgumentGroups>
-                <Conflicts>
-                  <ArgumentRef name="name"/>
-                  <ArgumentRef name="incname"/>
-                </Conflicts>
-                <Implies>
-                  <ArgumentRef name="studioname"/>
-                  <ArgumentRef name="labelname"/>
-                </Implies>
-                <Conflicts>
-                  <ArgumentRef name = "header"/>
-                  <ArgumentRef name = "producer"/>
-                  <ArgumentRef name = "director"/>
-                </Conflicts>
-              </ArgumentGroups>
-            </Command>
-            <Command name="uni-command" abstract="true">
-              <Arguments>
-                <ArgumentRef name="path"/>
-                <ArgumentRef name="filesys"/>
-                <ArgumentRef name="tree"/>
-              </Arguments>
-            </Command>
-            <Command name="rename"
-              describe="Rename albums according to arguments specified (write)."
-              inherits="base-command,domain-command,uni-command">
-              <Arguments>
-                <ArgumentRef name="with"/>
-                <ArgumentRef name="put"/>
-              </Arguments>
-            </Command>
-          </Commands>
-        </Cli>
-      </Application>`;
-
-    context('given: a rename command, inherits from 3 commands, ArgumentRefs and ArgumentGroups', () => {
-      it('should: return an object with children constituents normalised.', () => {
-        const document = parser.parseFromString(data);
-        const commandsNode = xp.select(
-          '/Application/Cli/Commands',
-          document,
-          true
-        );
-
-        if (commandsNode instanceof Node) {
-          const commands = builder.buildCommands(converter, commandsNode);
-
-          const normalisedCommands = builder.resolveCommandArguments(commands, {
-            commandArguments: ComplexNormalisedArgumentDefs
-          });
-          const normalisedRenameCommand = normalisedCommands[0];
-          // console.log(`===> Normalise Rename Command: ${JSON.stringify(normalisedRenameCommand)}`);
-
-          const result = R.where({
-            name: R.equals('rename'),
-            source: R.equals('filesystem-source'),
-            _: R.equals('Command'),
-            _children: R.is(Object)
-          }, normalisedRenameCommand);
-
-          expect(result).to.be.true();
-        } else {
-          assert.fail("Couldn't get Commands node.");
-        }
-      });
-    }); // given: a rename command, inherits from 3 commands, ArgumentRefs and ArgumentGroups
-  }); // command-builder: normaliseCommands (deeper check) (resolveArguments)
-
-}); // command-builder
-
-// with test specific data
-//
-describe('custom data', () => {
+describe('Command builder', () => {
   let converter: jaxom.IConverter;
   let document: Node;
   let commandsNode: Node;
@@ -411,7 +221,6 @@ describe('custom data', () => {
               </Commands>
             </Cli>
           </Application>`;
-
         init(data);
 
         const commands = builder.buildCommands(converter, commandsNode);
@@ -436,7 +245,6 @@ describe('custom data', () => {
             </Commands>
           </Cli>
         </Application>`;
-
       init(data);
 
       expect(() => {
@@ -453,7 +261,7 @@ describe('custom data', () => {
       const normalisedCommands = builder.resolveCommandArguments(commands, {
         commandArguments: ComplexNormalisedArgumentDefs
       });
-      // console.log(`===> resolved: ${functify(normalisedCommands)}`);
+
       const normalisedRenameCommand = normalisedCommands[0];
       const result = R.where(
         {
@@ -482,7 +290,7 @@ describe('custom data', () => {
         ['_children', 'Arguments'],
         normalisedRenameCommand
       );
-      // console.log(`===> Normalise Rename Command arguments: ${JSON.stringify(commandArguments)}`);
+
       const argsLength = R.keys(commandArguments).length;
       expect(argsLength).to.be.equal(14);
     }); // should: return the correct number of Argument's
@@ -499,7 +307,7 @@ describe('custom data', () => {
         ['_children', 'ArgumentGroups'],
         normalisedRenameCommand
       );
-      // console.log(`===> Normalise Rename Command ArgumentGroups': ${JSON.stringify(argumentGroups)}`);
+
       const argGroupsLength = R.keys(argumentGroups).length;
 
       expect(argGroupsLength).to.be.equal(4);
@@ -519,7 +327,6 @@ describe('custom data', () => {
               </Commands>
             </Cli>
           </Application>`;
-
         init(data);
 
         const document = parser.parseFromString(data);
@@ -608,5 +415,57 @@ describe('custom data', () => {
         builder.buildNamedCommand(converter, 'unicorns', commandsNode);
       }).to.throw();
     });
+  }); // a command with an unknown "name"
+
+  describe('command-builder: buildCommands (deeper check)', () => {
+    context('given: rename command, inherits from 3 commands, with ArgumentRefs and ArgumentGroups', () => {
+      it('should: return an object with all properties populated.', () => {
+        init(commonData);
+
+        const commands = builder.buildCommands(converter, commandsNode);
+        const renameCommand = commands[0];
+        const elementLabel = '_';
+        const args = R.prop('Arguments', renameCommand._children);
+        expect(R.is(Object)(args));
+        const groups = R.prop('ArgumentGroups', renameCommand._children) as Array<{}>;
+        expect(R.is(Array)(groups));
+        expect(groups.length).to.equal(4);
+        expect(
+          R.all((o: types.StringIndexableObj) => R.includes(o[elementLabel], ['Conflicts', 'Implies']))(groups)
+        ).to.be.true();
+
+        const result = R.where({
+          name: R.equals('rename'),
+          source: R.equals('filesystem-source'),
+          _: R.equals('Command'),
+          _children: R.is(Object)
+        }, renameCommand);
+
+        expect(result).to.be.true();
+      });
+    });
   });
-});
+
+  describe('command-builder: normaliseCommands (deeper check) (resolveArguments) [COMPLEX]', () => {
+    context('given: a rename command, inherits from 3 commands, ArgumentRefs and ArgumentGroups', () => {
+      it('should: return an object with children constituents normalised.', () => {
+        init(commonData);
+
+        const commands = builder.buildCommands(converter, commandsNode);
+        const normalisedCommands = builder.resolveCommandArguments(commands, {
+          commandArguments: ComplexNormalisedArgumentDefs
+        });
+        const normalisedRenameCommand = normalisedCommands[0];
+
+        const result = R.where({
+          name: R.equals('rename'),
+          source: R.equals('filesystem-source'),
+          _: R.equals('Command'),
+          _children: R.is(Object)
+        }, normalisedRenameCommand);
+
+        expect(result).to.be.true();
+      });
+    }); // given: a rename command, inherits from 3 commands, ArgumentRefs and ArgumentGroups
+  }); // command-builder: normaliseCommands (deeper check) (resolveArguments)
+}); // Command builder
