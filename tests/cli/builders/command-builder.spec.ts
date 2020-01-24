@@ -114,7 +114,7 @@ const ComplexNormalisedArgumentDefs = {
   }
 };
 
-describe('Command builder', () => {
+describe.skip('Command builder', () => {
   let converter: jaxom.IConverter;
   let document: Node;
   let commandsNode: Node;
