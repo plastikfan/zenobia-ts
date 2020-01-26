@@ -202,6 +202,7 @@ function resolveArguments (command: types.StringIndexableObj,
 
   const defaultSpec = jaxom.Specs.default;
   const descendantsLabel = defaultSpec.labels?.descendants ?? '?';
+  const elementLabel = defaultSpec.labels?.element ?? '?';
 
   const { commandArguments = {} } = info;
   const argumentDefs = commandArguments[descendantsLabel];
@@ -209,30 +210,29 @@ function resolveArguments (command: types.StringIndexableObj,
   if (R.is(Object, R.prop(descendantsLabel)(command))) {
     const children = command[descendantsLabel];
 
-    if (R.where({ Arguments: R.is(Object) }, children)) {
-      const argumentRefs: any = children.Arguments;
-      const resolved = R.map((ref: { name: string; }) => argumentDefs[ref[Id]])(argumentRefs);
+    const argumentRefsObj = R.find((el: types.StringIndexableObj): boolean => {
+      return el[elementLabel] === 'Arguments';
+    })(children);
 
-      const resolvedValues = R.values(resolved);
-      const argRefValues = R.values(argumentRefs);
+    if (argumentRefsObj instanceof Object) {
+      const argumentRefs = argumentRefsObj[descendantsLabel];
+      const resolved = R.map((ref: { name: string; }) => argumentDefs[ref[Id]] ?? {
+        // This marks out unresolved arguments so we can find them
+        //
+        unresolved: ref.name
+      })(argumentRefs);
 
-      const joined = R.innerJoin((res: any, argsRef: any) => res.name === argsRef.name,
-        resolvedValues, argRefValues);
-
-      if (joined.length === R.keys(resolved).length) {
-        command = R.assocPath([descendantsLabel, 'Arguments'], resolved, command);
-      } else {
-        const elementLabel = defaultSpec.labels?.element ?? '?';
-
-        const unresolved = R.find((arg: any): any => { return arg[elementLabel] === 'ArgumentRef'; })(resolved);
+      const unresolved = R.find((arg: any): any => R.has('unresolved')(arg))(R.values(resolved));
+      if (unresolved) {
         throw new Error(
-          `command-builder.resolveArguments: Argument definition missing for command: "${command.name}"; unresolved: "${functify(unresolved)}"`);
+          `Argument definition missing for command: "${command.name}"; unresolved: "${functify(unresolved)}"`);
       }
+      argumentRefsObj[descendantsLabel] = resolved;
     } else {
-      throw new Error(`command-builder.resolveArguments: "Arguments" is missing from "${descendantsLabel}" of command: "${command.name}"`);
+      throw new Error(`Couldn't find 'Arguments in command: ${command.name}`);
     }
   } else {
-    throw new Error(`command-builder.resolveArguments: "${descendantsLabel}" is missing from command: "${command.name}"`);
+    throw new Error(`"${descendantsLabel}" is missing from command: "${command.name}"`);
   }
 
   return command;
