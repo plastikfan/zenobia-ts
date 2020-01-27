@@ -11,16 +11,19 @@ import * as Helpers from '../test-helpers';
 import { DOMParserImpl as dom } from 'xmldom-ts';
 const parser = new dom();
 import * as jaxom from 'jaxom-ts';
-import * as builder from '../../lib/regex/expression-builder';
-import * as impl from '../../lib/regex/expression-builder.impl';
+import * as build from '../../lib/regex/expression-builder.class';
 
-describe('expression-builder (test config)', () => {
+describe.only('expression-builder (test config)', () => {
   let xml: string;
   let document: Document;
   let converter: jaxom.IConverter;
+  let builder: build.ExpressionBuilder;
+  const options = new jaxom.SpecOptionService();
 
   before(() => {
     converter = new jaxom.XpathConverter();
+    builder = new build.ExpressionBuilder(converter, options);
+
     try {
       xml = Helpers.read(
         path.resolve(
@@ -40,7 +43,7 @@ describe('expression-builder (test config)', () => {
       const applicationNode = xp.select('/Application', document, true);
 
       if (applicationNode instanceof Node) {
-        const expressions: any = builder.buildExpressions(converter, applicationNode);
+        const expressions: any = builder.buildExpressions(applicationNode);
 
         const keys = R.keys(expressions);
         expect(keys.length).to.equal(34);
@@ -56,10 +59,10 @@ describe('expression-builder (test config)', () => {
       const applicationNode = xp.select('/Application', document, true);
 
       if (applicationNode instanceof Node) {
-        const expressions = builder.buildExpressions(converter, applicationNode);
+        const expressions = builder.buildExpressions(applicationNode);
 
         R.forEach((expressionName: string) => {
-          const expression = impl.evaluate(expressionName, expressions);
+          const expression = builder.evaluate(expressionName, expressions);
 
           const regexpObj = expression.$regexp;
           expect(regexpObj).to.be.a('regexp');

@@ -52,6 +52,10 @@ export class ExpressionBuilder {
     throw new Error('Failed to select <Expressions> nodes');
   } // buildExpressions
 
+  public evaluate (expressionName: string, expressions: any): any {
+    return impl.evaluate(expressionName, expressions);
+  }
+
   /**
    *
    *
