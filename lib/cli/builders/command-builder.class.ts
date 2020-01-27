@@ -229,14 +229,14 @@ export class CommandBuilder {
         const resolved = R.map((ref: { name: string; }) => argumentDefs[ref['name']] ?? {
           // This marks out unresolved arguments so we can find them
           //
-          unresolved: ref.name
+          $unresolved: ref.name
         })(argumentRefs);
 
         const unresolvedArgument = R.find(
-          (arg: any): any => R.has('unresolved')(arg))(R.values(resolved));
+          (arg: any): any => R.has('$unresolved')(arg))(R.values(resolved));
         if (unresolvedArgument) {
           throw new Error(
-            `"${unresolvedArgument.unresolved}" Argument definition missing for command: "${command.name}"`);
+            `"${unresolvedArgument.$unresolved}" Argument definition missing for command: "${command.name}"`);
         }
         argumentRefsObj[this.options.descendantsLabel] = resolved;
       } else {
