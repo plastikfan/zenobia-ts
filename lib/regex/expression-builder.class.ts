@@ -20,6 +20,17 @@ export class ExpressionBuilder {
 
   private impl: impl.ExpressionBuilderImpl;
 
+  /**
+   * @method buildExpressions
+   * @description: Builds all regular expression in the document (parentNode). Expressions
+   * that are contained inside an Expression element.
+   *
+   * @param {Node} parentNode: the xpath node which is the parent under which the requested
+   * expression group should reside.
+   * @returns {types.StringIndexableObj}: A group of regular expressions returned as a
+   * map-like object, keyed by the names of each expression group.
+   * @memberof ExpressionBuilder
+   */
   public buildExpressions (parentNode: Node)
     : types.StringIndexableObj {
     const expressionsInfo = jaxom.composeElementInfo('Expressions', this.pInfo);
@@ -54,15 +65,18 @@ export class ExpressionBuilder {
   } // buildExpressions
 
   public evaluate (expressionName: string, expressions: any): any {
-    return impl.evaluate(expressionName, expressions);
+    return this.impl.evaluate(expressionName, expressions);
   }
 
   /**
-   *
+   * @method validateId
+   * @description: Checks that id's of named elements are valid
    *
    * @private
-   * @param {Node} parentNode
-   * @param {string[]} elementNames
+   * @param {Node} parentNode: the xpath node which is the parent under which the requested
+   * @param {string[]} elementNames: Array containing the names of elements to be validated
+   * expression group should reside.
+   * @throws: if id anomaly is found.
    * @memberof ExpressionBuilder
    */
   private validateId (parentNode: Node, elementNames: string[])
@@ -98,11 +112,24 @@ export class ExpressionBuilder {
   } // validateId
 
   /**
-   *
+   * @method normalise
+   * @description: The XML representation of regular expressions in the config allows
+   * regular expressions to be grouped. This means that when jaxine is used to
+   * convert the to JSON the result is not a particularly useful for clients to
+   * interact with. Essentially all clients need is the ability to specify a
+   * regular expression name and get back an expression. However, the normalise only
+   * creates a map of expression names to expression objects. These expression objects
+   * here are not built into fully fledged regular expressions.
    *
    * @private
-   * @param {*} expressionGroups
-   * @returns {types.StringIndexableObj}
+   * @param {*} expressionGroups: Plain JSON object representing all expressions
+   * in all Expressions groups.
+   * @throws: if duplication definitions found for a regular expression name or id is
+   * not defined for 'Expression' via getOptions.
+   * @returns {types.StringIndexableObj}: representing normalised expressions which is
+   * simply a map object, from regular expression name to the regular expression
+   *  object (not regex!).
+   *
    * @memberof ExpressionBuilder
    */
   private normalise (expressionGroups: any)
@@ -125,7 +152,8 @@ export class ExpressionBuilder {
         const expressions = R.prop(this.options.descendantsLabel, expressionGroups[groupName]);
         const alreadyDefined = R.intersection(R.keys(expressions), R.keys(combinedAcc));
         if (!R.isEmpty(alreadyDefined)) {
-          throw new Error(`These expressions have already been defined: "${R.join(', ', alreadyDefined)}"`);
+          throw new Error(`These expressions have already been defined: "${
+            R.join(', ', alreadyDefined)}"`);
         }
 
         const expressionsForThisGroupMap = R.reduce(
