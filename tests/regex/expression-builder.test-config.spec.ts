@@ -13,7 +13,7 @@ const parser = new dom();
 import * as jaxom from 'jaxom-ts';
 import * as build from '../../lib/regex/expression-builder.class';
 
-describe.only('expression-builder (test config)', () => {
+describe('expression-builder (test config)', () => {
   let xml: string;
   let document: Document;
   let converter: jaxom.IConverter;

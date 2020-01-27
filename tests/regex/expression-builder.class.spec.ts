@@ -1,14 +1,12 @@
-/* eslint-disable no-useless-escape */
 
+import { functify } from 'jinxed';
 import { expect, assert, use } from 'chai';
-import dirtyChai = require('dirty-chai');
-use(dirtyChai);
+import dirtyChai = require('dirty-chai'); use(dirtyChai);
 import * as xp from 'xpath-ts';
 import { DOMParserImpl as dom } from 'xmldom-ts';
 const parser = new dom();
 import * as jaxom from 'jaxom-ts';
-
-import * as builder from '../../lib/regex/expression-builder';
+import * as build from '../../lib/regex/expression-builder.class';
 
 describe('Expression builder', () => {
   context('Expression', () => {
@@ -100,11 +98,13 @@ describe('Expression builder', () => {
           it('should: throw', () => {
             const converter = new jaxom.XpathConverter();
             const document = parser.parseFromString(t.data);
+            const options = new jaxom.SpecOptionService();
+            const builder = new build.ExpressionBuilder(converter, options);
             const applicationNode = xp.select('/Application', document, true);
 
             if (applicationNode instanceof Node) {
               expect(() => {
-                builder.buildExpressions(converter, applicationNode);
+                builder.buildExpressions(applicationNode);
               }).to.throw();
             } else {
               assert.fail('Couldn\'t get Application node.');
