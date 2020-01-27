@@ -6,41 +6,13 @@ import { functify } from 'jinxed';
 import * as helpers from '../../utils/helpers';
 import * as types from '../../types';
 
-const parseInfo: jaxom.IParseInfo = {
-  elements: new Map<string, jaxom.IElementInfo>([
-    ['Commands', {
-      descendants: {
-        by: 'index',
-        id: 'name',
-        throwIfCollision: true,
-        throwIfMissing: true
-      }
-    }],
-    ['Command', {
-      id: 'name',
-      recurse: 'inherits',
-      discards: ['inherits', 'abstract']
-    }],
-    ['Arguments', {
-      descendants: {
-        by: 'index',
-        id: 'name',
-        throwIfCollision: true,
-        throwIfMissing: true
-      }
-    }],
-    ['ArgumentRef', {
-      id: 'name'
-    }]
-  ])
-};
-
 /**
  * @export
  * @class CommandBuilder
  */
 export class CommandBuilder {
-  constructor (private converter: jaxom.IConverter, private options: jaxom.ISpecService) { }
+  constructor (private converter: jaxom.IConverter, private options: jaxom.ISpecService,
+    private parseInfo: jaxom.IParseInfo) { }
 
   /**
    * @method buildNamedCommand
@@ -68,7 +40,7 @@ export class CommandBuilder {
       'Command', 'name', commandName, commandsNode);
 
     if (commandNode instanceof Node) {
-      let command = this.converter.build(commandNode, parseInfo);
+      let command = this.converter.build(commandNode, this.parseInfo);
       command = this.postBuildCommand(command);
 
       return [command];
@@ -89,13 +61,12 @@ export class CommandBuilder {
    * built are non normalised, so will contain ArgumentRefs which subsequently
    * need to be resolved into their definitions.
    *
-   * @param {jaxom.IConverter} converter
    * @param {Node} commandsNode: the XML node which is the immediate parent of
    * all Commands available at: /Application/Cli/Commands.
    * @returns {types.StringIndexableObj[]}: containing all concrete Commands defined.
    * @memberof CommandBuilder
    */
-  public buildCommands (converter: jaxom.IConverter, commandsNode: Node)
+  public buildCommands (commandsNode: Node)
     : types.StringIndexableObj[] {
     const concreteCommands = xp.select('.//Command[not(@abstract)]', commandsNode);
 
@@ -105,7 +76,7 @@ export class CommandBuilder {
       }
 
       const commands = R.map((commandNode: Node) => {
-        return this.postBuildCommand(converter.build(commandNode, parseInfo));
+        return this.postBuildCommand(this.converter.build(commandNode, this.parseInfo));
       }, concreteCommands);
 
       return commands;
@@ -179,7 +150,7 @@ export class CommandBuilder {
    */
   private postBuildCommand (command: types.StringIndexableObj)
     : types.StringIndexableObj {
-    const elementInfo: any = jaxom.composeElementInfo('Command', parseInfo);
+    const elementInfo: any = jaxom.composeElementInfo('Command', this.parseInfo);
 
     // Transform the @inherits attribute from a csv into an array
     //

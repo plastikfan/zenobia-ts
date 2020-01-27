@@ -7,7 +7,7 @@ import { DOMParserImpl as dom } from 'xmldom-ts';
 const parser = new dom();
 import * as jaxom from 'jaxom-ts';
 import { functify } from 'jinxed';
-import * as builder from '../../../lib/cli/builders/command-builder';
+import * as build from '../../../lib/cli/builders/command-builder.class';
 import * as types from '../../../lib/types';
 
 const ComplexNormalisedArgumentDefs = {
@@ -118,6 +118,36 @@ describe('Command builder', () => {
   let converter: jaxom.IConverter;
   let document: Node;
   let commandsNode: Node;
+  let builder: build.CommandBuilder;
+  let options: jaxom.ISpecService;
+  const parseInfo: jaxom.IParseInfo = {
+    elements: new Map<string, jaxom.IElementInfo>([
+      ['Commands', {
+        descendants: {
+          by: 'index',
+          id: 'name',
+          throwIfCollision: true,
+          throwIfMissing: true
+        }
+      }],
+      ['Command', {
+        id: 'name',
+        recurse: 'inherits',
+        discards: ['inherits', 'abstract']
+      }],
+      ['Arguments', {
+        descendants: {
+          by: 'index',
+          id: 'name',
+          throwIfCollision: true,
+          throwIfMissing: true
+        }
+      }],
+      ['ArgumentRef', {
+        id: 'name'
+      }]
+    ])
+  };
 
   beforeEach(() => {
     converter = new jaxom.XpathConverter();
@@ -135,6 +165,8 @@ describe('Command builder', () => {
     } else {
       assert.fail("Couldn't get Commands Node");
     }
+    options = new jaxom.SpecOptionService();
+    builder = new build.CommandBuilder(converter, options, parseInfo);
   }
 
   context('resolveArguments', () => {
@@ -162,7 +194,7 @@ describe('Command builder', () => {
           </Application>`;
         init(data);
 
-        const commands = builder.buildCommands(converter, commandsNode);
+        const commands = builder.buildCommands(commandsNode);
         expect(() => {
           builder.resolveCommandArguments(commands, {
             commandArguments: ComplexNormalisedArgumentDefs
@@ -187,7 +219,7 @@ describe('Command builder', () => {
       init(data);
 
       expect(() => {
-        builder.buildCommands(converter, commandsNode);
+        builder.buildCommands(commandsNode);
       }).to.throw();
     });
   });
@@ -255,7 +287,8 @@ describe('Command builder', () => {
           </Cli>
         </Application>`;
       init(data);
-      const commands = builder.buildCommands(converter, commandsNode);
+
+      const commands = builder.buildCommands(commandsNode);
       const normalisedCommands = builder.resolveCommandArguments(commands, {
         commandArguments: ComplexNormalisedArgumentDefs
       });
@@ -433,7 +466,7 @@ describe('Command builder', () => {
 
         if (commandsNode instanceof Node) {
           expect(() => {
-            builder.buildCommands(converter, commandsNode);
+            builder.buildCommands(commandsNode);
           }).to.throw(Error);
         } else {
           assert.fail("Couldn't get Commands node.");
@@ -462,7 +495,7 @@ describe('Command builder', () => {
       it('should: build a single command', () => {
         init(data);
 
-        const commands = builder.buildNamedCommand(converter, 'rename', commandsNode);
+        const commands = builder.buildNamedCommand('rename', commandsNode);
         const renameCommand = commands[0];
         let result = R.where({
           name: R.equals('rename'),
@@ -493,7 +526,7 @@ describe('Command builder', () => {
       init(data);
 
       expect(() => {
-        builder.buildNamedCommand(converter, 'unicorns', commandsNode);
+        builder.buildNamedCommand('unicorns', commandsNode);
       }).to.throw();
     });
   }); // a command with an unknown "name"
