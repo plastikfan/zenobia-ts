@@ -96,10 +96,26 @@ describe('Expression builder', () => {
       tests.forEach((t: IUnitTestInfo) => {
         context(`given: ${t.given}`, () => {
           it('should: throw', () => {
+            const parseInfo: jaxom.IParseInfo = {
+              elements: new Map<string, jaxom.IElementInfo>([
+                ['Expressions', {
+                  id: 'name',
+                  descendants: {
+                    by: 'index',
+                    id: 'name',
+                    throwIfCollision: true,
+                    throwIfMissing: true
+                  }
+                }],
+                ['Expression', {
+                  id: 'name'
+                }]
+              ])
+            };
             const converter = new jaxom.XpathConverter();
             const document = parser.parseFromString(t.data);
             const options = new jaxom.SpecOptionService();
-            const builder = new build.ExpressionBuilder(converter, options);
+            const builder = new build.ExpressionBuilder(converter, options, parseInfo);
             const applicationNode = xp.select('/Application', document, true);
 
             if (applicationNode instanceof Node) {

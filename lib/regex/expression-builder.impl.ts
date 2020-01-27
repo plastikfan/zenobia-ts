@@ -115,6 +115,10 @@ export function evaluate (expressionName: string, expressions: any, previouslySe
   }
   const expression = expressions[expressionName];
   const descendantsLabel = defaultSpec.labels?.descendants ?? '?';
+
+  if (!R.has(descendantsLabel)(expression)) {
+    throw new Error(`Expression (${ExpressionId}="${expressionName}") does not contain any Patterns`);
+  }
   const patterns = R.filter((o: any) => R.equals(R.prop('_', o), 'Pattern'),
     R.prop(descendantsLabel, expression));
 
@@ -208,7 +212,8 @@ export function evaluate (expressionName: string, expressions: any, previouslySe
  * @class ExpressionBuilderImpl
  */
 export class ExpressionBuilderImpl {
-  constructor (private converter: jaxom.IConverter, private options: jaxom.ISpecService) { }
+  constructor (private converter: jaxom.IConverter, private options: jaxom.ISpecService,
+    private pInfo: jaxom.IParseInfo) { }
 
   public buildExpressionGroup (parentNode: Node, groupName: string)
     : types.StringIndexableObj {
@@ -264,6 +269,11 @@ export class ExpressionBuilderImpl {
       throw new Error(`Expression (${this.ExpressionId}="${expressionName}") not found`);
     }
     const expression = expressions[expressionName];
+
+    if (!R.has(this.options.descendantsLabel)(expression)) {
+      throw new Error(`Expression (${this.ExpressionId}="${expressionName}") does not contain any Patterns`);
+    }
+
     const patterns = R.filter((o: any) => R.equals(R.prop('_', o), 'Pattern'),
       R.prop(this.options.descendantsLabel, expression));
 

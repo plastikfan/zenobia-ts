@@ -21,8 +21,24 @@ describe('expression-builder (test config)', () => {
   const options = new jaxom.SpecOptionService();
 
   before(() => {
+    const parseInfo: jaxom.IParseInfo = {
+      elements: new Map<string, jaxom.IElementInfo>([
+        ['Expressions', {
+          id: 'name',
+          descendants: {
+            by: 'index',
+            id: 'name',
+            throwIfCollision: true,
+            throwIfMissing: true
+          }
+        }],
+        ['Expression', {
+          id: 'name'
+        }]
+      ])
+    };
     converter = new jaxom.XpathConverter();
-    builder = new build.ExpressionBuilder(converter, options);
+    builder = new build.ExpressionBuilder(converter, options, parseInfo);
 
     try {
       xml = Helpers.read(
