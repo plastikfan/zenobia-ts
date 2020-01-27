@@ -9,19 +9,22 @@ import * as impl from './expression-builder.impl';
 
 /**
  *
- *
  * @export
  * @class ExpressionBuilder
  */
 export class ExpressionBuilder {
-  constructor (private converter: jaxom.IConverter, private options: jaxom.ISpecService) { }
+  constructor (private converter: jaxom.IConverter, private options: jaxom.ISpecService) {
+    this.impl = new impl.ExpressionBuilderImpl(converter, options);
+  }
 
-  public buildExpressions (parentNode: Node): types.StringIndexableObj {
-    const parseInfo = impl.getParseInfo();
-    const expressionsInfo = jaxom.composeElementInfo('Expressions', parseInfo);
+  private impl: impl.ExpressionBuilderImpl;
+
+  public buildExpressions (parentNode: Node)
+    : types.StringIndexableObj {
+    const expressionsInfo = jaxom.composeElementInfo('Expressions', this.impl.ParseInfo);
     const { id = '' } = expressionsInfo;
 
-    this.validateId(parentNode, ['Expression', 'Expressions'], impl.getParseInfo());
+    this.validateId(parentNode, ['Expression', 'Expressions']);
 
     const expressionGroupNodes = xp.select(`.//Expressions[@${id}]`, parentNode);
 
@@ -33,7 +36,7 @@ export class ExpressionBuilder {
       const expressionGroups = R.reduce((acc: types.StringIndexableObj, groupNode: Node): any => {
         const groupElement = groupNode as Element;
         const groupName: string = groupElement.getAttribute(id) || '';
-        const group: any = impl.buildExpressionGroup(this.converter, parentNode, groupName);
+        const group: any = this.impl.buildExpressionGroup(parentNode, groupName);
         if (!R.includes(groupName, R.keys(acc))) {
           acc[groupName] = group;
         } else {
@@ -43,7 +46,7 @@ export class ExpressionBuilder {
         return acc;
       }, {})(expressionGroupNodes);
 
-      return this.normalise(expressionGroups, impl.getParseInfo());
+      return this.normalise(expressionGroups);
     }
 
     throw new Error('Failed to select <Expressions> nodes');
@@ -55,14 +58,13 @@ export class ExpressionBuilder {
    * @private
    * @param {Node} parentNode
    * @param {string[]} elementNames
-   * @param {jaxom.IParseInfo} parseInfo
    * @memberof ExpressionBuilder
    */
-  private validateId (parentNode: Node, elementNames: string[], parseInfo: jaxom.IParseInfo)
+  private validateId (parentNode: Node, elementNames: string[])
     : void {
     if (elementNames.length && elementNames.length > 0) {
       elementNames.forEach((elementName: string) => {
-        const elementInfo: jaxom.IElementInfo = jaxom.composeElementInfo(elementName, parseInfo);
+        const elementInfo: jaxom.IElementInfo = jaxom.composeElementInfo(elementName, this.impl.ParseInfo);
         const { id = '' } = elementInfo;
 
         if (id !== '') {
@@ -71,14 +73,16 @@ export class ExpressionBuilder {
           if (elementsWithoutIdResult instanceof Array) {
             if (elementsWithoutIdResult.length > 0) {
               const first = elementsWithoutIdResult[0];
-              throw new Error(`Found at least 1 ${elementName} without ${id} attribute, first: ${first}`);
+              throw new Error(
+                `Found at least 1 ${elementName} without ${id} attribute, first: ${functify(first)}`);
             }
 
             const elementsWithEmptyIdResult: any = xp.select(`.//${elementName}[@${id}=""]`, parentNode);
 
             if (elementsWithEmptyIdResult.length > 0) {
               const first: string = elementsWithEmptyIdResult[0];
-              throw new Error(`Found at least 1 ${elementName} with empty ${id} attribute, first: ${first}`);
+              throw new Error(
+                `Found at least 1 ${elementName} with empty ${id} attribute, first: ${functify(first)}`);
             }
           }
         } else {
@@ -93,14 +97,13 @@ export class ExpressionBuilder {
    *
    * @private
    * @param {*} expressionGroups
-   * @param {jaxom.IParseInfo} parseInfo
    * @returns {types.StringIndexableObj}
    * @memberof ExpressionBuilder
    */
-  private normalise (expressionGroups: any, parseInfo: jaxom.IParseInfo)
+  private normalise (expressionGroups: any)
     : types.StringIndexableObj {
 
-    const expressionInfo = jaxom.composeElementInfo('Expression', parseInfo);
+    const expressionInfo = jaxom.composeElementInfo('Expression', this.impl.ParseInfo);
     const { id = '' } = expressionInfo;
 
     if (!id) {

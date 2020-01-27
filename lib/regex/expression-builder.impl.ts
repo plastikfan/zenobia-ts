@@ -2,6 +2,7 @@
 import * as R from 'ramda';
 import * as jaxom from 'jaxom-ts';
 import * as helpers from '../utils/helpers';
+import * as types from '../types';
 
 const defaultSpec = jaxom.Specs.default;
 
@@ -167,11 +168,11 @@ export function evaluate (expressionName: string, expressions: any, previouslySe
   do {
     capture = captureGroupsRegExp.exec(expressionText);
 
-    if (capture !== null) {
+    if (capture) {
       captures = R.append(capture?.groups?.captureGroup, captures);
     }
   }
-  while (capture !== null);
+  while (capture);
 
   if (!R.isEmpty(captures)) {
     updatedExpression = R.set(R.lensProp('$namedGroups'), captures)(updatedExpression);
@@ -199,3 +200,151 @@ export function evaluate (expressionName: string, expressions: any, previouslySe
   }
   return updatedExpression;
 } // evaluate
+
+/**
+ *
+ *
+ * @export
+ * @class ExpressionBuilderImpl
+ */
+export class ExpressionBuilderImpl {
+  constructor (private converter: jaxom.IConverter, private options: jaxom.ISpecService) { }
+
+  public buildExpressionGroup (parentNode: Node, groupName: string)
+    : types.StringIndexableObj {
+    const expressionsGroupNode = helpers.selectElementNodeById(
+      'Expressions', ExpressionId, groupName, parentNode);
+
+    if (expressionsGroupNode instanceof Node) {
+      const expressionsGroup = this.converter.build(expressionsGroupNode, this.ParseInfo);
+      return expressionsGroup;
+    } else {
+      throw new Error(`Bad configuration: No <Expressions "${ExpressionId}"="${groupName}">s found`);
+    }
+  }
+
+  public readonly ParseInfo: jaxom.IParseInfo = {
+    elements: new Map<string, jaxom.IElementInfo>([
+      ['Expressions', {
+        id: ExpressionId,
+        descendants: {
+          by: 'index',
+          id: ExpressionId,
+          throwIfCollision: true,
+          throwIfMissing: true
+        }
+      }],
+      ['Expression', {
+        id: ExpressionId
+      }]
+    ])
+  };
+
+  readonly ExpressionId = 'name';
+
+  // private express(expressions: any, parseInfo: jaxom.IParseInfo): any {
+  //   //
+  // }
+
+  /**
+   *
+   *
+   * @param {string} expressionName
+   * @param {*} expressions
+   * @param {*} [previouslySeen=[]]
+   * @returns {*}
+   * @memberof ExpressionBuilderImpl
+   */
+  public evaluate (expressionName: string, expressions: any, previouslySeen = []): any {
+    if (!expressionName) {
+      throw new Error('Expression name not specified');
+    }
+
+    if (!R.includes(expressionName, R.keys(expressions))) {
+      throw new Error(`Expression (${this.ExpressionId}="${expressionName}") not found`);
+    }
+    const expression = expressions[expressionName];
+    const patterns = R.filter((o: any) => R.equals(R.prop('_', o), 'Pattern'),
+      R.prop(this.options.descendantsLabel, expression));
+
+    if (R.isEmpty(patterns)) {
+      throw new Error(`Expression (${this.ExpressionId}="${expressionName}") does not contain any Patterns`);
+    }
+
+    // Build the regular expression text
+    //
+    const expressionText = R.reduce((acc: string, pattern: any) => {
+      const text = R.cond([
+        [R.both(R.has(this.options.textLabel), R.has('link')), () => {
+          throw new Error(`Expression (${this.ExpressionId}="${expressionName}"), contains a Pattern with both a link and text`);
+        }],
+        [R.has(this.options.textLabel), R.prop(this.options.textLabel)],
+        [R.has('link'), (o: any): string => {
+          const link: string = R.prop('link', o) || '';
+          if (R.includes(link, previouslySeen)) {
+            throw new Error(`Circular reference detected, element '${link}', has already been encountered.`);
+          }
+
+          const p = R.append(expressionName, previouslySeen) as any; // cast away never ???
+          const linkedExpression: any = evaluate(link, expressions, p);
+          const linkedText: any = R.prop('$regexp', linkedExpression).source;
+          return linkedText;
+        }],
+        [R.T, () => {
+          throw new Error(`Expression (${this.ExpressionId}="${expressionName}") contains a Pattern without a link or regex text`);
+        }]
+      ])(pattern);
+      return acc + text;
+    }, '')(patterns);
+
+    let updatedExpression;
+    try {
+      updatedExpression = R.set(R.lensProp('$regexp'), new RegExp(expressionText))(expression);
+    } catch (error) {
+      throw new Error(`Expression (${this.ExpressionId}="${expressionName}") invalid regular expression: ${expressionText}`);
+    }
+
+    // Build the collection of named capturing groups. We can do this by parsing the collated
+    // regular expression text (rather than depending on a user specified definition of a "groups"
+    // attribute). Named capturing groups of the form: ?<groupName>
+    //
+    const captureGroupsRegExp = new RegExp('\\?<(?<captureGroup>[a-zA-Z]+)>', 'g');
+    let captures: any = [];
+    let capture: RegExpExecArray | null;
+
+    do {
+      capture = captureGroupsRegExp.exec(expressionText);
+
+      if (capture) {
+        captures = R.append(capture?.groups?.captureGroup, captures);
+      }
+    }
+    while (capture);
+
+    if (!R.isEmpty(captures)) {
+      updatedExpression = R.set(R.lensProp('$namedGroups'), captures)(updatedExpression);
+    }
+
+    // Now build up the "eg" text. There are 2 ways the "eg" Text can be composed:
+    // 1) The single "eg" attribute instance on the Expression
+    // 2) The collection of "eg" values on all of the Patterns inside the Expression
+    // If Expression contains an "eg", this will be used and overrides the Pattern instances
+    //    otherwise, the Patterns' "eg" instances will be collated and used.
+    //
+    if (R.has('eg', updatedExpression)) {
+      updatedExpression = R.set(R.lensProp('$eg'), R.prop('eg', updatedExpression))(updatedExpression);
+    } else {
+      // Do Pattern eg collation ...
+      //
+      const egPatterns = R.filter(R.has('eg'))(patterns);
+
+      const egText = R.reduce((acc: string, pattern: any) => {
+        const text = R.prop('eg')(pattern);
+        return acc + text;
+      }, '')(egPatterns);
+
+      updatedExpression = R.set(R.lensProp('$eg'), egText)(updatedExpression);
+    }
+    return updatedExpression;
+  } // evaluate
+}

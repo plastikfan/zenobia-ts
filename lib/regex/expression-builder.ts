@@ -16,7 +16,8 @@ const spec = jaxom.Specs.default;
  * @returns: A group of regular expressions returned as a map-like object, keyed by the
  * names of each expression group.
  */
-export function buildExpressions (converter: jaxom.IConverter, parentNode: Node): types.StringIndexableObj {
+export function buildExpressions (converter: jaxom.IConverter, parentNode: Node)
+  : types.StringIndexableObj {
   const parseInfo = impl.getParseInfo();
   const expressionsInfo = jaxom.composeElementInfo('Expressions', parseInfo);
   const { id = '' } = expressionsInfo;
@@ -60,7 +61,8 @@ export function buildExpressions (converter: jaxom.IConverter, parentNode: Node)
  * contain jaxom element info for 'Expressions' and 'Expression'.
  * @throws: if id anomaly is found
  */
-function validateId (parentNode: Node, elementNames: string[], parseInfo: jaxom.IParseInfo): void {
+function validateId (parentNode: Node, elementNames: string[], parseInfo: jaxom.IParseInfo)
+  : void {
   if (elementNames.length && elementNames.length > 0) {
     elementNames.forEach((elementName: string) => {
       const elementInfo: jaxom.IElementInfo = jaxom.composeElementInfo(elementName, parseInfo);
@@ -108,7 +110,8 @@ function validateId (parentNode: Node, elementNames: string[], parseInfo: jaxom.
  * @returns {Object}: Representing normalised expressions which is simply a map object,
  * from regular expression name to the regular expression object (not regex!).
  */
-function normalise (expressionGroups: any, parseInfo: jaxom.IParseInfo) {
+function normalise (expressionGroups: types.StringIndexableObj, parseInfo: jaxom.IParseInfo)
+  : types.StringIndexableObj {
   const expressionInfo = jaxom.composeElementInfo('Expression', parseInfo);
   const { id = '' } = expressionInfo;
 
