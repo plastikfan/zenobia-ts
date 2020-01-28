@@ -1,13 +1,11 @@
 
 import { expect, assert, use } from 'chai';
 import dirtyChai = require('dirty-chai'); use(dirtyChai);
-import * as sinon from 'sinon';
 import sinonChai = require('sinon-chai'); use(sinonChai);
 import * as R from 'ramda';
 import { DOMParserImpl as dom } from 'xmldom-ts';
 const parser = new dom();
 import * as jaxom from 'jaxom-ts';
-import * as xp from 'xpath-ts';
 import * as build from '../../lib/regex/expression-builder.class';
 import * as impl from '../../lib/regex/expression-builder.impl';
 import * as helpers from '../../lib/utils/helpers';
@@ -197,12 +195,13 @@ describe('Expression Builder Impl', () => {
         it('should: evaluate regular expression text successfully', () => {
           const converter = new jaxom.XpathConverter();
           const document: Document = parser.parseFromString(t.data);
-          const applicationNode = xp.select('/Application', document, true);
+          const xpath = new helpers.XPathSelector();
+          const applicationNode = xpath.select('/Application', document, true);
 
           if (applicationNode instanceof Node) {
             const options = new jaxom.SpecOptionService();
             const builder = new build.ExpressionBuilder(converter, options, parseInfo,
-              helpers.selectElementNodeById);
+              xpath);
             const expressions = builder.buildExpressions(applicationNode);
             const expression = builder.evaluate(t.expressionName, expressions);
             // expressionObject: Record<string, ?>
@@ -371,10 +370,11 @@ describe('Expression Builder Impl', () => {
         it('should: throw', () => {
           const converter = new jaxom.XpathConverter();
           const document: Document = parser.parseFromString(t.data);
-          const applicationNode = xp.select('/Application', document, true);
+          const xpath = new helpers.XPathSelector();
+          const applicationNode = xpath.select('/Application', document, true);
           const options = new jaxom.SpecOptionService();
           const builder = new build.ExpressionBuilder(converter, options,
-            parseInfo, helpers.selectElementNodeById);
+            parseInfo, xpath);
 
           if (applicationNode instanceof Node) {
             const expressions = builder.buildExpressions(applicationNode);
@@ -395,6 +395,7 @@ describe('Expression Builder Impl Error handling (custom)', () => {
   let converter: jaxom.XpathConverter;
   let document: Document;
   let builderImpl: impl.ExpressionBuilderImpl;
+  // let xpath: types.ISelector;
 
   beforeEach(() => {
     converter = new jaxom.XpathConverter();
@@ -417,7 +418,7 @@ describe('Expression Builder Impl Error handling (custom)', () => {
         }]
       ])
     },
-    select: types.IXPathSelector = helpers.selectElementNodeById)
+    xpath: types.IXPathSelector = new helpers.XPathSelector())
     : void {
     document = parser.parseFromString(d);
 
@@ -425,7 +426,7 @@ describe('Expression Builder Impl Error handling (custom)', () => {
       converter,
       new jaxom.SpecOptionService(),
       pi,
-      select
+      xpath
     );
   }
 
@@ -594,30 +595,4 @@ describe('Expression Builder Impl Error handling (custom)', () => {
       });
     });
   }); // validateId
-
-  context('normalise', () => {
-    const K = {
-      'test-expressions': {
-        name: 'test-expressions',
-        _: 'Expressions',
-        _children: {
-          'single-digit-day-no-expression': {
-            name: 'single-digit-day-no-expression',
-            _: 'Expression',
-            _children: [{ _: 'Pattern', _text: 'DAY' }]
-          },
-          'mmm-month-no-expression': {
-            name: 'mmm-month-no-expression',
-            _: 'Expression',
-            _children: [{ _: 'Pattern', _text: 'MONTH' }]
-          },
-          'y2k-years-expression': {
-            name: 'y2k-years-expression',
-            _: 'Expression',
-            _children: [{ _: 'Pattern', _text: 'YEAR' }]
-          }
-        }
-      }
-    };
-  });
 }); // Expression Builder Impl Error handling (custom)

@@ -1,7 +1,6 @@
 
 import * as R from 'ramda';
 import * as jaxom from 'jaxom-ts';
-import { functify } from 'jinxed';
 import * as types from '../../types';
 
 export class CommandBuilderImpl {

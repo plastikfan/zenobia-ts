@@ -2,7 +2,6 @@
 import { functify } from 'jinxed';
 import { expect, assert, use } from 'chai';
 import dirtyChai = require('dirty-chai'); use(dirtyChai);
-import * as xp from 'xpath-ts';
 import { DOMParserImpl as dom } from 'xmldom-ts';
 const parser = new dom();
 import * as jaxom from 'jaxom-ts';
@@ -123,9 +122,10 @@ describe('Expression builder', () => {
             const converter = new jaxom.XpathConverter();
             const document = parser.parseFromString(t.data);
             const options = new jaxom.SpecOptionService();
+            const xpath = new helpers.XPathSelector();
             const builder = new build.ExpressionBuilder(converter, options, parseInfo,
-              helpers.selectElementNodeById);
-            const applicationNode = xp.select('/Application', document, true);
+              xpath);
+            const applicationNode = xpath.select('/Application', document, true);
 
             if (applicationNode instanceof Node) {
               expect(() => {
@@ -167,7 +167,7 @@ describe('Expression builder Error Handling', () => {
         }]
       ])
     },
-    select: types.IXPathSelector = helpers.selectElementNodeById)
+    xpath: types.IXPathSelector = new helpers.XPathSelector())
     : void {
     document = parser.parseFromString(d);
 
@@ -175,7 +175,7 @@ describe('Expression builder Error Handling', () => {
       converter,
       new jaxom.SpecOptionService(),
       pi,
-      select
+      xpath
     );
   }
 

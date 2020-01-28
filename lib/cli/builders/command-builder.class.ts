@@ -1,7 +1,5 @@
 import * as R from 'ramda';
-import * as xp from 'xpath-ts';
 import * as jaxom from 'jaxom-ts';
-import { functify } from 'jinxed';
 import * as types from '../../types';
 import { CommandBuilderImpl } from './command-builder.impl';
 
@@ -11,7 +9,7 @@ import { CommandBuilderImpl } from './command-builder.impl';
  */
 export class CommandBuilder {
   constructor (private converter: jaxom.IConverter, private options: jaxom.ISpecService,
-    private parseInfo: jaxom.IParseInfo, private select: types.IXPathSelector) {
+    private parseInfo: jaxom.IParseInfo, private selector: types.IXPathSelector) {
 
     // Control freak
     //
@@ -42,7 +40,7 @@ export class CommandBuilder {
   public buildNamedCommand (commandName: string, commandsNode: Node)
     : Array<{}> {
 
-    const commandNode = this.select(
+    const commandNode = this.selector.selectById(
       'Command', 'name', commandName, commandsNode);
 
     if (commandNode instanceof Node) {
@@ -73,7 +71,7 @@ export class CommandBuilder {
    */
   public buildCommands (commandsNode: Node)
     : types.StringIndexableObj[] {
-    const concreteCommands = xp.select('.//Command[not(@abstract)]', commandsNode);
+    const concreteCommands = this.selector.select('.//Command[not(@abstract)]', commandsNode);
 
     /* istanbul ignore next */
     if (concreteCommands instanceof Array) {

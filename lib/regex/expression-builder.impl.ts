@@ -1,7 +1,6 @@
 
 import * as R from 'ramda';
 import * as jaxom from 'jaxom-ts';
-import * as xp from 'xpath-ts';
 import { functify } from 'jinxed';
 import * as types from '../types';
 
@@ -11,7 +10,7 @@ import * as types from '../types';
  */
 export class ExpressionBuilderImpl {
   constructor (private converter: jaxom.IConverter, private options: jaxom.ISpecService,
-    private parseInfo: jaxom.IParseInfo, private select: types.IXPathSelector) { }
+    private parseInfo: jaxom.IParseInfo, private xpath: types.IXPathSelector) { }
 
   /**
    * @method buildExpressionGroup
@@ -27,7 +26,7 @@ export class ExpressionBuilderImpl {
    */
   public buildExpressionGroup (parentNode: Node, groupName: string)
     : types.StringIndexableObj {
-    const expressionsGroupNode = this.select(
+    const expressionsGroupNode = this.xpath.selectById(
       'Expressions', 'name', groupName, parentNode);
 
     if (expressionsGroupNode instanceof Node) {
@@ -210,7 +209,7 @@ export class ExpressionBuilderImpl {
         const { id = '' } = elementInfo;
 
         if (id !== '') {
-          const elementsWithoutIdResult = xp.select(`.//${elementName}[not(@${id})]`, parentNode);
+          const elementsWithoutIdResult = this.xpath.select(`.//${elementName}[not(@${id})]`, parentNode);
 
           /* istanbul ignore next: type-guard; xp.select always returns array */
           if (elementsWithoutIdResult instanceof Array) {
@@ -220,7 +219,7 @@ export class ExpressionBuilderImpl {
                 `Found at least 1 ${elementName} without ${id} attribute, first: ${functify(first)}`);
             }
 
-            const elementsWithEmptyIdResult: any = xp.select(`.//${elementName}[@${id}=""]`, parentNode);
+            const elementsWithEmptyIdResult: any = this.xpath.select(`.//${elementName}[@${id}=""]`, parentNode);
 
             if (elementsWithEmptyIdResult.length > 0) {
               const first: string = elementsWithEmptyIdResult[0];

@@ -6,7 +6,6 @@ use(dirtyChai);
 
 import * as path from 'path';
 import * as R from 'ramda';
-import * as xp from 'xpath-ts';
 import * as Helpers from '../test-helpers';
 import { DOMParserImpl as dom } from 'xmldom-ts';
 const parser = new dom();
@@ -40,7 +39,7 @@ describe('expression-builder (test config)', () => {
     };
     converter = new jaxom.XpathConverter();
     builder = new build.ExpressionBuilder(converter, options,
-      parseInfo, helpers.selectElementNodeById);
+      parseInfo, new helpers.XPathSelector());
 
     try {
       xml = Helpers.read(
@@ -58,7 +57,8 @@ describe('expression-builder (test config)', () => {
 
   context('given: a config with various expressions and expression groups', () => {
     it('should: return a map object with loaded expressions"', () => {
-      const applicationNode = xp.select('/Application', document, true);
+      const xpath = new helpers.XPathSelector();
+      const applicationNode = xpath.select('/Application', document, true);
 
       if (applicationNode instanceof Node) {
         const expressions: any = builder.buildExpressions(applicationNode);
@@ -74,7 +74,8 @@ describe('expression-builder (test config)', () => {
 
   context('given: a config with various expressions and expression groups', () => {
     it('should: evaluate all built expressions"', () => {
-      const applicationNode = xp.select('/Application', document, true);
+      const xpath = new helpers.XPathSelector();
+      const applicationNode = xpath.select('/Application', document, true);
 
       if (applicationNode instanceof Node) {
         const expressions = builder.buildExpressions(applicationNode);

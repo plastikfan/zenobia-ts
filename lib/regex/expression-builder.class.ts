@@ -1,6 +1,5 @@
 
 import * as R from 'ramda';
-import * as xp from 'xpath-ts';
 import * as jaxom from 'jaxom-ts';
 import * as types from '../types';
 import * as impl from './expression-builder.impl';
@@ -12,9 +11,9 @@ import * as impl from './expression-builder.impl';
  */
 export class ExpressionBuilder {
   constructor (private converter: jaxom.IConverter, private options: jaxom.ISpecService,
-    private pareInfo: jaxom.IParseInfo, private select: types.IXPathSelector) {
+    private pareInfo: jaxom.IParseInfo, private xpath: types.IXPathSelector) {
     this.impl = new impl.ExpressionBuilderImpl(this.converter, options,
-      pareInfo, this.select);
+      pareInfo, this.xpath);
   }
 
   private impl: impl.ExpressionBuilderImpl;
@@ -38,7 +37,7 @@ export class ExpressionBuilder {
 
     this.impl.validateId(parentNode, ['Expression', 'Expressions']);
 
-    const expressionGroupNodes = xp.select(`.//Expressions[@${id}]`, parentNode);
+    const expressionGroupNodes = this.xpath.select(`.//Expressions[@${id}]`, parentNode);
 
     /* istanbul ignore else xp.select return [] if no Expression found */
     if (expressionGroupNodes instanceof Array) {
