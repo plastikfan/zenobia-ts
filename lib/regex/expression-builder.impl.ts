@@ -1,7 +1,6 @@
 
 import * as R from 'ramda';
 import * as jaxom from 'jaxom-ts';
-import * as helpers from '../utils/helpers';
 import * as types from '../types';
 
 /**
@@ -10,7 +9,7 @@ import * as types from '../types';
  */
 export class ExpressionBuilderImpl {
   constructor (private converter: jaxom.IConverter, private options: jaxom.ISpecService,
-    private parseInfo: jaxom.IParseInfo) { }
+    private parseInfo: jaxom.IParseInfo, private select: types.IXPathSelector) { }
 
   /**
    * @method buildExpressionGroup
@@ -26,7 +25,7 @@ export class ExpressionBuilderImpl {
    */
   public buildExpressionGroup (parentNode: Node, groupName: string)
     : types.StringIndexableObj {
-    const expressionsGroupNode = helpers.selectElementNodeById(
+    const expressionsGroupNode = this.select(
       'Expressions', 'name', groupName, parentNode);
 
     if (expressionsGroupNode instanceof Node) {

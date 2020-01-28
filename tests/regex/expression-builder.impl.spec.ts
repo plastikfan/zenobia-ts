@@ -8,6 +8,7 @@ const parser = new dom();
 import * as jaxom from 'jaxom-ts';
 import * as xp from 'xpath-ts';
 import * as build from '../../lib/regex/expression-builder.class';
+import * as helpers from '../../lib/utils/helpers';
 
 const parseInfo: jaxom.IParseInfo = {
   elements: new Map<string, jaxom.IElementInfo>([
@@ -197,7 +198,8 @@ describe('Expression Builder', () => {
 
           if (applicationNode instanceof Node) {
             const options = new jaxom.SpecOptionService();
-            const builder = new build.ExpressionBuilder(converter, options, parseInfo);
+            const builder = new build.ExpressionBuilder(converter, options, parseInfo,
+              helpers.selectElementNodeById);
             const expressions = builder.buildExpressions(applicationNode);
             const expression = builder.evaluate(t.expressionName, expressions);
             // expressionObject: Record<string, ?>
@@ -369,7 +371,8 @@ describe('Expression Builder', () => {
           const document: Document = parser.parseFromString(t.data);
           const applicationNode = xp.select('/Application', document, true);
           const options = new jaxom.SpecOptionService();
-          const builder = new build.ExpressionBuilder(converter, options, parseInfo);
+          const builder = new build.ExpressionBuilder(converter, options,
+            parseInfo, helpers.selectElementNodeById);
 
           if (applicationNode instanceof Node) {
             const expressions = builder.buildExpressions(applicationNode);

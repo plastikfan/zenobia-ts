@@ -12,6 +12,7 @@ import { DOMParserImpl as dom } from 'xmldom-ts';
 const parser = new dom();
 import * as jaxom from 'jaxom-ts';
 import * as build from '../../lib/regex/expression-builder.class';
+import * as helpers from '../../lib/utils/helpers';
 
 describe('expression-builder (test config)', () => {
   let xml: string;
@@ -38,7 +39,8 @@ describe('expression-builder (test config)', () => {
       ])
     };
     converter = new jaxom.XpathConverter();
-    builder = new build.ExpressionBuilder(converter, options, parseInfo);
+    builder = new build.ExpressionBuilder(converter, options,
+      parseInfo, helpers.selectElementNodeById);
 
     try {
       xml = Helpers.read(

@@ -9,6 +9,7 @@ import * as jaxom from 'jaxom-ts';
 import { functify } from 'jinxed';
 import * as build from '../../../lib/cli/builders/command-builder.class';
 import * as types from '../../../lib/types';
+import * as helpers from '../../../lib/utils/helpers';
 
 const ComplexNormalisedArgumentDefs = {
   _: 'ArgumentDefs',
@@ -166,7 +167,8 @@ describe('Command builder', () => {
       assert.fail("Couldn't get Commands Node");
     }
     options = new jaxom.SpecOptionService();
-    builder = new build.CommandBuilder(converter, options, parseInfo);
+    builder = new build.CommandBuilder(converter, options, parseInfo,
+      helpers.selectElementNodeById);
   }
 
   context('resolveArguments', () => {

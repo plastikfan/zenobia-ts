@@ -14,8 +14,9 @@ import * as impl from './expression-builder.impl';
  */
 export class ExpressionBuilder {
   constructor (private converter: jaxom.IConverter, private options: jaxom.ISpecService,
-    private pInfo: jaxom.IParseInfo) {
-    this.impl = new impl.ExpressionBuilderImpl(converter, options, pInfo);
+    private pareInfo: jaxom.IParseInfo, private select: types.IXPathSelector) {
+    this.impl = new impl.ExpressionBuilderImpl(this.converter, options,
+      pareInfo, this.select);
   }
 
   private impl: impl.ExpressionBuilderImpl;
@@ -33,7 +34,7 @@ export class ExpressionBuilder {
    */
   public buildExpressions (parentNode: Node)
     : types.StringIndexableObj {
-    const expressionsInfo = jaxom.composeElementInfo('Expressions', this.pInfo);
+    const expressionsInfo = jaxom.composeElementInfo('Expressions', this.pareInfo);
     const { id = '' } = expressionsInfo;
 
     this.validateId(parentNode, ['Expression', 'Expressions']);
@@ -83,7 +84,7 @@ export class ExpressionBuilder {
     : void {
     if (elementNames.length && elementNames.length > 0) {
       elementNames.forEach((elementName: string) => {
-        const elementInfo: jaxom.IElementInfo = jaxom.composeElementInfo(elementName, this.pInfo);
+        const elementInfo: jaxom.IElementInfo = jaxom.composeElementInfo(elementName, this.pareInfo);
         const { id = '' } = elementInfo;
 
         if (id !== '') {
@@ -135,7 +136,7 @@ export class ExpressionBuilder {
   private normalise (expressionGroups: any)
     : types.StringIndexableObj {
 
-    const expressionInfo = jaxom.composeElementInfo('Expression', this.pInfo);
+    const expressionInfo = jaxom.composeElementInfo('Expression', this.pareInfo);
     const { id = '' } = expressionInfo;
 
     if (!id) {

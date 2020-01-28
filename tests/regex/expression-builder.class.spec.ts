@@ -7,6 +7,7 @@ import { DOMParserImpl as dom } from 'xmldom-ts';
 const parser = new dom();
 import * as jaxom from 'jaxom-ts';
 import * as build from '../../lib/regex/expression-builder.class';
+import * as helpers from '../../lib/utils/helpers';
 
 describe('Expression builder', () => {
   context('Expression', () => {
@@ -115,7 +116,8 @@ describe('Expression builder', () => {
             const converter = new jaxom.XpathConverter();
             const document = parser.parseFromString(t.data);
             const options = new jaxom.SpecOptionService();
-            const builder = new build.ExpressionBuilder(converter, options, parseInfo);
+            const builder = new build.ExpressionBuilder(converter, options, parseInfo,
+              helpers.selectElementNodeById);
             const applicationNode = xp.select('/Application', document, true);
 
             if (applicationNode instanceof Node) {
