@@ -6,21 +6,41 @@ use(dirtyChai);
 
 import * as path from 'path';
 import * as R from 'ramda';
-import * as xp from 'xpath-ts';
 import * as Helpers from '../test-helpers';
 import { DOMParserImpl as dom } from 'xmldom-ts';
 const parser = new dom();
 import * as jaxom from 'jaxom-ts';
-import * as builder from '../../lib/regex/expression-builder';
-import * as impl from '../../lib/regex/expression-builder.impl';
+import * as build from '../../lib/regex/expression-builder.class';
+import * as helpers from '../../lib/utils/helpers';
 
 describe('expression-builder (test config)', () => {
   let xml: string;
   let document: Document;
   let converter: jaxom.IConverter;
+  let builder: build.ExpressionBuilder;
+  const options = new jaxom.SpecOptionService();
 
   before(() => {
+    const parseInfo: jaxom.IParseInfo = {
+      elements: new Map<string, jaxom.IElementInfo>([
+        ['Expressions', {
+          id: 'name',
+          descendants: {
+            by: 'index',
+            id: 'name',
+            throwIfCollision: true,
+            throwIfMissing: true
+          }
+        }],
+        ['Expression', {
+          id: 'name'
+        }]
+      ])
+    };
     converter = new jaxom.XpathConverter();
+    builder = new build.ExpressionBuilder(converter, options,
+      parseInfo, new helpers.XPathSelector());
+
     try {
       xml = Helpers.read(
         path.resolve(
@@ -37,10 +57,11 @@ describe('expression-builder (test config)', () => {
 
   context('given: a config with various expressions and expression groups', () => {
     it('should: return a map object with loaded expressions"', () => {
-      const applicationNode = xp.select('/Application', document, true);
+      const xpath = new helpers.XPathSelector();
+      const applicationNode = xpath.select('/Application', document, true);
 
       if (applicationNode instanceof Node) {
-        const expressions: any = builder.buildExpressions(converter, applicationNode);
+        const expressions: any = builder.buildExpressions(applicationNode);
 
         const keys = R.keys(expressions);
         expect(keys.length).to.equal(34);
@@ -53,13 +74,14 @@ describe('expression-builder (test config)', () => {
 
   context('given: a config with various expressions and expression groups', () => {
     it('should: evaluate all built expressions"', () => {
-      const applicationNode = xp.select('/Application', document, true);
+      const xpath = new helpers.XPathSelector();
+      const applicationNode = xpath.select('/Application', document, true);
 
       if (applicationNode instanceof Node) {
-        const expressions = builder.buildExpressions(converter, applicationNode);
+        const expressions = builder.buildExpressions(applicationNode);
 
         R.forEach((expressionName: string) => {
-          const expression = impl.evaluate(expressionName, expressions);
+          const expression = builder.evaluate(expressionName, expressions);
 
           const regexpObj = expression.$regexp;
           expect(regexpObj).to.be.a('regexp');

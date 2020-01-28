@@ -1,14 +1,13 @@
-/* eslint-disable no-useless-escape */
 
+import { functify } from 'jinxed';
 import { expect, assert, use } from 'chai';
-import dirtyChai = require('dirty-chai');
-use(dirtyChai);
-import * as xp from 'xpath-ts';
+import dirtyChai = require('dirty-chai'); use(dirtyChai);
 import { DOMParserImpl as dom } from 'xmldom-ts';
 const parser = new dom();
 import * as jaxom from 'jaxom-ts';
-
-import * as builder from '../../lib/regex/expression-builder';
+import * as build from '../../lib/regex/expression-builder.class';
+import * as helpers from '../../lib/utils/helpers';
+import * as types from '../../lib/types';
 
 describe('Expression builder', () => {
   context('Expression', () => {
@@ -93,18 +92,44 @@ describe('Expression builder', () => {
                 </Expression>
               </Expressions>
             </Application>`
-        }];
+        },
+        {
+          given: 'invalid/missing expression group Node',
+          data: `<?xml version="1.0"?>
+            <Application name="pez"/>`
+        }
+      ];
 
       tests.forEach((t: IUnitTestInfo) => {
         context(`given: ${t.given}`, () => {
           it('should: throw', () => {
+            const parseInfo: jaxom.IParseInfo = {
+              elements: new Map<string, jaxom.IElementInfo>([
+                ['Expressions', {
+                  id: 'name',
+                  descendants: {
+                    by: 'index',
+                    id: 'name',
+                    throwIfCollision: true,
+                    throwIfMissing: true
+                  }
+                }],
+                ['Expression', {
+                  id: 'name'
+                }]
+              ])
+            };
             const converter = new jaxom.XpathConverter();
             const document = parser.parseFromString(t.data);
-            const applicationNode = xp.select('/Application', document, true);
+            const options = new jaxom.SpecOptionService();
+            const xpath = new helpers.XPathSelector();
+            const builder = new build.ExpressionBuilder(converter, options, parseInfo,
+              xpath);
+            const applicationNode = xpath.select('/Application', document, true);
 
             if (applicationNode instanceof Node) {
               expect(() => {
-                builder.buildExpressions(converter, applicationNode);
+                builder.buildExpressions(applicationNode);
               }).to.throw();
             } else {
               assert.fail('Couldn\'t get Application node.');
@@ -115,3 +140,94 @@ describe('Expression builder', () => {
     });
   }); // Expression
 }); // Expression builder
+
+describe('Expression builder Error Handling', () => {
+  let converter: jaxom.XpathConverter;
+  let document: Document;
+  let builder: build.ExpressionBuilder;
+
+  beforeEach(() => {
+    converter = new jaxom.XpathConverter();
+  });
+
+  function init (d: string,
+    pi: jaxom.IParseInfo = {
+      elements: new Map<string, jaxom.IElementInfo>([
+        ['Expressions', {
+          id: 'name',
+          descendants: {
+            by: 'index',
+            id: 'name',
+            throwIfCollision: true,
+            throwIfMissing: true
+          }
+        }],
+        ['Expression', {
+          id: 'name'
+        }]
+      ])
+    },
+    xpath: types.IXPathSelector = new helpers.XPathSelector())
+    : void {
+    document = parser.parseFromString(d);
+
+    builder = new build.ExpressionBuilder(
+      converter,
+      new jaxom.SpecOptionService(),
+      pi,
+      xpath
+    );
+  }
+
+  context('buildExpressions', () => {
+    context('given: no <Expressions>', () => {
+      it('should: throw', () => {
+        const data = `<?xml version="1.0"?>
+          <Application name="pez"/>`;
+        init(data);
+
+        expect(() => {
+          builder.buildExpressions(document);
+        }).to.throw();
+      });
+    });
+
+    context('given: no <Expressions>', () => {
+      it('should: throw', () => {
+        const data = `<?xml version="1.0"?>
+          <Application name="pez">
+          </Application>`;
+        init(data);
+
+        expect(() => {
+          builder.buildExpressions(document);
+        }).to.throw();
+      });
+    });
+
+    context('given: Different expression groups contain an Expression with same id(name)', () => {
+      it('should: throw', () => {
+        const data = `<?xml version="1.0"?>
+        <Application name="pez">
+          <Expressions name="test-expressions">
+            <Expression name="forename-expression" eg="Ted">
+              <Pattern link="middle-expression"/>
+              <Pattern><![CDATA[THIS IS A REG EX]]></Pattern>
+            </Expression>
+          </Expressions>
+          <Expressions name="duplicate-expressions">
+            <Expression name="forename-expression" eg="Ted">
+              <Pattern link="middle-expression"/>
+              <Pattern><![CDATA[THIS IS A REG EX]]></Pattern>
+            </Expression>
+          </Expressions>
+        </Application>`;
+        init(data);
+
+        expect(() => {
+          builder.buildExpressions(document);
+        }).to.throw();
+      });
+    });
+  }); // buildExpressions
+});
