@@ -1,6 +1,8 @@
 
 import * as R from 'ramda';
 import * as jaxom from 'jaxom-ts';
+import * as xp from 'xpath-ts';
+import { functify } from 'jinxed';
 import * as types from '../types';
 
 /**
@@ -116,7 +118,7 @@ export class ExpressionBuilderImpl {
         }],
         [R.has(this.options.textLabel), R.prop(this.options.textLabel)],
         [R.has('link'), (o: any): string => {
-          const link: string = R.prop('link', o) || '';
+          const link: string = R.prop('link', o);
           if (R.includes(link, previouslySeen)) {
             throw new Error(`Circular reference detected, element '${
               link}', has already been encountered.`);
@@ -155,6 +157,7 @@ export class ExpressionBuilderImpl {
       capture = captureGroupsRegExp.exec(expressionText);
 
       if (capture) {
+        /* istanbul ignore next: too difficult to test for missing groups/captureGroup */
         captures = R.append(capture?.groups?.captureGroup, captures);
       }
     }
@@ -186,4 +189,107 @@ export class ExpressionBuilderImpl {
     }
     return updatedExpression;
   } // evaluate
-}
+
+  /**
+   * @method validateId
+   * @description: Checks that id's of named elements are valid
+   *
+   * @public
+   * @param {Node} parentNode: the xpath node which is the parent under which the requested
+   * @param {string[]} elementNames: Array containing the names of elements to be validated
+   * expression group should reside.
+   * @throws: if id anomaly is found.
+   * @memberof ExpressionBuilderImpl
+   */
+  public validateId (parentNode: Node, elementNames: string[])
+    : void {
+    if (elementNames.length && elementNames.length > 0) {
+      elementNames.forEach((elementName: string) => {
+        const elementInfo: jaxom.IElementInfo = jaxom.composeElementInfo(elementName, this.parseInfo);
+        /* istanbul ignore next: typescript prevents elementInfo not having id */
+        const { id = '' } = elementInfo;
+
+        if (id !== '') {
+          const elementsWithoutIdResult = xp.select(`.//${elementName}[not(@${id})]`, parentNode);
+
+          /* istanbul ignore next: type-guard; xp.select always returns array */
+          if (elementsWithoutIdResult instanceof Array) {
+            if (elementsWithoutIdResult.length > 0) {
+              const first = elementsWithoutIdResult[0];
+              throw new Error(
+                `Found at least 1 ${elementName} without ${id} attribute, first: ${functify(first)}`);
+            }
+
+            const elementsWithEmptyIdResult: any = xp.select(`.//${elementName}[@${id}=""]`, parentNode);
+
+            if (elementsWithEmptyIdResult.length > 0) {
+              const first: string = elementsWithEmptyIdResult[0];
+              throw new Error(
+                `Found at least 1 ${elementName} with empty ${id} attribute, first: ${functify(first)}`);
+            }
+          }
+        } else {
+          throw new Error(`No "id" field specified in ${elementName} elementInfo`);
+        }
+      });
+    }
+  } // validateId
+
+  /**
+   * @method normalise
+   * @description: The XML representation of regular expressions in the config allows
+   * regular expressions to be grouped. This means that when jaxine is used to
+   * convert the to JSON the result is not a particularly useful for clients to
+   * interact with. Essentially all clients need is the ability to specify a
+   * regular expression name and get back an expression. However, the normalise only
+   * creates a map of expression names to expression objects. These expression objects
+   * here are not built into fully fledged regular expressions.
+   *
+   * @private
+   * @param {*} expressionGroups: Plain JSON object representing all expressions
+   * in all Expressions groups.
+   * @throws: if duplication definitions found for a regular expression name or id is
+   * not defined for 'Expression' via getOptions.
+   * @returns {types.StringIndexableObj}: representing normalised expressions which is
+   * simply a map object, from regular expression name to the regular expression
+   *  object (not regex!).
+   *
+   * @memberof ExpressionBuilderImpl
+   */
+  public normalise (expressionGroups: any)
+    : types.StringIndexableObj {
+
+    // Each expression sub-group is already in a normalised form of sorts. The only problem we
+    // have to deal with here is the fact that there is a single map per expression group. We
+    // have no need to for the sub-group structure, so effectively what we need to do is combine
+    // several map objects into one and detecting any potential collisions.
+    //
+    const combinedExpressionGroupsMap = R.reduce(
+      (combinedAcc: types.StringIndexableObj, groupName: string) => {
+        const expressions = R.prop(this.options.descendantsLabel, expressionGroups[groupName]);
+        const alreadyDefined = R.intersection(R.keys(expressions), R.keys(combinedAcc));
+        /* istanbul ignore if */
+        if (!R.isEmpty(alreadyDefined)) {
+          /* istanbul ignore next */
+          throw new Error(`These expressions have already been defined: "${
+            R.join(', ', alreadyDefined)}"`);
+        }
+
+        const expressionsForThisGroupMap = R.reduce(
+          (thisGroupAcc: types.StringIndexableObj, exprName: string) => {
+            /* istanbul ignore if */
+            if (R.includes(exprName, R.keys(thisGroupAcc))) {
+              /* istanbul ignore next */
+              throw new Error(`Expression: '${exprName}' already defined`);
+            }
+            thisGroupAcc[exprName] = expressions[exprName];
+            return thisGroupAcc;
+          }, {})(R.keys(R.prop(
+            this.options.descendantsLabel, expressionGroups[groupName])) as string[]);
+
+        return R.mergeAll([combinedAcc, expressionsForThisGroupMap]);
+      }, {})(R.keys(expressionGroups) as string[]);
+
+    return combinedExpressionGroupsMap;
+  } // normalise
+} // ExpressionBuilderImpl

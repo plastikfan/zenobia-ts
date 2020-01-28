@@ -8,6 +8,7 @@ const parser = new dom();
 import * as jaxom from 'jaxom-ts';
 import * as build from '../../lib/regex/expression-builder.class';
 import * as helpers from '../../lib/utils/helpers';
+import * as types from '../../lib/types';
 
 describe('Expression builder', () => {
   context('Expression', () => {
@@ -92,7 +93,13 @@ describe('Expression builder', () => {
                 </Expression>
               </Expressions>
             </Application>`
-        }];
+        },
+        {
+          given: 'invalid/missing expression group Node',
+          data: `<?xml version="1.0"?>
+            <Application name="pez"/>`
+        }
+      ];
 
       tests.forEach((t: IUnitTestInfo) => {
         context(`given: ${t.given}`, () => {
@@ -133,3 +140,94 @@ describe('Expression builder', () => {
     });
   }); // Expression
 }); // Expression builder
+
+describe('Expression builder Error Handling', () => {
+  let converter: jaxom.XpathConverter;
+  let document: Document;
+  let builder: build.ExpressionBuilder;
+
+  beforeEach(() => {
+    converter = new jaxom.XpathConverter();
+  });
+
+  function init (d: string,
+    pi: jaxom.IParseInfo = {
+      elements: new Map<string, jaxom.IElementInfo>([
+        ['Expressions', {
+          id: 'name',
+          descendants: {
+            by: 'index',
+            id: 'name',
+            throwIfCollision: true,
+            throwIfMissing: true
+          }
+        }],
+        ['Expression', {
+          id: 'name'
+        }]
+      ])
+    },
+    select: types.IXPathSelector = helpers.selectElementNodeById)
+    : void {
+    document = parser.parseFromString(d);
+
+    builder = new build.ExpressionBuilder(
+      converter,
+      new jaxom.SpecOptionService(),
+      pi,
+      select
+    );
+  }
+
+  context('buildExpressions', () => {
+    context('given: no <Expressions>', () => {
+      it('should: throw', () => {
+        const data = `<?xml version="1.0"?>
+          <Application name="pez"/>`;
+        init(data);
+
+        expect(() => {
+          builder.buildExpressions(document);
+        }).to.throw();
+      });
+    });
+
+    context('given: no <Expressions>', () => {
+      it('should: throw', () => {
+        const data = `<?xml version="1.0"?>
+          <Application name="pez">
+          </Application>`;
+        init(data);
+
+        expect(() => {
+          builder.buildExpressions(document);
+        }).to.throw();
+      });
+    });
+
+    context('given: Different expression groups contain an Expression with same id(name)', () => {
+      it('should: throw', () => {
+        const data = `<?xml version="1.0"?>
+        <Application name="pez">
+          <Expressions name="test-expressions">
+            <Expression name="forename-expression" eg="Ted">
+              <Pattern link="middle-expression"/>
+              <Pattern><![CDATA[THIS IS A REG EX]]></Pattern>
+            </Expression>
+          </Expressions>
+          <Expressions name="duplicate-expressions">
+            <Expression name="forename-expression" eg="Ted">
+              <Pattern link="middle-expression"/>
+              <Pattern><![CDATA[THIS IS A REG EX]]></Pattern>
+            </Expression>
+          </Expressions>
+        </Application>`;
+        init(data);
+
+        expect(() => {
+          builder.buildExpressions(document);
+        }).to.throw();
+      });
+    });
+  }); // buildExpressions
+});

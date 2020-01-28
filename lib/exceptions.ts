@@ -4,11 +4,3 @@
 // Microsoft recommendation.
 // See: https://github.com/Microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md#extending-built-ins-like-error-array-and-map-may-no-longer-work
 //
-
-export class ZenDummyError extends Error {
-  constructor (message: string, elementPath: string) {
-    super(`${message} at: '${elementPath}'`);
-
-    Object.setPrototypeOf(this, ZenDummyError.prototype);
-  }
-}
