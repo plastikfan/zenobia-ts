@@ -1,4 +1,3 @@
-
 import * as R from 'ramda';
 import * as xp from 'xpath-ts';
 import * as jaxom from 'jaxom-ts';
@@ -185,7 +184,7 @@ export class CommandBuilder {
   private resolveArguments (command: types.StringIndexableObj, info: types.StringIndexableObj)
     : types.StringIndexableObj {
 
-    const { commandArguments = {} } = info;
+    const { commandArguments } = info;
     const argumentDefs = commandArguments[this.options.descendantsLabel];
 
     if (R.is(Object, R.prop(this.options.descendantsLabel)(command))) {
