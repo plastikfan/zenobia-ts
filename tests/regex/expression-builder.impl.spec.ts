@@ -204,7 +204,6 @@ describe('Expression Builder Impl', () => {
               xpath);
             const expressions = builder.buildExpressions(applicationNode);
             const expression = builder.evaluate(t.expressionName, expressions);
-            // expressionObject: Record<string, ?>
             const expressionObject: { source: string } = R.prop('$regexp')(expression);
             expect(expressionObject.source).to.equal(t.expectedRegexText);
 
@@ -238,7 +237,7 @@ describe('Expression Builder Impl', () => {
 
     const tests: IUnitTestInfo[] = [
       {
-        given: 'evaluate invoked with empty expression name', // WHERE'S THE MISSING NAME?
+        given: 'evaluate invoked with empty expression name',
         data: `<?xml version="1.0"?>
           <Application name="pez">
             <Expressions name="test-expressions">
@@ -247,11 +246,11 @@ describe('Expression Builder Impl', () => {
               </Expression>
             </Expressions>
           </Application>`,
-        expressionName: '',
+        expressionName: '', // <-- *
         expectedRegexText: 'THIS IS A REG EX'
       },
       {
-        given: 'evaluate invoked with an expression name that is undefined', // ??? WHAT IS THIS DOING?
+        given: 'evaluate invoked with an expression name that is undefined',
         data: `<?xml version="1.0"?>
           <Application name="pez">
             <Expressions name="test-expressions">
@@ -260,7 +259,7 @@ describe('Expression Builder Impl', () => {
               </Expression>
             </Expressions>
           </Application>`,
-        expressionName: 'this-expression-does-not-exist',
+        expressionName: 'this-expression-does-not-exist', // <-- *
         expectedRegexText: 'THIS IS A REG EX'
       },
       {
@@ -268,15 +267,14 @@ describe('Expression Builder Impl', () => {
         data: `<?xml version="1.0"?>
           <Application name="pez">
             <Expressions name="test-expressions">
-              <Expression name="forename-expression" eg="Ted">
-              </Expression>
+              <Expression name="forename-expression" eg="Ted"/>
             </Expressions>
           </Application>`,
         expressionName: 'forename-expression',
         expectedRegexText: 'THIS IS A REG EX'
       },
       {
-        given: 'evaluate invoked with empty Expression element',
+        given: 'evaluate invoked with Expression element with no Patterns',
         data: `<?xml version="1.0"?>
           <Application name="pez">
             <Expressions name="test-expressions">
