@@ -122,7 +122,7 @@ describe('Expression builder', () => {
             const converter = new jaxom.XpathConverter();
             const document = parser.parseFromString(t.data);
             const options = new jaxom.SpecOptionService();
-            const xpath = new helpers.XPathSelector();
+            const xpath = helpers.Selectors;
             const builder = new build.ExpressionBuilder(converter, options, parseInfo,
               xpath);
             const applicationNode = xpath.select('/Application', document, true);
@@ -167,7 +167,7 @@ describe('Expression builder Error Handling', () => {
         }]
       ])
     },
-    xpath: types.IXPathSelector = new helpers.XPathSelector())
+    xpath: types.ISelectors = helpers.Selectors)
     : void {
     document = parser.parseFromString(d);
 

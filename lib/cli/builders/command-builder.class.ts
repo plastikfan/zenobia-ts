@@ -9,7 +9,7 @@ import { CommandBuilderImpl } from './command-builder.impl';
  */
 export class CommandBuilder {
   constructor (private converter: jaxom.IConverter, private options: jaxom.ISpecService,
-    private parseInfo: jaxom.IParseInfo, private selector: types.IXPathSelector) {
+    private parseInfo: jaxom.IParseInfo, private xpath: types.ISelectors) {
 
     // Control freak
     //
@@ -40,7 +40,7 @@ export class CommandBuilder {
   public buildNamedCommand (commandName: string, commandsNode: Node)
     : Array<{}> {
 
-    const commandNode = this.selector.selectById(
+    const commandNode = this.xpath.selectById(
       'Command', 'name', commandName, commandsNode);
 
     if (commandNode instanceof Node) {
@@ -71,7 +71,7 @@ export class CommandBuilder {
    */
   public buildCommands (commandsNode: Node)
     : types.StringIndexableObj[] {
-    const concreteCommands = this.selector.select('.//Command[not(@abstract)]', commandsNode);
+    const concreteCommands = this.xpath.select('.//Command[not(@abstract)]', commandsNode);
 
     /* istanbul ignore next */
     if (concreteCommands instanceof Array) {

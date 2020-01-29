@@ -195,7 +195,7 @@ describe('Expression Builder Impl', () => {
         it('should: evaluate regular expression text successfully', () => {
           const converter = new jaxom.XpathConverter();
           const document: Document = parser.parseFromString(t.data);
-          const xpath = new helpers.XPathSelector();
+          const xpath = helpers.Selectors;
           const applicationNode = xpath.select('/Application', document, true);
 
           if (applicationNode instanceof Node) {
@@ -370,7 +370,7 @@ describe('Expression Builder Impl', () => {
         it('should: throw', () => {
           const converter = new jaxom.XpathConverter();
           const document: Document = parser.parseFromString(t.data);
-          const xpath = new helpers.XPathSelector();
+          const xpath = helpers.Selectors;
           const applicationNode = xpath.select('/Application', document, true);
           const options = new jaxom.SpecOptionService();
           const builder = new build.ExpressionBuilder(converter, options,
@@ -418,7 +418,7 @@ describe('Expression Builder Impl Error handling (custom)', () => {
         }]
       ])
     },
-    xpath: types.IXPathSelector = new helpers.XPathSelector())
+    xpath: types.ISelectors = helpers.Selectors)
     : void {
     document = parser.parseFromString(d);
 
@@ -455,7 +455,7 @@ describe('Expression Builder Impl Error handling (custom)', () => {
           </Application>`;
         init(data);
 
-        const expressionsNode = helpers.selectElementNodeById(
+        const expressionsNode = helpers.Selectors.selectById(
           'Expressions', 'name', 'test-expressions', document);
 
         if (expressionsNode instanceof Node) {
@@ -476,7 +476,7 @@ describe('Expression Builder Impl Error handling (custom)', () => {
           </Application>`;
         init(data);
 
-        const expressionsNode = helpers.selectElementNodeById(
+        const expressionsNode = helpers.Selectors.selectById(
           'Expressions', 'name', 'test-expressions', document);
 
         if (expressionsNode instanceof Node) {
@@ -503,7 +503,7 @@ describe('Expression Builder Impl Error handling (custom)', () => {
           </Application>`;
         init(data);
 
-        const expressionsNode = helpers.selectElementNodeById(
+        const expressionsNode = helpers.Selectors.selectById(
           'Expressions', 'name', 'test-expressions', document);
 
         if (expressionsNode instanceof Node) {

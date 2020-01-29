@@ -11,8 +11,8 @@ import * as impl from './expression-builder.impl';
  */
 export class ExpressionBuilder {
   constructor (private converter: jaxom.IConverter, private options: jaxom.ISpecService,
-    private pareInfo: jaxom.IParseInfo, private xpath: types.IXPathSelector) {
-    this.impl = new impl.ExpressionBuilderImpl(this.converter, options,
+    private pareInfo: jaxom.IParseInfo, private xpath: types.ISelectors) {
+    this.impl = new impl.ExpressionBuilderImpl(this.converter, this.options,
       pareInfo, this.xpath);
   }
 

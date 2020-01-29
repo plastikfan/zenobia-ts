@@ -9,6 +9,7 @@ import * as jaxom from 'jaxom-ts';
 import { functify } from 'jinxed';
 import * as build from '../../../lib/cli/builders/command-builder.class';
 import * as helpers from '../../../lib/utils/helpers';
+import * as types from '../../../lib/types';
 
 const ComplexNormalisedArgumentDefs = {
   _: 'ArgumentDefs',
@@ -167,7 +168,7 @@ describe('Command builder', () => {
     }
     options = new jaxom.SpecOptionService();
     builder = new build.CommandBuilder(converter, options, parseInfo,
-      new helpers.XPathSelector());
+      helpers.Selectors);
   }
 
   context('resolveArguments', () => {
@@ -532,3 +533,41 @@ describe('Command builder', () => {
     });
   }); // a command with an unknown "name"
 }); // Command builder
+
+function invoke (xpath: types.ISelectors): void {
+  const data = `<?xml version="1.0"?>
+    <Application name="pez">
+      <Cli>
+        <Commands>
+          <Command name="base-command" abstract="true" source="filesystem-source">
+            <Arguments>
+              <ArgumentRef name="loglevel"/>
+              <ArgumentRef name="logfile"/>
+            </Arguments>
+          </Command>
+          <Command name="rename"
+            describe="Rename albums according to arguments specified (write)."
+            inherits="base-command">
+            <Arguments>
+              <ArgumentRef name="missing"/>
+            </Arguments>
+          </Command>
+        </Commands>
+      </Cli>
+    </Application>`;
+
+  const query = '/Application/Cli/Commands';
+  const document = parser.parseFromString(data);
+
+  xpath.select(query, document);
+  xpath.selectById('Command', 'name', 'rename', document);
+
+  // select(query, document);
+  // select('Command', 'name', 'rename', document);
+}
+
+describe('dual fn interface', () => {
+  it('ISelector', () => {
+    invoke(helpers.Selectors);
+  });
+});

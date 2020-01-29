@@ -39,7 +39,7 @@ describe('expression-builder (test config)', () => {
     };
     converter = new jaxom.XpathConverter();
     builder = new build.ExpressionBuilder(converter, options,
-      parseInfo, new helpers.XPathSelector());
+      parseInfo, helpers.Selectors);
 
     try {
       xml = Helpers.read(
@@ -57,7 +57,7 @@ describe('expression-builder (test config)', () => {
 
   context('given: a config with various expressions and expression groups', () => {
     it('should: return a map object with loaded expressions"', () => {
-      const xpath = new helpers.XPathSelector();
+      const xpath = helpers.Selectors;
       const applicationNode = xpath.select('/Application', document, true);
 
       if (applicationNode instanceof Node) {
@@ -74,7 +74,7 @@ describe('expression-builder (test config)', () => {
 
   context('given: a config with various expressions and expression groups', () => {
     it('should: evaluate all built expressions"', () => {
-      const xpath = new helpers.XPathSelector();
+      const xpath = helpers.Selectors;
       const applicationNode = xpath.select('/Application', document, true);
 
       if (applicationNode instanceof Node) {

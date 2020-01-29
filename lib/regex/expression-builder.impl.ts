@@ -10,7 +10,7 @@ import * as types from '../types';
  */
 export class ExpressionBuilderImpl {
   constructor (private converter: jaxom.IConverter, private options: jaxom.ISpecService,
-    private parseInfo: jaxom.IParseInfo, private xpath: types.IXPathSelector) { }
+    private parseInfo: jaxom.IParseInfo, private xpath: types.ISelectors) { }
 
   /**
    * @method buildExpressionGroup
