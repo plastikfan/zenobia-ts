@@ -120,7 +120,7 @@ describe('Command builder', () => {
   let document: Node;
   let commandsNode: Node;
   let builder: build.CommandBuilder;
-  let options: jaxom.ISpecService;
+  let specSvc: jaxom.ISpecService;
   const parseInfo: jaxom.IParseInfo = {
     elements: new Map<string, jaxom.IElementInfo>([
       ['Commands', {
@@ -166,8 +166,8 @@ describe('Command builder', () => {
     } else {
       assert.fail("Couldn't get Commands Node");
     }
-    options = new jaxom.SpecOptionService();
-    builder = new build.CommandBuilder(converter, options, parseInfo,
+    specSvc = new jaxom.SpecOptionService();
+    builder = new build.CommandBuilder(converter, specSvc, parseInfo,
       helpers.Selectors);
   }
 

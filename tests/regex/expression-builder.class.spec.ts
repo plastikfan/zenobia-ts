@@ -121,9 +121,9 @@ describe('Expression builder', () => {
             };
             const converter = new jaxom.XpathConverter();
             const document = parser.parseFromString(t.data);
-            const options = new jaxom.SpecOptionService();
+            const specSvc = new jaxom.SpecOptionService();
             const xpath = helpers.Selectors;
-            const builder = new build.ExpressionBuilder(converter, options, parseInfo,
+            const builder = new build.ExpressionBuilder(converter, specSvc, parseInfo,
               xpath);
             const applicationNode = xpath.select('/Application', document, true);
 

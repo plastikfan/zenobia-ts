@@ -29,8 +29,8 @@ describe('CommandBuilderImpl.resolveArguments', () => {
   let builderImpl: CommandBuilderImpl;
 
   beforeEach(() => {
-    const options = new jaxom.SpecOptionService();
-    builderImpl = new CommandBuilderImpl(options);
+    const specSvc = new jaxom.SpecOptionService();
+    builderImpl = new CommandBuilderImpl(specSvc);
   });
 
   context('given: a command whose descendants is not an array', () => {

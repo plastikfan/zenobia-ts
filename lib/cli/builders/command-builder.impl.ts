@@ -4,7 +4,7 @@ import * as jaxom from 'jaxom-ts';
 import * as types from '../../types';
 
 export class CommandBuilderImpl {
-  constructor (private options: jaxom.ISpecService) { }
+  constructor (private specSvc: jaxom.ISpecService) { }
 
   /**
    * @method resolveArguments
@@ -24,16 +24,16 @@ export class CommandBuilderImpl {
     : types.StringIndexableObj {
 
     const { commandArguments } = info;
-    const argumentDefs = commandArguments[this.options.descendantsLabel];
+    const argumentDefs = commandArguments[this.specSvc.descendantsLabel];
 
-    if (R.is(Array)(R.prop(this.options.descendantsLabel)(command))) {
-      const children = command[this.options.descendantsLabel];
+    if (R.is(Array)(R.prop(this.specSvc.descendantsLabel)(command))) {
+      const children = command[this.specSvc.descendantsLabel];
       const argumentRefsObj = R.find((el: types.StringIndexableObj): boolean => {
-        return el[this.options.elementLabel] === 'Arguments';
+        return el[this.specSvc.elementLabel] === 'Arguments';
       })(children);
 
       if (argumentRefsObj instanceof Object) {
-        const argumentRefs = argumentRefsObj[this.options.descendantsLabel];
+        const argumentRefs = argumentRefsObj[this.specSvc.descendantsLabel];
         const resolved = R.map((ref: { name: string; }) => argumentDefs[ref['name']] ?? {
           // This marks out unresolved arguments so we can find them
           //
@@ -46,12 +46,12 @@ export class CommandBuilderImpl {
           throw new Error(
             `"${unresolvedArgument.$unresolved}" Argument definition missing for command: "${command.name}"`);
         }
-        argumentRefsObj[this.options.descendantsLabel] = resolved;
+        argumentRefsObj[this.specSvc.descendantsLabel] = resolved;
       } else {
         throw new Error(`Couldn't find 'Arguments in command: ${command.name}`);
       }
     } else {
-      throw new Error(`"${this.options.descendantsLabel}" Array is missing from command: "${command.name}"`);
+      throw new Error(`"${this.specSvc.descendantsLabel}" Array is missing from command: "${command.name}"`);
     }
 
     return command;

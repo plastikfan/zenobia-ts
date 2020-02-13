@@ -8,12 +8,12 @@ import { CommandBuilderImpl } from './command-builder.impl';
  * @class CommandBuilder
  */
 export class CommandBuilder {
-  constructor (private converter: jaxom.IConverter, private options: jaxom.ISpecService,
+  constructor (private converter: jaxom.IConverter, private specSvc: jaxom.ISpecService,
     private parseInfo: jaxom.IParseInfo, private xpath: types.ISelectors) {
 
     // Control freak
     //
-    this.impl = new CommandBuilderImpl(this.options);
+    this.impl = new CommandBuilderImpl(this.specSvc);
   }
 
   private impl: CommandBuilderImpl;

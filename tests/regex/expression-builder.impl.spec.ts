@@ -199,8 +199,8 @@ describe('Expression Builder Impl', () => {
           const applicationNode = xpath.select('/Application', document, true);
 
           if (applicationNode instanceof Node) {
-            const options = new jaxom.SpecOptionService();
-            const builder = new build.ExpressionBuilder(converter, options, parseInfo,
+            const specSvc = new jaxom.SpecOptionService();
+            const builder = new build.ExpressionBuilder(converter, specSvc, parseInfo,
               xpath);
             const expressions = builder.buildExpressions(applicationNode);
             const expression = builder.evaluate(t.expressionName, expressions);
@@ -370,8 +370,8 @@ describe('Expression Builder Impl', () => {
           const document: Document = parser.parseFromString(t.data);
           const xpath = helpers.Selectors;
           const applicationNode = xpath.select('/Application', document, true);
-          const options = new jaxom.SpecOptionService();
-          const builder = new build.ExpressionBuilder(converter, options,
+          const specSvc = new jaxom.SpecOptionService();
+          const builder = new build.ExpressionBuilder(converter, specSvc,
             parseInfo, xpath);
 
           if (applicationNode instanceof Node) {
