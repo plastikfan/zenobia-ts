@@ -171,7 +171,7 @@ describe('Command builder', () => {
       helpers.Selectors);
   }
 
-  context('resolveArguments', () => {
+  context('resolveOptions', () => {
     context('given: a built command with at least 1 unresolvable OptionRef', () => {
       it('should: throw', () => {
         const data = `<?xml version="1.0"?>
@@ -204,7 +204,7 @@ describe('Command builder', () => {
         }).to.throw();
       });
     });
-  }); // command-builder.resolveArguments
+  }); // command-builder.resolveOptions
 
   context('given: a command defined as abstract has a description', () => {
     it('should: throw', () => {

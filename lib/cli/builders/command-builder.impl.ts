@@ -7,7 +7,7 @@ export class CommandBuilderImpl {
   constructor (private specSvc: jaxom.ISpecService) { }
 
   /**
-   * @method resolveArguments
+   * @method resolveOptions
    * @description: Resolves all OptionRefs to Options using the info object passed in.
    *
    * @public
@@ -20,7 +20,7 @@ export class CommandBuilderImpl {
    * @returns {types.StringIndexableObj}: A native Command object with resolved Options
    * @memberof CommandBuilder
    */
-  public resolveArguments (command: types.StringIndexableObj, info: types.StringIndexableObj)
+  public resolveOptions (command: types.StringIndexableObj, info: types.StringIndexableObj)
     : types.StringIndexableObj {
 
     const { commandArguments } = info;

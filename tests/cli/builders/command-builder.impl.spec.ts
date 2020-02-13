@@ -25,7 +25,7 @@ const ComplexNormalisedOptionDefs = {
   }
 };
 
-describe('CommandBuilderImpl.resolveArguments', () => {
+describe('CommandBuilderImpl.resolveOptions', () => {
   let builderImpl: CommandBuilderImpl;
 
   beforeEach(() => {
@@ -49,7 +49,7 @@ describe('CommandBuilderImpl.resolveArguments', () => {
       };
 
       expect(() => {
-        builderImpl.resolveArguments(command, resolveInfo);
+        builderImpl.resolveOptions(command, resolveInfo);
       }).to.throw();
     });
   });
@@ -79,7 +79,7 @@ describe('CommandBuilderImpl.resolveArguments', () => {
       };
 
       expect(() => {
-        builderImpl.resolveArguments(command, resolveInfo);
+        builderImpl.resolveOptions(command, resolveInfo);
       }).to.throw();
     });
   });

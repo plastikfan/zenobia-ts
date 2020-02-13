@@ -103,7 +103,7 @@ export class CommandBuilder {
   public resolveCommandArguments (commands: any[], info: any)
     : types.StringIndexableObj {
     return R.map((command: any) => {
-      return this.impl.resolveArguments(command, info);
+      return this.impl.resolveOptions(command, info);
     })(commands);
   }
 } // CommandBuilder
