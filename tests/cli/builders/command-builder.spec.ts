@@ -198,7 +198,7 @@ describe('Command builder', () => {
 
         const commands = builder.buildCommands(commandsNode);
         expect(() => {
-          builder.resolveCommandArguments(commands, {
+          builder.resolveCommandOptions(commands, {
             commandOptions: ComplexNormalisedOptionDefs
           });
         }).to.throw();
@@ -291,7 +291,7 @@ describe('Command builder', () => {
       init(data);
 
       const commands = builder.buildCommands(commandsNode);
-      const normalisedCommands = builder.resolveCommandArguments(commands, {
+      const normalisedCommands = builder.resolveCommandOptions(commands, {
         commandOptions: ComplexNormalisedOptionDefs
       });
       const normalisedRenameCommand = normalisedCommands[0];

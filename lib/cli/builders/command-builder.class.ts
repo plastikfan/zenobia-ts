@@ -91,7 +91,7 @@ export class CommandBuilder {
   }
 
   /**
-   * @method resolveCommandArguments
+   * @method resolveCommandOptions
    * @description Any OptionRefs within the Command are resolved into Argument's using
    * the argument definitions provided in info.
    *
@@ -100,7 +100,7 @@ export class CommandBuilder {
    * @returns {types.StringIndexableObj}
    * @memberof CommandBuilder
    */
-  public resolveCommandArguments (commands: any[], info: any)
+  public resolveCommandOptions (commands: any[], info: any)
     : types.StringIndexableObj {
     return R.map((command: any) => {
       return this.impl.resolveOptions(command, info);
