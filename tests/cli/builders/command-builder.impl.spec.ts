@@ -42,7 +42,7 @@ describe('CommandBuilderImpl.resolveOptions', () => {
         _children: {
           // NOT AN ARRAY!
         },
-        describe: 'Rename albums according to arguments specified (write).'
+        describe: 'Rename albums according to options specified (write).'
       };
       const resolveInfo = {
         commandOptions: ComplexNormalisedOptionDefs
@@ -72,7 +72,7 @@ describe('CommandBuilderImpl.resolveOptions', () => {
             }
           }
         ],
-        describe: 'Rename albums according to arguments specified (write).'
+        describe: 'Rename albums according to options specified (write).'
       };
       const resolveInfo = {
         commandOptions: ComplexNormalisedOptionDefs

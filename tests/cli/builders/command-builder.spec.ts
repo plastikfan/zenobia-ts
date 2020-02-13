@@ -185,7 +185,7 @@ describe('Command builder', () => {
                   </Options>
                 </Command>
                 <Command name="rename"
-                  describe="Rename albums according to arguments specified (write)."
+                  describe="Rename albums according to options specified (write)."
                   inherits="base-command">
                   <Options>
                     <OptionRef name="missing"/>
@@ -278,7 +278,7 @@ describe('Command builder', () => {
                 </Options>
               </Command>
               <Command name="rename"
-                describe="Rename albums according to arguments specified (write)."
+                describe="Rename albums according to options specified (write)."
                 inherits="base-command,domain-command,uni-command">
                 <Options>
                   <OptionRef name="with"/>
@@ -439,7 +439,7 @@ describe('Command builder', () => {
             ]
           }
         ],
-        describe: 'Rename albums according to arguments specified (write).'
+        describe: 'Rename albums according to options specified (write).'
       });
     });
   });
@@ -484,7 +484,7 @@ describe('Command builder', () => {
           <Cli>
             <Commands>
               <Command name="rename"
-                describe="Rename albums according to arguments specified (write).">
+                describe="Rename albums according to options specified (write).">
                 <Options>
                   <OptionRef name="with"/>
                   <OptionRef name="put"/>
@@ -516,7 +516,7 @@ describe('Command builder', () => {
           <Cli>
             <Commands>
               <Command name="rename"
-                describe="Rename albums according to arguments specified (write).">
+                describe="Rename albums according to options specified (write).">
                 <Options>
                   <OptionRef name="with"/>
                   <OptionRef name="put"/>
@@ -546,7 +546,7 @@ function invoke (xpath: types.ISelectors): void {
             </Options>
           </Command>
           <Command name="rename"
-            describe="Rename albums according to arguments specified (write)."
+            describe="Rename albums according to options specified (write)."
             inherits="base-command">
             <Options>
               <OptionRef name="missing"/>

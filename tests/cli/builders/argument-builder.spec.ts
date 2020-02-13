@@ -44,7 +44,7 @@ describe('Option builder', () => {
   });
 
   context('given: a correctly defined argument', () => {
-    it('should: build arguments successfully', () => {
+    it('should: build options successfully', () => {
       const data = `<?xml version="1.0"?>
         <Application name="pez">
           <Cli>

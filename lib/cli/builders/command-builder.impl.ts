@@ -12,7 +12,7 @@ export class CommandBuilderImpl {
    *
    * @public
    * @param {types.StringIndexableObj} command: The native command object with unresolved
-   * Options (ie, the arguments are all just OptionRefs)
+   * Options (ie, the options are all just OptionRefs)
    * @param {types.StringIndexableObj} info: normalisation information, which contains
    * "commandOptions" being a reference to a generic format object built by jaxom
    * whose top level "_children" attribute contains a map keyed by option name
@@ -35,7 +35,7 @@ export class CommandBuilderImpl {
       if (argumentRefsObj instanceof Object) {
         const argumentRefs = argumentRefsObj[this.specSvc.descendantsLabel];
         const resolved = R.map((ref: { name: string; }) => argumentDefs[ref['name']] ?? {
-          // This marks out unresolved arguments so we can find them
+          // This marks out unresolved options so we can find them
           //
           $unresolved: ref.name
         })(argumentRefs);
