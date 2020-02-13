@@ -35,12 +35,12 @@ describe('Option builder', () => {
   // rather than use it. Just more practical to use jaxom directly.
   //
   let converter: jaxom.IConverter;
-  let builder: build.ArgumentBuilder;
+  let builder: build.OptionBuilder;
 
   beforeEach(() => {
 
     converter = new jaxom.XpathConverter();
-    builder = new build.ArgumentBuilder(converter, parseInfo);
+    builder = new build.OptionBuilder(converter, parseInfo);
   });
 
   context('given: a correctly defined option', () => {
@@ -162,7 +162,7 @@ describe('Option builder from config', () => {
 
       if (optionsNode instanceof Node) {
         const converter = new jaxom.XpathConverter();
-        const builder = new build.ArgumentBuilder(converter, parseInfo);
+        const builder = new build.OptionBuilder(converter, parseInfo);
         const optionDefs = builder.buildOptions(optionsNode);
 
         expect(optionDefs).to.deep.equal({

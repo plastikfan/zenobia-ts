@@ -6,7 +6,7 @@ import * as types from '../../types';
  * @export
  * @class OptionBuilder
  */
-export class ArgumentBuilder {
+export class OptionBuilder {
   constructor (private converter: jaxom.IConverter, private parseInfo: jaxom.IParseInfo) { }
 
   /**
@@ -16,7 +16,7 @@ export class ArgumentBuilder {
    *
    * @param {Node} optionsNode
    * @returns {types.StringIndexableObj}
-   * @memberof ArgumentBuilder
+   * @memberof OptionBuilder
    */
   public buildOptions (optionsNode: Node)
   : types.StringIndexableObj {
