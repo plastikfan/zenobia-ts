@@ -8,12 +8,12 @@ import { CommandBuilderImpl } from './command-builder.impl';
  * @class CommandBuilder
  */
 export class CommandBuilder {
-  constructor (private converter: jaxom.IConverter, private options: jaxom.ISpecService,
+  constructor (private converter: jaxom.IConverter, private specSvc: jaxom.ISpecService,
     private parseInfo: jaxom.IParseInfo, private xpath: types.ISelectors) {
 
     // Control freak
     //
-    this.impl = new CommandBuilderImpl(this.options);
+    this.impl = new CommandBuilderImpl(this.specSvc);
   }
 
   private impl: CommandBuilderImpl;
@@ -26,8 +26,8 @@ export class CommandBuilder {
    * "abstract" attributes (ie this scenario would imply an abstract command
    * is going to be invoked directly, which can't happen.). A concrete Command
    * is one that does not contain an "abstract" attribute. The "inherits" array
-   * is converted from a csv as its defined in config to an array. The Arguments
-   * built are non normalised, so will contain ArgumentRefs which subsequently
+   * is converted from a csv as its defined in config to an array. The Options
+   * built are non normalised, so will contain OptionRefs which subsequently
    * need to be resolved into their definitions.
    * @param {XMLNode} commandsNode: the XML node which is the immediate parent of
    * the Command available at: /Application/Cli/Commands.
@@ -60,8 +60,8 @@ export class CommandBuilder {
    * "abstract" attributes (ie this scenario would imply an abstract command
    * is going to be invoked directly, which can't happen.). A concrete Command
    * is one that does not contain an "abstract" attribute. The "inherits" array
-   * is converted from a csv as its defined in config to an array. The Arguments
-   * built are non normalised, so will contain ArgumentRefs which subsequently
+   * is converted from a csv as its defined in config to an array. The Options
+   * built are non normalised, so will contain OptionRefs which subsequently
    * need to be resolved into their definitions.
    *
    * @param {Node} commandsNode: the XML node which is the immediate parent of
@@ -91,19 +91,19 @@ export class CommandBuilder {
   }
 
   /**
-   * @method resolveCommandArguments
-   * @description Any ArgumentRefs within the Command are resolved into Argument's using
-   * the argument definitions provided in info.
+   * @method resolveCommandOptions
+   * @description Any OptionRefs within the Command are resolved into Option's using
+   * the option definitions provided in info.
    *
    * @param {any[]} commands
    * @param {*} info
    * @returns {types.StringIndexableObj}
    * @memberof CommandBuilder
    */
-  public resolveCommandArguments (commands: any[], info: any)
+  public resolveCommandOptions (commands: any[], info: any)
     : types.StringIndexableObj {
     return R.map((command: any) => {
-      return this.impl.resolveArguments(command, info);
+      return this.impl.resolveOptions(command, info);
     })(commands);
   }
 } // CommandBuilder

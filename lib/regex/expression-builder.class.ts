@@ -10,9 +10,9 @@ import * as impl from './expression-builder.impl';
  * @class ExpressionBuilder
  */
 export class ExpressionBuilder {
-  constructor (private converter: jaxom.IConverter, private options: jaxom.ISpecService,
+  constructor (private converter: jaxom.IConverter, private specSvc: jaxom.ISpecService,
     private pareInfo: jaxom.IParseInfo, private xpath: types.ISelectors) {
-    this.impl = new impl.ExpressionBuilderImpl(this.converter, this.options,
+    this.impl = new impl.ExpressionBuilderImpl(this.converter, this.specSvc,
       pareInfo, this.xpath);
   }
 

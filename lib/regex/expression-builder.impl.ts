@@ -9,7 +9,7 @@ import * as types from '../types';
  * @class ExpressionBuilderImpl
  */
 export class ExpressionBuilderImpl {
-  constructor (private converter: jaxom.IConverter, private options: jaxom.ISpecService,
+  constructor (private converter: jaxom.IConverter, private specSvc: jaxom.ISpecService,
     private parseInfo: jaxom.IParseInfo, private xpath: types.ISelectors) { }
 
   /**
@@ -94,13 +94,13 @@ export class ExpressionBuilderImpl {
     }
     const expression = expressions[expressionName];
 
-    if (!R.has(this.options.descendantsLabel)(expression)) {
+    if (!R.has(this.specSvc.descendantsLabel)(expression)) {
       throw new Error(`Expression (${this.ExpressionId}="${
         expressionName}") does not contain any Patterns`);
     }
 
     const patterns = R.filter((o: any) => R.equals(R.prop('_', o), 'Pattern'),
-      R.prop(this.options.descendantsLabel, expression));
+      R.prop(this.specSvc.descendantsLabel, expression));
 
     if (R.isEmpty(patterns)) {
       throw new Error(`Expression (${this.ExpressionId}="${
@@ -111,11 +111,11 @@ export class ExpressionBuilderImpl {
     //
     const expressionText = R.reduce((acc: string, pattern: any) => {
       const text = R.cond([
-        [R.both(R.has(this.options.textLabel), R.has('link')), () => {
+        [R.both(R.has(this.specSvc.textLabel), R.has('link')), () => {
           throw new Error(`Expression (${this.ExpressionId}="${
             expressionName}"), contains a Pattern with both a link and text`);
         }],
-        [R.has(this.options.textLabel), R.prop(this.options.textLabel)],
+        [R.has(this.specSvc.textLabel), R.prop(this.specSvc.textLabel)],
         [R.has('link'), (o: any): string => {
           const link: string = R.prop('link', o);
           if (R.includes(link, previouslySeen)) {
@@ -265,7 +265,7 @@ export class ExpressionBuilderImpl {
     //
     const combinedExpressionGroupsMap = R.reduce(
       (combinedAcc: types.StringIndexableObj, groupName: string) => {
-        const expressions = R.prop(this.options.descendantsLabel, expressionGroups[groupName]);
+        const expressions = R.prop(this.specSvc.descendantsLabel, expressionGroups[groupName]);
         const alreadyDefined = R.intersection(R.keys(expressions), R.keys(combinedAcc));
         /* istanbul ignore if */
         if (!R.isEmpty(alreadyDefined)) {
@@ -284,7 +284,7 @@ export class ExpressionBuilderImpl {
             thisGroupAcc[exprName] = expressions[exprName];
             return thisGroupAcc;
           }, {})(R.keys(R.prop(
-            this.options.descendantsLabel, expressionGroups[groupName])) as string[]);
+            this.specSvc.descendantsLabel, expressionGroups[groupName])) as string[]);
 
         return R.mergeAll([combinedAcc, expressionsForThisGroupMap]);
       }, {})(R.keys(expressionGroups) as string[]);

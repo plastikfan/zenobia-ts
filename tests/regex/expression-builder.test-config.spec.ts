@@ -18,7 +18,7 @@ describe('expression-builder (test config)', () => {
   let document: Document;
   let converter: jaxom.IConverter;
   let builder: build.ExpressionBuilder;
-  const options = new jaxom.SpecOptionService();
+  const specSvc = new jaxom.SpecOptionService();
 
   before(() => {
     const parseInfo: jaxom.IParseInfo = {
@@ -38,7 +38,7 @@ describe('expression-builder (test config)', () => {
       ])
     };
     converter = new jaxom.XpathConverter();
-    builder = new build.ExpressionBuilder(converter, options,
+    builder = new build.ExpressionBuilder(converter, specSvc,
       parseInfo, helpers.Selectors);
 
     try {

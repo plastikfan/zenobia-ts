@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<Application name="pez">
+  <Cli>
+    <Options type="string">
+      <Option name="filesys" alias="fs" optional="true"
+        describe="The file system as defined in config as FileSystem">
+      </Option>
+
+      <Option name="path" alias="p" optional="true"
+        describe="Full path. The path specified has the highest priority.">
+      </Option>
+
+      <Option name="from" alias="fr" optional="true"
+        describe="Full source path. Must be specified with to">
+      </Option>
+
+      <Option name="to" optional="true"
+        describe="Full destination path. Must be specified with from">
+      </Option>
+
+      <Option name="tree" alias="t" optional="true"
+        describe="Tree as defined in config under a FileSystem as alias">
+      </Option>
+
+      <Option name="filter" alias="fi" optional="true"
+        describe="The filter (specified as a glob), is applied to incoming directories">
+      </Option>
+
+      <Option name="name" alias="n" optional="true"
+        describe="Full name">
+      </Option>
+
+      <Option name="incname" alias="in" optional="true"
+        describe="Incorporation name">
+      </Option>
+
+      <Option name="producer" alias="pr" optional="true"
+        describe="Producer name">
+      </Option>
+
+      <Option name="director" alias="dn" optional="true"
+        describe="Director name">
+      </Option>
+
+      <Option name="member" alias="me" optional="true"
+        describe="members 1 to 4">
+      </Option>
+
+      <Option name="header" alias="hdr" optional="true"
+        describe="Header, has no influence on the naming of content.">
+      </Option>
+
+      <Option name="genre" alias="gen" optional="true" choice="alt-rock,blues,prog-rock,rock,metal,thrash,pop,indie"
+        describe="Album genre (alt-rock|blues|prog-rock|rock|metal|thrash|pop|indie)">
+      </Option>
+
+      <Option name="location" alias="loc" optional="true"
+        describe="Recording location">
+      </Option>
+
+      <Option name="studio" alias="sn" optional="true"
+        describe="Recording studio">
+      </Option>
+
+      <Option name="composer" alias="cn" optional="true"
+        describe="Composer name">
+      </Option>
+
+      <Option name="catalog" alias="cat" optional="true"
+        describe="The catalog number">
+      </Option>
+
+      <Option name="barcode" alias="bc" optional="true"
+        describe="The barcode">
+      </Option>
+
+      <Option name="release" alias="rel" optional="true"
+        describe="Album release">
+      </Option>
+
+      <Option name="whatif" alias="wh" type="switch"
+        describe="Dry run the command only.">
+      </Option>
+
+      <Option name="loglevel" alias="lgl" optional="true"
+        describe="Level of logging to be performed. Valid settings: info,debug (... blah all the standard ones!)">
+      </Option>
+
+      <Option name="logfile" alias="lf" optional="true" default="~/pez/pez.log.<dd-mmm-yyyy>.log"
+        describe="Full path to the logfile name. Can include standard time/date variables inside.">
+      </Option>
+
+      <Option name="meta" alias="me" type="switch"
+        describe="Apply operation to meta files only.">
+      </Option>
+
+      <Option name="content" alias="co" type="switch"
+        describe="Apply operation to content files only.">
+      </Option>
+
+      <Option name="select" alias="se" optional="true" default="folder"
+        describe="Select fields in the output, expressed as a csv.">
+      </Option>
+
+      <Option name="genundo" alias="gu" default="false" type="switch"
+        describe="Generate Undo Script.">
+      </Option>
+
+      <Option name="expr" alias="ex"
+        describe="The regular expression(Expression) 'name' to test.">
+      </Option>
+
+      <Option name="input" alias="i"
+        describe="Input string to test against the regular expression specified.">
+      </Option>
+
+      <Option name="config" alias="cfg" type="switch"
+        describe="Check config switch.">
+      </Option>
+
+      <Option name="cli" alias="cl" type="switch"
+        describe="Check dynamic cli definitions switch.">
+      </Option>
+
+      <Option name="repl" alias="re"
+        describe="Existing value in field to replace.">
+      </Option>
+
+      <Option name="with" alias="wi"
+        describe="New value.">
+      </Option>
+
+      <Option name="put" alias="pu" type="switch"
+        describe="Insert new field if it doesn't exist. (Like put http verb)  switch.">
+      </Option>
+    </Options>
+  </Cli>
+</Application>

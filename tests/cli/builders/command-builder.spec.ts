@@ -11,106 +11,106 @@ import * as build from '../../../lib/cli/builders/command-builder.class';
 import * as helpers from '../../../lib/utils/helpers';
 import * as types from '../../../lib/types';
 
-const ComplexNormalisedArgumentDefs = {
-  _: 'ArgumentDefs',
+const ComplexNormalisedOptionDefs = {
+  _: 'OptionDefs',
   _children: {
     name: {
       name: 'name',
       alias: 'n',
       optional: 'true',
       describe: 'Album name',
-      _: 'Argument'
+      _: 'Option'
     },
     incname: {
       name: 'incname',
       alias: 'in',
       optional: 'true',
       describe: 'Incorporation name',
-      _: 'Argument'
+      _: 'Option'
     },
     studioname: {
       name: 'studioname',
       alias: 'sn',
       optional: 'true',
       describe: 'Studio name',
-      _: 'Argument'
+      _: 'Option'
     },
     labelname: {
       name: 'labelname',
       alias: 'ln',
       optional: 'true',
       describe: 'Record label name',
-      _: 'Argument'
+      _: 'Option'
     },
     header: {
       name: 'header',
       alias: 'hdr',
       optional: 'true',
       describe: 'Header, has no influence on the naming of content.',
-      _: 'Argument'
+      _: 'Option'
     },
     producer: {
       name: 'producer',
       alias: 'pn',
       optional: 'true',
       describe: 'Producer name',
-      _: 'Argument'
+      _: 'Option'
     },
     director: {
       name: 'director',
       alias: 'dn',
       optional: 'true',
       describe: 'Director name',
-      _: 'Argument'
+      _: 'Option'
     },
     filesys: {
       name: 'filesys',
       alias: 'fs',
       optional: 'true',
       describe: 'The file system as defined in config as FileSystem',
-      _: 'Argument'
+      _: 'Option'
     },
     path: {
       name: 'path',
       alias: 'p',
       optional: 'true',
       describe: 'Full path.',
-      _: 'Argument'
+      _: 'Option'
     },
     tree: {
       name: 'tree',
       alias: 't',
       optional: 'true',
       describe: 'File system tree',
-      _: 'Argument'
+      _: 'Option'
     },
     with: {
       name: 'with',
       alias: 'w',
       optional: 'true',
       describe: 'replace with',
-      _: 'Argument'
+      _: 'Option'
     },
     put: {
       name: 'put',
       alias: 'pu',
       optional: 'true',
       describe: 'update existing',
-      _: 'Argument'
+      _: 'Option'
     },
     loglevel: {
       name: 'loglevel',
       alias: 'll',
       optional: 'true',
       describe: 'the logging level',
-      _: 'Argument'
+      _: 'Option'
     },
     logfile: {
       name: 'logfile',
       alias: 'lf',
       optional: 'true',
       describe: 'the file full path',
-      _: 'Argument'
+      _: 'Option'
     }
   }
 };
@@ -120,7 +120,7 @@ describe('Command builder', () => {
   let document: Node;
   let commandsNode: Node;
   let builder: build.CommandBuilder;
-  let options: jaxom.ISpecService;
+  let specSvc: jaxom.ISpecService;
   const parseInfo: jaxom.IParseInfo = {
     elements: new Map<string, jaxom.IElementInfo>([
       ['Commands', {
@@ -136,7 +136,7 @@ describe('Command builder', () => {
         recurse: 'inherits',
         discards: ['inherits', 'abstract']
       }],
-      ['Arguments', {
+      ['Options', {
         descendants: {
           by: 'index',
           id: 'name',
@@ -144,7 +144,7 @@ describe('Command builder', () => {
           throwIfMissing: true
         }
       }],
-      ['ArgumentRef', {
+      ['OptionRef', {
         id: 'name'
       }]
     ])
@@ -166,30 +166,30 @@ describe('Command builder', () => {
     } else {
       assert.fail("Couldn't get Commands Node");
     }
-    options = new jaxom.SpecOptionService();
-    builder = new build.CommandBuilder(converter, options, parseInfo,
+    specSvc = new jaxom.SpecOptionService();
+    builder = new build.CommandBuilder(converter, specSvc, parseInfo,
       helpers.Selectors);
   }
 
-  context('resolveArguments', () => {
-    context('given: a built command with at least 1 unresolvable ArgumentRef', () => {
+  context('resolveOptions', () => {
+    context('given: a built command with at least 1 unresolvable OptionRef', () => {
       it('should: throw', () => {
         const data = `<?xml version="1.0"?>
           <Application name="pez">
             <Cli>
               <Commands>
                 <Command name="base-command" abstract="true" source="filesystem-source">
-                  <Arguments>
-                    <ArgumentRef name="loglevel"/>
-                    <ArgumentRef name="logfile"/>
-                  </Arguments>
+                  <Options>
+                    <OptionRef name="loglevel"/>
+                    <OptionRef name="logfile"/>
+                  </Options>
                 </Command>
                 <Command name="rename"
-                  describe="Rename albums according to arguments specified (write)."
+                  describe="Rename albums according to options specified (write)."
                   inherits="base-command">
-                  <Arguments>
-                    <ArgumentRef name="missing"/>
-                  </Arguments>
+                  <Options>
+                    <OptionRef name="missing"/>
+                  </Options>
                 </Command>
               </Commands>
             </Cli>
@@ -198,13 +198,13 @@ describe('Command builder', () => {
 
         const commands = builder.buildCommands(commandsNode);
         expect(() => {
-          builder.resolveCommandArguments(commands, {
-            commandArguments: ComplexNormalisedArgumentDefs
+          builder.resolveCommandOptions(commands, {
+            commandOptions: ComplexNormalisedOptionDefs
           });
         }).to.throw();
       });
     });
-  }); // command-builder.resolveArguments
+  }); // command-builder.resolveOptions
 
   context('given: a command defined as abstract has a description', () => {
     it('should: throw', () => {
@@ -226,64 +226,64 @@ describe('Command builder', () => {
     });
   });
 
-  context('given: a rename command, inherits from 3 commands, ArgumentRefs and ArgumentGroups', () => {
+  context('given: a rename command, inherits from 3 commands, OptionRefs and OptionGroups', () => {
     it('should: return an object with children constituents normalised.', () => {
       const data = `<?xml version="1.0"?>
         <Application name="pez">
           <Cli>
             <Commands>
               <Command name="base-command" abstract="true" source="filesystem-source">
-                <Arguments>
-                  <ArgumentRef name="loglevel"/>
-                  <ArgumentRef name="logfile"/>
-                </Arguments>
-                <ArgumentGroups>
+                <Options>
+                  <OptionRef name="loglevel"/>
+                  <OptionRef name="logfile"/>
+                </Options>
+                <OptionGroups>
                   <Conflicts>
-                    <ArgumentRef name="loglevel"/>
-                    <ArgumentRef name="logfile"/>
+                    <OptionRef name="loglevel"/>
+                    <OptionRef name="logfile"/>
                   </Conflicts>
-                </ArgumentGroups>
+                </OptionGroups>
               </Command>
               <Command name="domain-command" abstract="true">
-                <Arguments>
-                  <ArgumentRef name="name"/>
-                  <ArgumentRef name="labelname"/>
-                  <ArgumentRef name="incname"/>
-                  <ArgumentRef name="studioname"/>
-                  <ArgumentRef name="header"/>
-                  <ArgumentRef name="producer"/>
-                  <ArgumentRef name="director"/>
-                </Arguments>
-                <ArgumentGroups>
+                <Options>
+                  <OptionRef name="name"/>
+                  <OptionRef name="labelname"/>
+                  <OptionRef name="incname"/>
+                  <OptionRef name="studioname"/>
+                  <OptionRef name="header"/>
+                  <OptionRef name="producer"/>
+                  <OptionRef name="director"/>
+                </Options>
+                <OptionGroups>
                   <Conflicts>
-                    <ArgumentRef name="name"/>
-                    <ArgumentRef name="labelname"/>
+                    <OptionRef name="name"/>
+                    <OptionRef name="labelname"/>
                   </Conflicts>
                   <Implies>
-                    <ArgumentRef name="incname"/>
-                    <ArgumentRef name="studioname"/>
+                    <OptionRef name="incname"/>
+                    <OptionRef name="studioname"/>
                   </Implies>
                   <Conflicts>
-                    <ArgumentRef name="header"/>
-                    <ArgumentRef name="producer"/>
-                    <ArgumentRef name="director"/>
+                    <OptionRef name="header"/>
+                    <OptionRef name="producer"/>
+                    <OptionRef name="director"/>
                   </Conflicts>
-                </ArgumentGroups>
+                </OptionGroups>
               </Command>
               <Command name="uni-command" abstract="true">
-                <Arguments>
-                  <ArgumentRef name="path"/>
-                  <ArgumentRef name="filesys"/>
-                  <ArgumentRef name="tree"/>
-                </Arguments>
+                <Options>
+                  <OptionRef name="path"/>
+                  <OptionRef name="filesys"/>
+                  <OptionRef name="tree"/>
+                </Options>
               </Command>
               <Command name="rename"
-                describe="Rename albums according to arguments specified (write)."
+                describe="Rename albums according to options specified (write)."
                 inherits="base-command,domain-command,uni-command">
-                <Arguments>
-                  <ArgumentRef name="with"/>
-                  <ArgumentRef name="put"/>
-                </Arguments>
+                <Options>
+                  <OptionRef name="with"/>
+                  <OptionRef name="put"/>
+                </Options>
               </Command>
             </Commands>
           </Cli>
@@ -291,8 +291,8 @@ describe('Command builder', () => {
       init(data);
 
       const commands = builder.buildCommands(commandsNode);
-      const normalisedCommands = builder.resolveCommandArguments(commands, {
-        commandArguments: ComplexNormalisedArgumentDefs
+      const normalisedCommands = builder.resolveCommandOptions(commands, {
+        commandOptions: ComplexNormalisedOptionDefs
       });
       const normalisedRenameCommand = normalisedCommands[0];
 
@@ -302,144 +302,144 @@ describe('Command builder', () => {
         _: 'Command',
         _children: [
           {
-            _: 'Arguments',
+            _: 'Options',
             _children: {
               with: {
                 name: 'with',
                 alias: 'w',
                 optional: 'true',
                 describe: 'replace with',
-                _: 'Argument'
+                _: 'Option'
               },
               put: {
                 name: 'put',
                 alias: 'pu',
                 optional: 'true',
                 describe: 'update existing',
-                _: 'Argument'
+                _: 'Option'
               },
               loglevel: {
                 name: 'loglevel',
                 alias: 'll',
                 optional: 'true',
                 describe: 'the logging level',
-                _: 'Argument'
+                _: 'Option'
               },
               logfile: {
                 name: 'logfile',
                 alias: 'lf',
                 optional: 'true',
                 describe: 'the file full path',
-                _: 'Argument'
+                _: 'Option'
               },
               name: {
                 name: 'name',
                 alias: 'n',
                 optional: 'true',
                 describe: 'Album name',
-                _: 'Argument'
+                _: 'Option'
               },
               labelname: {
                 name: 'labelname',
                 alias: 'ln',
                 optional: 'true',
                 describe: 'Record label name',
-                _: 'Argument'
+                _: 'Option'
               },
               incname: {
                 name: 'incname',
                 alias: 'in',
                 optional: 'true',
                 describe: 'Incorporation name',
-                _: 'Argument'
+                _: 'Option'
               },
               studioname: {
                 name: 'studioname',
                 alias: 'sn',
                 optional: 'true',
                 describe: 'Studio name',
-                _: 'Argument'
+                _: 'Option'
               },
               header: {
                 name: 'header',
                 alias: 'hdr',
                 optional: 'true',
                 describe: 'Header, has no influence on the naming of content.',
-                _: 'Argument'
+                _: 'Option'
               },
               producer: {
                 name: 'producer',
                 alias: 'pn',
                 optional: 'true',
                 describe: 'Producer name',
-                _: 'Argument'
+                _: 'Option'
               },
               director: {
                 name: 'director',
                 alias: 'dn',
                 optional: 'true',
                 describe: 'Director name',
-                _: 'Argument'
+                _: 'Option'
               },
               path: {
                 name: 'path',
                 alias: 'p',
                 optional: 'true',
                 describe: 'Full path.',
-                _: 'Argument'
+                _: 'Option'
               },
               filesys: {
                 name: 'filesys',
                 alias: 'fs',
                 optional: 'true',
                 describe: 'The file system as defined in config as FileSystem',
-                _: 'Argument'
+                _: 'Option'
               },
               tree: {
                 name: 'tree',
                 alias: 't',
                 optional: 'true',
                 describe: 'File system tree',
-                _: 'Argument'
+                _: 'Option'
               }
             }
           },
           {
-            _: 'ArgumentGroups',
+            _: 'OptionGroups',
             _children: [
               {
                 _: 'Conflicts',
                 _children: [
-                  { name: 'loglevel', _: 'ArgumentRef' },
-                  { name: 'logfile', _: 'ArgumentRef' }
+                  { name: 'loglevel', _: 'OptionRef' },
+                  { name: 'logfile', _: 'OptionRef' }
                 ]
               },
               {
                 _: 'Conflicts',
                 _children: [
-                  { name: 'name', _: 'ArgumentRef' },
-                  { name: 'labelname', _: 'ArgumentRef' }
+                  { name: 'name', _: 'OptionRef' },
+                  { name: 'labelname', _: 'OptionRef' }
                 ]
               },
               {
                 _: 'Implies',
                 _children: [
-                  { name: 'incname', _: 'ArgumentRef' },
-                  { name: 'studioname', _: 'ArgumentRef' }
+                  { name: 'incname', _: 'OptionRef' },
+                  { name: 'studioname', _: 'OptionRef' }
                 ]
               },
               {
                 _: 'Conflicts',
                 _children: [
-                  { name: 'header', _: 'ArgumentRef' },
-                  { name: 'producer', _: 'ArgumentRef' },
-                  { name: 'director', _: 'ArgumentRef' }
+                  { name: 'header', _: 'OptionRef' },
+                  { name: 'producer', _: 'OptionRef' },
+                  { name: 'director', _: 'OptionRef' }
                 ]
               }
             ]
           }
         ],
-        describe: 'Rename albums according to arguments specified (write).'
+        describe: 'Rename albums according to options specified (write).'
       });
     });
   });
@@ -484,11 +484,11 @@ describe('Command builder', () => {
           <Cli>
             <Commands>
               <Command name="rename"
-                describe="Rename albums according to arguments specified (write).">
-                <Arguments>
-                  <ArgumentRef name="with"/>
-                  <ArgumentRef name="put"/>
-                </Arguments>
+                describe="Rename albums according to options specified (write).">
+                <Options>
+                  <OptionRef name="with"/>
+                  <OptionRef name="put"/>
+                </Options>
               </Command>
             </Commands>
           </Cli>
@@ -516,11 +516,11 @@ describe('Command builder', () => {
           <Cli>
             <Commands>
               <Command name="rename"
-                describe="Rename albums according to arguments specified (write).">
-                <Arguments>
-                  <ArgumentRef name="with"/>
-                  <ArgumentRef name="put"/>
-                </Arguments>
+                describe="Rename albums according to options specified (write).">
+                <Options>
+                  <OptionRef name="with"/>
+                  <OptionRef name="put"/>
+                </Options>
               </Command>
             </Commands>
           </Cli>
@@ -540,17 +540,17 @@ function invoke (xpath: types.ISelectors): void {
       <Cli>
         <Commands>
           <Command name="base-command" abstract="true" source="filesystem-source">
-            <Arguments>
-              <ArgumentRef name="loglevel"/>
-              <ArgumentRef name="logfile"/>
-            </Arguments>
+            <Options>
+              <OptionRef name="loglevel"/>
+              <OptionRef name="logfile"/>
+            </Options>
           </Command>
           <Command name="rename"
-            describe="Rename albums according to arguments specified (write)."
+            describe="Rename albums according to options specified (write)."
             inherits="base-command">
-            <Arguments>
-              <ArgumentRef name="missing"/>
-            </Arguments>
+            <Options>
+              <OptionRef name="missing"/>
+            </Options>
           </Command>
         </Commands>
       </Cli>

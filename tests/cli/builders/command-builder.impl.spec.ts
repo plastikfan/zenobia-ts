@@ -5,32 +5,32 @@ use(dirtyChai);
 import * as jaxom from 'jaxom-ts';
 import { CommandBuilderImpl } from '../../../lib/cli/builders/command-builder.impl';
 
-const ComplexNormalisedArgumentDefs = {
-  _: 'ArgumentDefs',
+const ComplexNormalisedOptionDefs = {
+  _: 'OptionDefs',
   _children: {
     incname: {
       name: 'incname',
       alias: 'in',
       optional: 'true',
       describe: 'Incorporation name',
-      _: 'Argument'
+      _: 'Option'
     },
     studioname: {
       name: 'studioname',
       alias: 'sn',
       optional: 'true',
       describe: 'Studio name',
-      _: 'Argument'
+      _: 'Option'
     }
   }
 };
 
-describe('CommandBuilderImpl.resolveArguments', () => {
+describe('CommandBuilderImpl.resolveOptions', () => {
   let builderImpl: CommandBuilderImpl;
 
   beforeEach(() => {
-    const options = new jaxom.SpecOptionService();
-    builderImpl = new CommandBuilderImpl(options);
+    const specSvc = new jaxom.SpecOptionService();
+    builderImpl = new CommandBuilderImpl(specSvc);
   });
 
   context('given: a command whose descendants is not an array', () => {
@@ -42,19 +42,19 @@ describe('CommandBuilderImpl.resolveArguments', () => {
         _children: {
           // NOT AN ARRAY!
         },
-        describe: 'Rename albums according to arguments specified (write).'
+        describe: 'Rename albums according to options specified (write).'
       };
       const resolveInfo = {
-        commandArguments: ComplexNormalisedArgumentDefs
+        commandOptions: ComplexNormalisedOptionDefs
       };
 
       expect(() => {
-        builderImpl.resolveArguments(command, resolveInfo);
+        builderImpl.resolveOptions(command, resolveInfo);
       }).to.throw();
     });
   });
 
-  context('given: a command with missing "Arguments"', () => {
+  context('given: a command with missing "Options"', () => {
     it('should: throw', () => {
       const command = {
         name: 'rename',
@@ -62,24 +62,24 @@ describe('CommandBuilderImpl.resolveArguments', () => {
         _: 'Command',
         _children: [
           {
-            _: 'MissingArguments', // Arguments not present in command
+            _: 'MissingOptions', // Options not present in command
             _children: {
-              incname: { name: 'incname', _: 'ArgumentRef' },
-              studioname: { name: 'studioname', _: 'ArgumentRef' },
-              header: { name: 'header', _: 'ArgumentRef' },
-              producer: { name: 'producer', _: 'ArgumentRef' },
-              director: { name: 'director', _: 'ArgumentRef' }
+              incname: { name: 'incname', _: 'OptionRef' },
+              studioname: { name: 'studioname', _: 'OptionRef' },
+              header: { name: 'header', _: 'OptionRef' },
+              producer: { name: 'producer', _: 'OptionRef' },
+              director: { name: 'director', _: 'OptionRef' }
             }
           }
         ],
-        describe: 'Rename albums according to arguments specified (write).'
+        describe: 'Rename albums according to options specified (write).'
       };
       const resolveInfo = {
-        commandArguments: ComplexNormalisedArgumentDefs
+        commandOptions: ComplexNormalisedOptionDefs
       };
 
       expect(() => {
-        builderImpl.resolveArguments(command, resolveInfo);
+        builderImpl.resolveOptions(command, resolveInfo);
       }).to.throw();
     });
   });
