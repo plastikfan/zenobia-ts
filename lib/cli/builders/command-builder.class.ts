@@ -92,7 +92,7 @@ export class CommandBuilder {
 
   /**
    * @method resolveCommandOptions
-   * @description Any OptionRefs within the Command are resolved into Argument's using
+   * @description Any OptionRefs within the Command are resolved into Option's using
    * the argument definitions provided in info.
    *
    * @param {any[]} commands

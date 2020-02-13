@@ -19,98 +19,98 @@ const ComplexNormalisedOptionDefs = {
       alias: 'n',
       optional: 'true',
       describe: 'Album name',
-      _: 'Argument'
+      _: 'Option'
     },
     incname: {
       name: 'incname',
       alias: 'in',
       optional: 'true',
       describe: 'Incorporation name',
-      _: 'Argument'
+      _: 'Option'
     },
     studioname: {
       name: 'studioname',
       alias: 'sn',
       optional: 'true',
       describe: 'Studio name',
-      _: 'Argument'
+      _: 'Option'
     },
     labelname: {
       name: 'labelname',
       alias: 'ln',
       optional: 'true',
       describe: 'Record label name',
-      _: 'Argument'
+      _: 'Option'
     },
     header: {
       name: 'header',
       alias: 'hdr',
       optional: 'true',
       describe: 'Header, has no influence on the naming of content.',
-      _: 'Argument'
+      _: 'Option'
     },
     producer: {
       name: 'producer',
       alias: 'pn',
       optional: 'true',
       describe: 'Producer name',
-      _: 'Argument'
+      _: 'Option'
     },
     director: {
       name: 'director',
       alias: 'dn',
       optional: 'true',
       describe: 'Director name',
-      _: 'Argument'
+      _: 'Option'
     },
     filesys: {
       name: 'filesys',
       alias: 'fs',
       optional: 'true',
       describe: 'The file system as defined in config as FileSystem',
-      _: 'Argument'
+      _: 'Option'
     },
     path: {
       name: 'path',
       alias: 'p',
       optional: 'true',
       describe: 'Full path.',
-      _: 'Argument'
+      _: 'Option'
     },
     tree: {
       name: 'tree',
       alias: 't',
       optional: 'true',
       describe: 'File system tree',
-      _: 'Argument'
+      _: 'Option'
     },
     with: {
       name: 'with',
       alias: 'w',
       optional: 'true',
       describe: 'replace with',
-      _: 'Argument'
+      _: 'Option'
     },
     put: {
       name: 'put',
       alias: 'pu',
       optional: 'true',
       describe: 'update existing',
-      _: 'Argument'
+      _: 'Option'
     },
     loglevel: {
       name: 'loglevel',
       alias: 'll',
       optional: 'true',
       describe: 'the logging level',
-      _: 'Argument'
+      _: 'Option'
     },
     logfile: {
       name: 'logfile',
       alias: 'lf',
       optional: 'true',
       describe: 'the file full path',
-      _: 'Argument'
+      _: 'Option'
     }
   }
 };
@@ -309,98 +309,98 @@ describe('Command builder', () => {
                 alias: 'w',
                 optional: 'true',
                 describe: 'replace with',
-                _: 'Argument'
+                _: 'Option'
               },
               put: {
                 name: 'put',
                 alias: 'pu',
                 optional: 'true',
                 describe: 'update existing',
-                _: 'Argument'
+                _: 'Option'
               },
               loglevel: {
                 name: 'loglevel',
                 alias: 'll',
                 optional: 'true',
                 describe: 'the logging level',
-                _: 'Argument'
+                _: 'Option'
               },
               logfile: {
                 name: 'logfile',
                 alias: 'lf',
                 optional: 'true',
                 describe: 'the file full path',
-                _: 'Argument'
+                _: 'Option'
               },
               name: {
                 name: 'name',
                 alias: 'n',
                 optional: 'true',
                 describe: 'Album name',
-                _: 'Argument'
+                _: 'Option'
               },
               labelname: {
                 name: 'labelname',
                 alias: 'ln',
                 optional: 'true',
                 describe: 'Record label name',
-                _: 'Argument'
+                _: 'Option'
               },
               incname: {
                 name: 'incname',
                 alias: 'in',
                 optional: 'true',
                 describe: 'Incorporation name',
-                _: 'Argument'
+                _: 'Option'
               },
               studioname: {
                 name: 'studioname',
                 alias: 'sn',
                 optional: 'true',
                 describe: 'Studio name',
-                _: 'Argument'
+                _: 'Option'
               },
               header: {
                 name: 'header',
                 alias: 'hdr',
                 optional: 'true',
                 describe: 'Header, has no influence on the naming of content.',
-                _: 'Argument'
+                _: 'Option'
               },
               producer: {
                 name: 'producer',
                 alias: 'pn',
                 optional: 'true',
                 describe: 'Producer name',
-                _: 'Argument'
+                _: 'Option'
               },
               director: {
                 name: 'director',
                 alias: 'dn',
                 optional: 'true',
                 describe: 'Director name',
-                _: 'Argument'
+                _: 'Option'
               },
               path: {
                 name: 'path',
                 alias: 'p',
                 optional: 'true',
                 describe: 'Full path.',
-                _: 'Argument'
+                _: 'Option'
               },
               filesys: {
                 name: 'filesys',
                 alias: 'fs',
                 optional: 'true',
                 describe: 'The file system as defined in config as FileSystem',
-                _: 'Argument'
+                _: 'Option'
               },
               tree: {
                 name: 'tree',
                 alias: 't',
                 optional: 'true',
                 describe: 'File system tree',
-                _: 'Argument'
+                _: 'Option'
               }
             }
           },

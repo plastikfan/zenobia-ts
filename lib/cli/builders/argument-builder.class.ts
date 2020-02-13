@@ -11,7 +11,7 @@ export class ArgumentBuilder {
 
   /**
    * @method buildArguments
-   * @description: builds <Argument> definitions. There are used by the command
+   * @description: builds <Option> definitions. There are used by the command
    * builder to resolve the <OptionRef>'s found.
    *
    * @param {Node} argumentsNode

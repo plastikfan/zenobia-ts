@@ -44,7 +44,7 @@ export class CommandBuilderImpl {
           (arg: any): any => R.has('$unresolved')(arg))(R.values(resolved));
         if (unresolvedArgument) {
           throw new Error(
-            `"${unresolvedArgument.$unresolved}" Argument definition missing for command: "${command.name}"`);
+            `"${unresolvedArgument.$unresolved}" Option definition missing for command: "${command.name}"`);
         }
         argumentRefsObj[this.specSvc.descendantsLabel] = resolved;
       } else {

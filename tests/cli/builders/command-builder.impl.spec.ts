@@ -13,14 +13,14 @@ const ComplexNormalisedOptionDefs = {
       alias: 'in',
       optional: 'true',
       describe: 'Incorporation name',
-      _: 'Argument'
+      _: 'Option'
     },
     studioname: {
       name: 'studioname',
       alias: 'sn',
       optional: 'true',
       describe: 'Studio name',
-      _: 'Argument'
+      _: 'Option'
     }
   }
 };

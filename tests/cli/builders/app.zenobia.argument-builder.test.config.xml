@@ -2,137 +2,137 @@
 <Application name="pez">
   <Cli>
     <Options type="string">
-      <Argument name="filesys" alias="fs" optional="true"
+      <Option name="filesys" alias="fs" optional="true"
         describe="The file system as defined in config as FileSystem">
-      </Argument>
+      </Option>
 
-      <Argument name="path" alias="p" optional="true"
+      <Option name="path" alias="p" optional="true"
         describe="Full path. The path specified has the highest priority.">
-      </Argument>
+      </Option>
 
-      <Argument name="from" alias="fr" optional="true"
+      <Option name="from" alias="fr" optional="true"
         describe="Full source path. Must be specified with to">
-      </Argument>
+      </Option>
 
-      <Argument name="to" optional="true"
+      <Option name="to" optional="true"
         describe="Full destination path. Must be specified with from">
-      </Argument>
+      </Option>
 
-      <Argument name="tree" alias="t" optional="true"
+      <Option name="tree" alias="t" optional="true"
         describe="Tree as defined in config under a FileSystem as alias">
-      </Argument>
+      </Option>
 
-      <Argument name="filter" alias="fi" optional="true"
+      <Option name="filter" alias="fi" optional="true"
         describe="The filter (specified as a glob), is applied to incoming directories">
-      </Argument>
+      </Option>
 
-      <Argument name="name" alias="n" optional="true"
+      <Option name="name" alias="n" optional="true"
         describe="Full name">
-      </Argument>
+      </Option>
 
-      <Argument name="incname" alias="in" optional="true"
+      <Option name="incname" alias="in" optional="true"
         describe="Incorporation name">
-      </Argument>
+      </Option>
 
-      <Argument name="producer" alias="pr" optional="true"
+      <Option name="producer" alias="pr" optional="true"
         describe="Producer name">
-      </Argument>
+      </Option>
 
-      <Argument name="director" alias="dn" optional="true"
+      <Option name="director" alias="dn" optional="true"
         describe="Director name">
-      </Argument>
+      </Option>
 
-      <Argument name="member" alias="me" optional="true"
+      <Option name="member" alias="me" optional="true"
         describe="members 1 to 4">
-      </Argument>
+      </Option>
 
-      <Argument name="header" alias="hdr" optional="true"
+      <Option name="header" alias="hdr" optional="true"
         describe="Header, has no influence on the naming of content.">
-      </Argument>
+      </Option>
 
-      <Argument name="genre" alias="gen" optional="true" choice="alt-rock,blues,prog-rock,rock,metal,thrash,pop,indie"
+      <Option name="genre" alias="gen" optional="true" choice="alt-rock,blues,prog-rock,rock,metal,thrash,pop,indie"
         describe="Album genre (alt-rock|blues|prog-rock|rock|metal|thrash|pop|indie)">
-      </Argument>
+      </Option>
 
-      <Argument name="location" alias="loc" optional="true"
+      <Option name="location" alias="loc" optional="true"
         describe="Recording location">
-      </Argument>
+      </Option>
 
-      <Argument name="studio" alias="sn" optional="true"
+      <Option name="studio" alias="sn" optional="true"
         describe="Recording studio">
-      </Argument>
+      </Option>
 
-      <Argument name="composer" alias="cn" optional="true"
+      <Option name="composer" alias="cn" optional="true"
         describe="Composer name">
-      </Argument>
+      </Option>
 
-      <Argument name="catalog" alias="cat" optional="true"
+      <Option name="catalog" alias="cat" optional="true"
         describe="The catalog number">
-      </Argument>
+      </Option>
 
-      <Argument name="barcode" alias="bc" optional="true"
+      <Option name="barcode" alias="bc" optional="true"
         describe="The barcode">
-      </Argument>
+      </Option>
 
-      <Argument name="release" alias="rel" optional="true"
+      <Option name="release" alias="rel" optional="true"
         describe="Album release">
-      </Argument>
+      </Option>
 
-      <Argument name="whatif" alias="wh" type="switch"
+      <Option name="whatif" alias="wh" type="switch"
         describe="Dry run the command only.">
-      </Argument>
+      </Option>
 
-      <Argument name="loglevel" alias="lgl" optional="true"
+      <Option name="loglevel" alias="lgl" optional="true"
         describe="Level of logging to be performed. Valid settings: info,debug (... blah all the standard ones!)">
-      </Argument>
+      </Option>
 
-      <Argument name="logfile" alias="lf" optional="true" default="~/pez/pez.log.<dd-mmm-yyyy>.log"
+      <Option name="logfile" alias="lf" optional="true" default="~/pez/pez.log.<dd-mmm-yyyy>.log"
         describe="Full path to the logfile name. Can include standard time/date variables inside.">
-      </Argument>
+      </Option>
 
-      <Argument name="meta" alias="me" type="switch"
+      <Option name="meta" alias="me" type="switch"
         describe="Apply operation to meta files only.">
-      </Argument>
+      </Option>
 
-      <Argument name="content" alias="co" type="switch"
+      <Option name="content" alias="co" type="switch"
         describe="Apply operation to content files only.">
-      </Argument>
+      </Option>
 
-      <Argument name="select" alias="se" optional="true" default="folder"
+      <Option name="select" alias="se" optional="true" default="folder"
         describe="Select fields in the output, expressed as a csv.">
-      </Argument>
+      </Option>
 
-      <Argument name="genundo" alias="gu" default="false" type="switch"
+      <Option name="genundo" alias="gu" default="false" type="switch"
         describe="Generate Undo Script.">
-      </Argument>
+      </Option>
 
-      <Argument name="expr" alias="ex"
+      <Option name="expr" alias="ex"
         describe="The regular expression(Expression) 'name' to test.">
-      </Argument>
+      </Option>
 
-      <Argument name="input" alias="i"
+      <Option name="input" alias="i"
         describe="Input string to test against the regular expression specified.">
-      </Argument>
+      </Option>
 
-      <Argument name="config" alias="cfg" type="switch"
+      <Option name="config" alias="cfg" type="switch"
         describe="Check config switch.">
-      </Argument>
+      </Option>
 
-      <Argument name="cli" alias="cl" type="switch"
+      <Option name="cli" alias="cl" type="switch"
         describe="Check dynamic cli definitions switch.">
-      </Argument>
+      </Option>
 
-      <Argument name="repl" alias="re"
+      <Option name="repl" alias="re"
         describe="Existing value in field to replace.">
-      </Argument>
+      </Option>
 
-      <Argument name="with" alias="wi"
+      <Option name="with" alias="wi"
         describe="New value.">
-      </Argument>
+      </Option>
 
-      <Argument name="put" alias="pu" type="switch"
+      <Option name="put" alias="pu" type="switch"
         describe="Insert new field if it doesn't exist. (Like put http verb)  switch.">
-      </Argument>
+      </Option>
     </Options>
   </Cli>
 </Application>
