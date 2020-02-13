@@ -226,7 +226,7 @@ describe('Command builder', () => {
     });
   });
 
-  context('given: a rename command, inherits from 3 commands, OptionRefs and ArgumentGroups', () => {
+  context('given: a rename command, inherits from 3 commands, OptionRefs and OptionGroups', () => {
     it('should: return an object with children constituents normalised.', () => {
       const data = `<?xml version="1.0"?>
         <Application name="pez">
@@ -237,12 +237,12 @@ describe('Command builder', () => {
                   <OptionRef name="loglevel"/>
                   <OptionRef name="logfile"/>
                 </Options>
-                <ArgumentGroups>
+                <OptionGroups>
                   <Conflicts>
                     <OptionRef name="loglevel"/>
                     <OptionRef name="logfile"/>
                   </Conflicts>
-                </ArgumentGroups>
+                </OptionGroups>
               </Command>
               <Command name="domain-command" abstract="true">
                 <Options>
@@ -254,7 +254,7 @@ describe('Command builder', () => {
                   <OptionRef name="producer"/>
                   <OptionRef name="director"/>
                 </Options>
-                <ArgumentGroups>
+                <OptionGroups>
                   <Conflicts>
                     <OptionRef name="name"/>
                     <OptionRef name="labelname"/>
@@ -268,7 +268,7 @@ describe('Command builder', () => {
                     <OptionRef name="producer"/>
                     <OptionRef name="director"/>
                   </Conflicts>
-                </ArgumentGroups>
+                </OptionGroups>
               </Command>
               <Command name="uni-command" abstract="true">
                 <Options>
@@ -405,7 +405,7 @@ describe('Command builder', () => {
             }
           },
           {
-            _: 'ArgumentGroups',
+            _: 'OptionGroups',
             _children: [
               {
                 _: 'Conflicts',
