@@ -150,7 +150,7 @@ describe('Option builder from config', () => {
       const data = Helpers.read(
         path.resolve(
           __dirname,
-          './app.zenobia.argument-builder.test.config.xml'
+          './app.zenobia.option-builder.test.config.xml'
         )
       );
       const document = parser.parseFromString(data);
