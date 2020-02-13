@@ -144,7 +144,7 @@ describe('Command builder', () => {
           throwIfMissing: true
         }
       }],
-      ['ArgumentRef', {
+      ['OptionRef', {
         id: 'name'
       }]
     ])
@@ -172,7 +172,7 @@ describe('Command builder', () => {
   }
 
   context('resolveArguments', () => {
-    context('given: a built command with at least 1 unresolvable ArgumentRef', () => {
+    context('given: a built command with at least 1 unresolvable OptionRef', () => {
       it('should: throw', () => {
         const data = `<?xml version="1.0"?>
           <Application name="pez">
@@ -180,15 +180,15 @@ describe('Command builder', () => {
               <Commands>
                 <Command name="base-command" abstract="true" source="filesystem-source">
                   <Options>
-                    <ArgumentRef name="loglevel"/>
-                    <ArgumentRef name="logfile"/>
+                    <OptionRef name="loglevel"/>
+                    <OptionRef name="logfile"/>
                   </Options>
                 </Command>
                 <Command name="rename"
                   describe="Rename albums according to arguments specified (write)."
                   inherits="base-command">
                   <Options>
-                    <ArgumentRef name="missing"/>
+                    <OptionRef name="missing"/>
                   </Options>
                 </Command>
               </Commands>
@@ -226,7 +226,7 @@ describe('Command builder', () => {
     });
   });
 
-  context('given: a rename command, inherits from 3 commands, ArgumentRefs and ArgumentGroups', () => {
+  context('given: a rename command, inherits from 3 commands, OptionRefs and ArgumentGroups', () => {
     it('should: return an object with children constituents normalised.', () => {
       const data = `<?xml version="1.0"?>
         <Application name="pez">
@@ -234,55 +234,55 @@ describe('Command builder', () => {
             <Commands>
               <Command name="base-command" abstract="true" source="filesystem-source">
                 <Options>
-                  <ArgumentRef name="loglevel"/>
-                  <ArgumentRef name="logfile"/>
+                  <OptionRef name="loglevel"/>
+                  <OptionRef name="logfile"/>
                 </Options>
                 <ArgumentGroups>
                   <Conflicts>
-                    <ArgumentRef name="loglevel"/>
-                    <ArgumentRef name="logfile"/>
+                    <OptionRef name="loglevel"/>
+                    <OptionRef name="logfile"/>
                   </Conflicts>
                 </ArgumentGroups>
               </Command>
               <Command name="domain-command" abstract="true">
                 <Options>
-                  <ArgumentRef name="name"/>
-                  <ArgumentRef name="labelname"/>
-                  <ArgumentRef name="incname"/>
-                  <ArgumentRef name="studioname"/>
-                  <ArgumentRef name="header"/>
-                  <ArgumentRef name="producer"/>
-                  <ArgumentRef name="director"/>
+                  <OptionRef name="name"/>
+                  <OptionRef name="labelname"/>
+                  <OptionRef name="incname"/>
+                  <OptionRef name="studioname"/>
+                  <OptionRef name="header"/>
+                  <OptionRef name="producer"/>
+                  <OptionRef name="director"/>
                 </Options>
                 <ArgumentGroups>
                   <Conflicts>
-                    <ArgumentRef name="name"/>
-                    <ArgumentRef name="labelname"/>
+                    <OptionRef name="name"/>
+                    <OptionRef name="labelname"/>
                   </Conflicts>
                   <Implies>
-                    <ArgumentRef name="incname"/>
-                    <ArgumentRef name="studioname"/>
+                    <OptionRef name="incname"/>
+                    <OptionRef name="studioname"/>
                   </Implies>
                   <Conflicts>
-                    <ArgumentRef name="header"/>
-                    <ArgumentRef name="producer"/>
-                    <ArgumentRef name="director"/>
+                    <OptionRef name="header"/>
+                    <OptionRef name="producer"/>
+                    <OptionRef name="director"/>
                   </Conflicts>
                 </ArgumentGroups>
               </Command>
               <Command name="uni-command" abstract="true">
                 <Options>
-                  <ArgumentRef name="path"/>
-                  <ArgumentRef name="filesys"/>
-                  <ArgumentRef name="tree"/>
+                  <OptionRef name="path"/>
+                  <OptionRef name="filesys"/>
+                  <OptionRef name="tree"/>
                 </Options>
               </Command>
               <Command name="rename"
                 describe="Rename albums according to arguments specified (write)."
                 inherits="base-command,domain-command,uni-command">
                 <Options>
-                  <ArgumentRef name="with"/>
-                  <ArgumentRef name="put"/>
+                  <OptionRef name="with"/>
+                  <OptionRef name="put"/>
                 </Options>
               </Command>
             </Commands>
@@ -410,30 +410,30 @@ describe('Command builder', () => {
               {
                 _: 'Conflicts',
                 _children: [
-                  { name: 'loglevel', _: 'ArgumentRef' },
-                  { name: 'logfile', _: 'ArgumentRef' }
+                  { name: 'loglevel', _: 'OptionRef' },
+                  { name: 'logfile', _: 'OptionRef' }
                 ]
               },
               {
                 _: 'Conflicts',
                 _children: [
-                  { name: 'name', _: 'ArgumentRef' },
-                  { name: 'labelname', _: 'ArgumentRef' }
+                  { name: 'name', _: 'OptionRef' },
+                  { name: 'labelname', _: 'OptionRef' }
                 ]
               },
               {
                 _: 'Implies',
                 _children: [
-                  { name: 'incname', _: 'ArgumentRef' },
-                  { name: 'studioname', _: 'ArgumentRef' }
+                  { name: 'incname', _: 'OptionRef' },
+                  { name: 'studioname', _: 'OptionRef' }
                 ]
               },
               {
                 _: 'Conflicts',
                 _children: [
-                  { name: 'header', _: 'ArgumentRef' },
-                  { name: 'producer', _: 'ArgumentRef' },
-                  { name: 'director', _: 'ArgumentRef' }
+                  { name: 'header', _: 'OptionRef' },
+                  { name: 'producer', _: 'OptionRef' },
+                  { name: 'director', _: 'OptionRef' }
                 ]
               }
             ]
@@ -486,8 +486,8 @@ describe('Command builder', () => {
               <Command name="rename"
                 describe="Rename albums according to arguments specified (write).">
                 <Options>
-                  <ArgumentRef name="with"/>
-                  <ArgumentRef name="put"/>
+                  <OptionRef name="with"/>
+                  <OptionRef name="put"/>
                 </Options>
               </Command>
             </Commands>
@@ -518,8 +518,8 @@ describe('Command builder', () => {
               <Command name="rename"
                 describe="Rename albums according to arguments specified (write).">
                 <Options>
-                  <ArgumentRef name="with"/>
-                  <ArgumentRef name="put"/>
+                  <OptionRef name="with"/>
+                  <OptionRef name="put"/>
                 </Options>
               </Command>
             </Commands>
@@ -541,15 +541,15 @@ function invoke (xpath: types.ISelectors): void {
         <Commands>
           <Command name="base-command" abstract="true" source="filesystem-source">
             <Options>
-              <ArgumentRef name="loglevel"/>
-              <ArgumentRef name="logfile"/>
+              <OptionRef name="loglevel"/>
+              <OptionRef name="logfile"/>
             </Options>
           </Command>
           <Command name="rename"
             describe="Rename albums according to arguments specified (write)."
             inherits="base-command">
             <Options>
-              <ArgumentRef name="missing"/>
+              <OptionRef name="missing"/>
             </Options>
           </Command>
         </Commands>

@@ -64,11 +64,11 @@ describe('CommandBuilderImpl.resolveArguments', () => {
           {
             _: 'MissingOptions', // Options not present in command
             _children: {
-              incname: { name: 'incname', _: 'ArgumentRef' },
-              studioname: { name: 'studioname', _: 'ArgumentRef' },
-              header: { name: 'header', _: 'ArgumentRef' },
-              producer: { name: 'producer', _: 'ArgumentRef' },
-              director: { name: 'director', _: 'ArgumentRef' }
+              incname: { name: 'incname', _: 'OptionRef' },
+              studioname: { name: 'studioname', _: 'OptionRef' },
+              header: { name: 'header', _: 'OptionRef' },
+              producer: { name: 'producer', _: 'OptionRef' },
+              director: { name: 'director', _: 'OptionRef' }
             }
           }
         ],

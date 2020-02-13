@@ -8,11 +8,11 @@ export class CommandBuilderImpl {
 
   /**
    * @method resolveArguments
-   * @description: Resolves all ArgumentRefs to Options using the info object passed in.
+   * @description: Resolves all OptionRefs to Options using the info object passed in.
    *
    * @public
    * @param {types.StringIndexableObj} command: The native command object with unresolved
-   * Options (ie, the arguments are all just ArgumentRef's)
+   * Options (ie, the arguments are all just OptionRefs)
    * @param {types.StringIndexableObj} info: normalisation information, which contains
    * "commandArguments" being a reference to a generic format object built by jaxom
    * whose top level "_children" attribute contains a map keyed by argument name

@@ -27,7 +27,7 @@ export class CommandBuilder {
    * is going to be invoked directly, which can't happen.). A concrete Command
    * is one that does not contain an "abstract" attribute. The "inherits" array
    * is converted from a csv as its defined in config to an array. The Options
-   * built are non normalised, so will contain ArgumentRefs which subsequently
+   * built are non normalised, so will contain OptionRefs which subsequently
    * need to be resolved into their definitions.
    * @param {XMLNode} commandsNode: the XML node which is the immediate parent of
    * the Command available at: /Application/Cli/Commands.
@@ -61,7 +61,7 @@ export class CommandBuilder {
    * is going to be invoked directly, which can't happen.). A concrete Command
    * is one that does not contain an "abstract" attribute. The "inherits" array
    * is converted from a csv as its defined in config to an array. The Options
-   * built are non normalised, so will contain ArgumentRefs which subsequently
+   * built are non normalised, so will contain OptionRefs which subsequently
    * need to be resolved into their definitions.
    *
    * @param {Node} commandsNode: the XML node which is the immediate parent of
@@ -92,7 +92,7 @@ export class CommandBuilder {
 
   /**
    * @method resolveCommandArguments
-   * @description Any ArgumentRefs within the Command are resolved into Argument's using
+   * @description Any OptionRefs within the Command are resolved into Argument's using
    * the argument definitions provided in info.
    *
    * @param {any[]} commands

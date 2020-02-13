@@ -12,7 +12,7 @@ export class ArgumentBuilder {
   /**
    * @method buildArguments
    * @description: builds <Argument> definitions. There are used by the command
-   * builder to resolve the <ArgumentRef>'s found.
+   * builder to resolve the <OptionRef>'s found.
    *
    * @param {Node} argumentsNode
    * @returns {types.StringIndexableObj}
