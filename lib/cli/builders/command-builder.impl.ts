@@ -16,7 +16,7 @@ export class CommandBuilderImpl {
    * @param {types.StringIndexableObj} info: normalisation information, which contains
    * "commandArguments" being a reference to a generic format object built by jaxom
    * whose top level "_children" attribute contains a map keyed by argument name
-   * of ArgumentDefs.
+   * of OptionDef.
    * @returns {types.StringIndexableObj}: A native Command object with resolved Options
    * @memberof CommandBuilder
    */

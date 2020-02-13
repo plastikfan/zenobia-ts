@@ -5,8 +5,8 @@ use(dirtyChai);
 import * as jaxom from 'jaxom-ts';
 import { CommandBuilderImpl } from '../../../lib/cli/builders/command-builder.impl';
 
-const ComplexNormalisedArgumentDefs = {
-  _: 'ArgumentDefs',
+const ComplexNormalisedOptionDefs = {
+  _: 'OptionDefs',
   _children: {
     incname: {
       name: 'incname',
@@ -45,7 +45,7 @@ describe('CommandBuilderImpl.resolveArguments', () => {
         describe: 'Rename albums according to arguments specified (write).'
       };
       const resolveInfo = {
-        commandArguments: ComplexNormalisedArgumentDefs
+        commandArguments: ComplexNormalisedOptionDefs
       };
 
       expect(() => {
@@ -75,7 +75,7 @@ describe('CommandBuilderImpl.resolveArguments', () => {
         describe: 'Rename albums according to arguments specified (write).'
       };
       const resolveInfo = {
-        commandArguments: ComplexNormalisedArgumentDefs
+        commandArguments: ComplexNormalisedOptionDefs
       };
 
       expect(() => {

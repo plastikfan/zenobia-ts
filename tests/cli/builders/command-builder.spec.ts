@@ -11,8 +11,8 @@ import * as build from '../../../lib/cli/builders/command-builder.class';
 import * as helpers from '../../../lib/utils/helpers';
 import * as types from '../../../lib/types';
 
-const ComplexNormalisedArgumentDefs = {
-  _: 'ArgumentDefs',
+const ComplexNormalisedOptionDefs = {
+  _: 'OptionDefs',
   _children: {
     name: {
       name: 'name',
@@ -199,7 +199,7 @@ describe('Command builder', () => {
         const commands = builder.buildCommands(commandsNode);
         expect(() => {
           builder.resolveCommandArguments(commands, {
-            commandArguments: ComplexNormalisedArgumentDefs
+            commandArguments: ComplexNormalisedOptionDefs
           });
         }).to.throw();
       });
@@ -292,7 +292,7 @@ describe('Command builder', () => {
 
       const commands = builder.buildCommands(commandsNode);
       const normalisedCommands = builder.resolveCommandArguments(commands, {
-        commandArguments: ComplexNormalisedArgumentDefs
+        commandArguments: ComplexNormalisedOptionDefs
       });
       const normalisedRenameCommand = normalisedCommands[0];
 
