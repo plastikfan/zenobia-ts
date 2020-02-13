@@ -16,7 +16,7 @@ import * as types from '../../../lib/types';
 
 const parseInfo: jaxom.IParseInfo = {
   elements: new Map<string, jaxom.IElementInfo>([
-    ['Arguments', {
+    ['Options', {
       descendants: {
         by: 'index',
         id: 'name',
@@ -48,17 +48,17 @@ describe('Argument builder', () => {
       const data = `<?xml version="1.0"?>
         <Application name="pez">
           <Cli>
-            <Arguments>
+            <Options>
               <Argument name="director" alias="dn" optional="true"
                 describe="Director name">
               </Argument>
-            </Arguments>
+            </Options>
           </Cli>
         </Application>`;
 
       const document = parser.parseFromString(data);
       const argumentsNode = xp.select(
-        '/Application/Cli/Arguments',
+        '/Application/Cli/Options',
         document,
         true
       );
@@ -66,7 +66,7 @@ describe('Argument builder', () => {
       if (argumentsNode instanceof Node) {
         const argumentDefs: types.StringIndexableObj = builder.buildArguments(argumentsNode);
         expect(argumentDefs).to.deep.equal({
-          _: 'Arguments',
+          _: 'Options',
           _children: {
             director: {
               name: 'director',
@@ -78,7 +78,7 @@ describe('Argument builder', () => {
           }
         });
       } else {
-        assert.fail("Couldn't get Arguments node.");
+        assert.fail("Couldn't get Options node.");
       }
     });
   });
@@ -95,14 +95,14 @@ describe('Argument builder', () => {
         data: `<?xml version="1.0"?>
           <Application name="pez">
             <Cli>
-              <Arguments>
+              <Options>
                 <Argument name="path" alias="p" optional="true"
                   describe="Full path">
                 </Argument>
                 <Argument name="path" alias="p" optional="true"
                   describe="Full path (DUPLICATE)">
                 </Argument>
-              </Arguments>
+              </Options>
             </Cli>
           </Application>`
       },
@@ -111,11 +111,11 @@ describe('Argument builder', () => {
         data: `<?xml version="1.0"?>
           <Application name="pez">
             <Cli>
-              <Arguments>
+              <Options>
                 <Argument alias="p" optional="true"
                   describe="Full path">
                 </Argument>
-              </Arguments>
+              </Options>
             </Cli>
           </Application>`
       }
@@ -126,7 +126,7 @@ describe('Argument builder', () => {
         it('should: throw', () => {
           const document = parser.parseFromString(t.data);
           const argumentsNode = xp.select(
-            '/Application/Cli/Arguments',
+            '/Application/Cli/Options',
             document,
             true
           );
@@ -136,7 +136,7 @@ describe('Argument builder', () => {
               builder.buildArguments(argumentsNode);
             }).to.throw();
           } else {
-            assert.fail("Couldn't get Arguments node.");
+            assert.fail("Couldn't get Options node.");
           }
         });
       });
@@ -146,7 +146,7 @@ describe('Argument builder', () => {
 
 describe('Argument builder from config', () => {
   context('given: valid xml config', () => {
-    it('should: build Arguments successfully', () => {
+    it('should: build Options successfully', () => {
       const data = Helpers.read(
         path.resolve(
           __dirname,
@@ -155,7 +155,7 @@ describe('Argument builder from config', () => {
       );
       const document = parser.parseFromString(data);
       const argumentsNode = xp.select(
-        '/Application/Cli/Arguments',
+        '/Application/Cli/Options',
         document,
         true
       );
@@ -167,7 +167,7 @@ describe('Argument builder from config', () => {
 
         expect(argumentDefs).to.deep.equal({
           type: 'string',
-          _: 'Arguments',
+          _: 'Options',
           _children: {
             filesys: {
               name: 'filesys',

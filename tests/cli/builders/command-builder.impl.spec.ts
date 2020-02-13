@@ -54,7 +54,7 @@ describe('CommandBuilderImpl.resolveArguments', () => {
     });
   });
 
-  context('given: a command with missing "Arguments"', () => {
+  context('given: a command with missing "Options"', () => {
     it('should: throw', () => {
       const command = {
         name: 'rename',
@@ -62,7 +62,7 @@ describe('CommandBuilderImpl.resolveArguments', () => {
         _: 'Command',
         _children: [
           {
-            _: 'MissingArguments', // Arguments not present in command
+            _: 'MissingOptions', // Options not present in command
             _children: {
               incname: { name: 'incname', _: 'ArgumentRef' },
               studioname: { name: 'studioname', _: 'ArgumentRef' },

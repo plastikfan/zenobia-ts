@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Application name="pez">
   <Cli>
-    <Arguments type="string">
+    <Options type="string">
       <Argument name="filesys" alias="fs" optional="true"
         describe="The file system as defined in config as FileSystem">
       </Argument>
@@ -133,6 +133,6 @@
       <Argument name="put" alias="pu" type="switch"
         describe="Insert new field if it doesn't exist. (Like put http verb)  switch.">
       </Argument>
-    </Arguments>
+    </Options>
   </Cli>
 </Application>

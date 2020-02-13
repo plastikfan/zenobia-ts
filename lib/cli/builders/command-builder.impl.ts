@@ -8,16 +8,16 @@ export class CommandBuilderImpl {
 
   /**
    * @method resolveArguments
-   * @description: Resolves all ArgumentRefs to Arguments using the info object passed in.
+   * @description: Resolves all ArgumentRefs to Options using the info object passed in.
    *
    * @public
    * @param {types.StringIndexableObj} command: The native command object with unresolved
-   * Arguments (ie, the arguments are all just ArgumentRef's)
+   * Options (ie, the arguments are all just ArgumentRef's)
    * @param {types.StringIndexableObj} info: normalisation information, which contains
    * "commandArguments" being a reference to a generic format object built by jaxom
    * whose top level "_children" attribute contains a map keyed by argument name
    * of ArgumentDefs.
-   * @returns {types.StringIndexableObj}: A native Command object with resolved Arguments
+   * @returns {types.StringIndexableObj}: A native Command object with resolved Options
    * @memberof CommandBuilder
    */
   public resolveArguments (command: types.StringIndexableObj, info: types.StringIndexableObj)
@@ -29,7 +29,7 @@ export class CommandBuilderImpl {
     if (R.is(Array)(R.prop(this.specSvc.descendantsLabel)(command))) {
       const children = command[this.specSvc.descendantsLabel];
       const argumentRefsObj = R.find((el: types.StringIndexableObj): boolean => {
-        return el[this.specSvc.elementLabel] === 'Arguments';
+        return el[this.specSvc.elementLabel] === 'Options';
       })(children);
 
       if (argumentRefsObj instanceof Object) {
@@ -48,7 +48,7 @@ export class CommandBuilderImpl {
         }
         argumentRefsObj[this.specSvc.descendantsLabel] = resolved;
       } else {
-        throw new Error(`Couldn't find 'Arguments in command: ${command.name}`);
+        throw new Error(`Couldn't find 'Options in command: ${command.name}`);
       }
     } else {
       throw new Error(`"${this.specSvc.descendantsLabel}" Array is missing from command: "${command.name}"`);

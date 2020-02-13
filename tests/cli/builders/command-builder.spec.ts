@@ -136,7 +136,7 @@ describe('Command builder', () => {
         recurse: 'inherits',
         discards: ['inherits', 'abstract']
       }],
-      ['Arguments', {
+      ['Options', {
         descendants: {
           by: 'index',
           id: 'name',
@@ -179,17 +179,17 @@ describe('Command builder', () => {
             <Cli>
               <Commands>
                 <Command name="base-command" abstract="true" source="filesystem-source">
-                  <Arguments>
+                  <Options>
                     <ArgumentRef name="loglevel"/>
                     <ArgumentRef name="logfile"/>
-                  </Arguments>
+                  </Options>
                 </Command>
                 <Command name="rename"
                   describe="Rename albums according to arguments specified (write)."
                   inherits="base-command">
-                  <Arguments>
+                  <Options>
                     <ArgumentRef name="missing"/>
-                  </Arguments>
+                  </Options>
                 </Command>
               </Commands>
             </Cli>
@@ -233,10 +233,10 @@ describe('Command builder', () => {
           <Cli>
             <Commands>
               <Command name="base-command" abstract="true" source="filesystem-source">
-                <Arguments>
+                <Options>
                   <ArgumentRef name="loglevel"/>
                   <ArgumentRef name="logfile"/>
-                </Arguments>
+                </Options>
                 <ArgumentGroups>
                   <Conflicts>
                     <ArgumentRef name="loglevel"/>
@@ -245,7 +245,7 @@ describe('Command builder', () => {
                 </ArgumentGroups>
               </Command>
               <Command name="domain-command" abstract="true">
-                <Arguments>
+                <Options>
                   <ArgumentRef name="name"/>
                   <ArgumentRef name="labelname"/>
                   <ArgumentRef name="incname"/>
@@ -253,7 +253,7 @@ describe('Command builder', () => {
                   <ArgumentRef name="header"/>
                   <ArgumentRef name="producer"/>
                   <ArgumentRef name="director"/>
-                </Arguments>
+                </Options>
                 <ArgumentGroups>
                   <Conflicts>
                     <ArgumentRef name="name"/>
@@ -271,19 +271,19 @@ describe('Command builder', () => {
                 </ArgumentGroups>
               </Command>
               <Command name="uni-command" abstract="true">
-                <Arguments>
+                <Options>
                   <ArgumentRef name="path"/>
                   <ArgumentRef name="filesys"/>
                   <ArgumentRef name="tree"/>
-                </Arguments>
+                </Options>
               </Command>
               <Command name="rename"
                 describe="Rename albums according to arguments specified (write)."
                 inherits="base-command,domain-command,uni-command">
-                <Arguments>
+                <Options>
                   <ArgumentRef name="with"/>
                   <ArgumentRef name="put"/>
-                </Arguments>
+                </Options>
               </Command>
             </Commands>
           </Cli>
@@ -302,7 +302,7 @@ describe('Command builder', () => {
         _: 'Command',
         _children: [
           {
-            _: 'Arguments',
+            _: 'Options',
             _children: {
               with: {
                 name: 'with',
@@ -485,10 +485,10 @@ describe('Command builder', () => {
             <Commands>
               <Command name="rename"
                 describe="Rename albums according to arguments specified (write).">
-                <Arguments>
+                <Options>
                   <ArgumentRef name="with"/>
                   <ArgumentRef name="put"/>
-                </Arguments>
+                </Options>
               </Command>
             </Commands>
           </Cli>
@@ -517,10 +517,10 @@ describe('Command builder', () => {
             <Commands>
               <Command name="rename"
                 describe="Rename albums according to arguments specified (write).">
-                <Arguments>
+                <Options>
                   <ArgumentRef name="with"/>
                   <ArgumentRef name="put"/>
-                </Arguments>
+                </Options>
               </Command>
             </Commands>
           </Cli>
@@ -540,17 +540,17 @@ function invoke (xpath: types.ISelectors): void {
       <Cli>
         <Commands>
           <Command name="base-command" abstract="true" source="filesystem-source">
-            <Arguments>
+            <Options>
               <ArgumentRef name="loglevel"/>
               <ArgumentRef name="logfile"/>
-            </Arguments>
+            </Options>
           </Command>
           <Command name="rename"
             describe="Rename albums according to arguments specified (write)."
             inherits="base-command">
-            <Arguments>
+            <Options>
               <ArgumentRef name="missing"/>
-            </Arguments>
+            </Options>
           </Command>
         </Commands>
       </Cli>
