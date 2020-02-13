@@ -11,7 +11,7 @@ import { DOMParserImpl as dom } from 'xmldom-ts';
 const parser = new dom();
 
 import * as Helpers from '../../test-helpers';
-import * as build from '../../../lib/cli/builders/argument-builder.class';
+import * as build from '../../../lib/cli/builders/option-builder.class';
 import * as types from '../../../lib/types';
 
 const parseInfo: jaxom.IParseInfo = {
