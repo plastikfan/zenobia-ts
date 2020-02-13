@@ -4,7 +4,7 @@ import * as types from '../../types';
 
 /**
  * @export
- * @class ArgumentBuilder
+ * @class OptionBuilder
  */
 export class ArgumentBuilder {
   constructor (private converter: jaxom.IConverter, private parseInfo: jaxom.IParseInfo) { }
@@ -14,12 +14,12 @@ export class ArgumentBuilder {
    * @description: builds <Option> definitions. There are used by the command
    * builder to resolve the <OptionRef>'s found.
    *
-   * @param {Node} argumentsNode
+   * @param {Node} optionsNode
    * @returns {types.StringIndexableObj}
    * @memberof ArgumentBuilder
    */
-  public buildOptions (argumentsNode: Node)
+  public buildOptions (optionsNode: Node)
   : types.StringIndexableObj {
-    return this.converter.build(argumentsNode, this.parseInfo);
+    return this.converter.build(optionsNode, this.parseInfo);
   }
-} // ArgumentBuilder
+} // OptionBuilder

@@ -24,29 +24,29 @@ export class CommandBuilderImpl {
     : types.StringIndexableObj {
 
     const { commandOptions } = info;
-    const argumentDefs = commandOptions[this.specSvc.descendantsLabel];
+    const optionDefs = commandOptions[this.specSvc.descendantsLabel];
 
     if (R.is(Array)(R.prop(this.specSvc.descendantsLabel)(command))) {
       const children = command[this.specSvc.descendantsLabel];
-      const argumentRefsObj = R.find((el: types.StringIndexableObj): boolean => {
+      const optionRefsObj = R.find((el: types.StringIndexableObj): boolean => {
         return el[this.specSvc.elementLabel] === 'Options';
       })(children);
 
-      if (argumentRefsObj instanceof Object) {
-        const argumentRefs = argumentRefsObj[this.specSvc.descendantsLabel];
-        const resolved = R.map((ref: { name: string; }) => argumentDefs[ref['name']] ?? {
+      if (optionRefsObj instanceof Object) {
+        const optionRefs = optionRefsObj[this.specSvc.descendantsLabel];
+        const resolved = R.map((ref: { name: string; }) => optionDefs[ref['name']] ?? {
           // This marks out unresolved options so we can find them
           //
           $unresolved: ref.name
-        })(argumentRefs);
+        })(optionRefs);
 
-        const unresolvedArgument = R.find(
+        const unresolvedOption = R.find(
           (arg: any): any => R.has('$unresolved')(arg))(R.values(resolved));
-        if (unresolvedArgument) {
+        if (unresolvedOption) {
           throw new Error(
-            `"${unresolvedArgument.$unresolved}" Option definition missing for command: "${command.name}"`);
+            `"${unresolvedOption.$unresolved}" Option definition missing for command: "${command.name}"`);
         }
-        argumentRefsObj[this.specSvc.descendantsLabel] = resolved;
+        optionRefsObj[this.specSvc.descendantsLabel] = resolved;
       } else {
         throw new Error(`Couldn't find 'Options in command: ${command.name}`);
       }

@@ -43,7 +43,7 @@ describe('Option builder', () => {
     builder = new build.ArgumentBuilder(converter, parseInfo);
   });
 
-  context('given: a correctly defined argument', () => {
+  context('given: a correctly defined option', () => {
     it('should: build options successfully', () => {
       const data = `<?xml version="1.0"?>
         <Application name="pez">
@@ -57,15 +57,15 @@ describe('Option builder', () => {
         </Application>`;
 
       const document = parser.parseFromString(data);
-      const argumentsNode = xp.select(
+      const optionsNode = xp.select(
         '/Application/Cli/Options',
         document,
         true
       );
 
-      if (argumentsNode instanceof Node) {
-        const argumentDefs: types.StringIndexableObj = builder.buildOptions(argumentsNode);
-        expect(argumentDefs).to.deep.equal({
+      if (optionsNode instanceof Node) {
+        const optionDefs: types.StringIndexableObj = builder.buildOptions(optionsNode);
+        expect(optionDefs).to.deep.equal({
           _: 'Options',
           _children: {
             director: {
@@ -125,15 +125,15 @@ describe('Option builder', () => {
       context(`given: ${t.given}`, () => {
         it('should: throw', () => {
           const document = parser.parseFromString(t.data);
-          const argumentsNode = xp.select(
+          const optionsNode = xp.select(
             '/Application/Cli/Options',
             document,
             true
           );
 
-          if (argumentsNode instanceof Node) {
+          if (optionsNode instanceof Node) {
             expect(() => {
-              builder.buildOptions(argumentsNode);
+              builder.buildOptions(optionsNode);
             }).to.throw();
           } else {
             assert.fail("Couldn't get Options node.");
@@ -154,18 +154,18 @@ describe('Option builder from config', () => {
         )
       );
       const document = parser.parseFromString(data);
-      const argumentsNode = xp.select(
+      const optionsNode = xp.select(
         '/Application/Cli/Options',
         document,
         true
       );
 
-      if (argumentsNode instanceof Node) {
+      if (optionsNode instanceof Node) {
         const converter = new jaxom.XpathConverter();
         const builder = new build.ArgumentBuilder(converter, parseInfo);
-        const argumentDefs = builder.buildOptions(argumentsNode);
+        const optionDefs = builder.buildOptions(optionsNode);
 
-        expect(argumentDefs).to.deep.equal({
+        expect(optionDefs).to.deep.equal({
           type: 'string',
           _: 'Options',
           _children: {
