@@ -10,7 +10,7 @@ export class ArgumentBuilder {
   constructor (private converter: jaxom.IConverter, private parseInfo: jaxom.IParseInfo) { }
 
   /**
-   * @method buildArguments
+   * @method buildOptions
    * @description: builds <Option> definitions. There are used by the command
    * builder to resolve the <OptionRef>'s found.
    *
@@ -18,7 +18,7 @@ export class ArgumentBuilder {
    * @returns {types.StringIndexableObj}
    * @memberof ArgumentBuilder
    */
-  public buildArguments (argumentsNode: Node)
+  public buildOptions (argumentsNode: Node)
   : types.StringIndexableObj {
     return this.converter.build(argumentsNode, this.parseInfo);
   }

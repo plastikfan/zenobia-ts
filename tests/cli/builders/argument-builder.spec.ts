@@ -64,7 +64,7 @@ describe('Option builder', () => {
       );
 
       if (argumentsNode instanceof Node) {
-        const argumentDefs: types.StringIndexableObj = builder.buildArguments(argumentsNode);
+        const argumentDefs: types.StringIndexableObj = builder.buildOptions(argumentsNode);
         expect(argumentDefs).to.deep.equal({
           _: 'Options',
           _children: {
@@ -133,7 +133,7 @@ describe('Option builder', () => {
 
           if (argumentsNode instanceof Node) {
             expect(() => {
-              builder.buildArguments(argumentsNode);
+              builder.buildOptions(argumentsNode);
             }).to.throw();
           } else {
             assert.fail("Couldn't get Options node.");
@@ -163,7 +163,7 @@ describe('Option builder from config', () => {
       if (argumentsNode instanceof Node) {
         const converter = new jaxom.XpathConverter();
         const builder = new build.ArgumentBuilder(converter, parseInfo);
-        const argumentDefs = builder.buildArguments(argumentsNode);
+        const argumentDefs = builder.buildOptions(argumentsNode);
 
         expect(argumentDefs).to.deep.equal({
           type: 'string',
