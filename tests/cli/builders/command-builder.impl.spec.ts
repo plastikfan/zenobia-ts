@@ -45,7 +45,7 @@ describe('CommandBuilderImpl.resolveOptions', () => {
         describe: 'Rename albums according to arguments specified (write).'
       };
       const resolveInfo = {
-        commandArguments: ComplexNormalisedOptionDefs
+        commandOptions: ComplexNormalisedOptionDefs
       };
 
       expect(() => {
@@ -75,7 +75,7 @@ describe('CommandBuilderImpl.resolveOptions', () => {
         describe: 'Rename albums according to arguments specified (write).'
       };
       const resolveInfo = {
-        commandArguments: ComplexNormalisedOptionDefs
+        commandOptions: ComplexNormalisedOptionDefs
       };
 
       expect(() => {

@@ -14,7 +14,7 @@ export class CommandBuilderImpl {
    * @param {types.StringIndexableObj} command: The native command object with unresolved
    * Options (ie, the arguments are all just OptionRefs)
    * @param {types.StringIndexableObj} info: normalisation information, which contains
-   * "commandArguments" being a reference to a generic format object built by jaxom
+   * "commandOptions" being a reference to a generic format object built by jaxom
    * whose top level "_children" attribute contains a map keyed by argument name
    * of OptionDef.
    * @returns {types.StringIndexableObj}: A native Command object with resolved Options
@@ -23,8 +23,8 @@ export class CommandBuilderImpl {
   public resolveOptions (command: types.StringIndexableObj, info: types.StringIndexableObj)
     : types.StringIndexableObj {
 
-    const { commandArguments } = info;
-    const argumentDefs = commandArguments[this.specSvc.descendantsLabel];
+    const { commandOptions } = info;
+    const argumentDefs = commandOptions[this.specSvc.descendantsLabel];
 
     if (R.is(Array)(R.prop(this.specSvc.descendantsLabel)(command))) {
       const children = command[this.specSvc.descendantsLabel];
