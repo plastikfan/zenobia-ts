@@ -7,7 +7,7 @@ import { DOMParserImpl as dom } from 'xmldom-ts';
 const parser = new dom();
 import * as jaxom from 'jaxom-ts';
 import { functify } from 'jinxed';
-import * as build from '../../../lib/cli/builders/command-builder.class';
+import * as build from '../../../lib/zen-cli/builders/command-builder.class';
 import * as helpers from '../../../lib/utils/helpers';
 import * as types from '../../../lib/types';
 
