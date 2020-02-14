@@ -1,3 +1,2 @@
-
-// Invoke the configuration root here ...
-//
+/* istanbul ignore next */
+require('./composition-root')(console, require('fs'));
