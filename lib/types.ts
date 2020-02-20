@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as memfs from 'memfs';
+import * as jaxom from 'jaxom-ts';
 
 export type NullableNode = Node | null;
 
@@ -21,3 +22,14 @@ export interface ISelectors {
 export type ConversionResult = { [key: string]: any } | { [key: string]: any }[];
 
 export type VirtualFS = typeof fs | memfs.IFs;
+
+export interface ICommandBuilder {
+  buildNamedCommand (commandName: string, commandsNode: Node): StringIndexableObj[];
+  buildCommands (commandsNode: Node): StringIndexableObj[];
+  resolveCommandOptions (commands: any[], info: any): StringIndexableObj;
+}
+
+export interface ICommandBuilderFactory {
+  (converter: jaxom.IConverter, specSvc: jaxom.ISpecService, parseInfo: jaxom.IParseInfo,
+    xpath: ISelectors): ICommandBuilder;
+}

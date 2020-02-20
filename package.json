@@ -8,7 +8,7 @@
     "dist"
   ],
   "bin": {
-    "zen": "./dist/zonobia-cli-bundle.js"
+    "zen": "./dist/zenobia-cli-bundle.js"
   },
   "scripts": {
     "clean": "rimraf dist/* && rimraf output/*",

@@ -1,4 +1,4 @@
-
+import * as R from 'ramda';
 import * as xp from 'xpath-ts';
 import * as types from '../types';
 
@@ -14,3 +14,7 @@ export const Selectors: types.ISelectors = {
     return elementResult instanceof Node ? elementResult : null;
   }
 };
+
+export function containsText (str: null | undefined | string): boolean {
+  return !R.isNil(str) && (str.trim().length > 0);
+}
