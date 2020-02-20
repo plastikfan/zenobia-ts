@@ -2,10 +2,8 @@
 import { functify } from 'jinxed';
 import { expect, use } from 'chai';
 import dirtyChai = require('dirty-chai'); use(dirtyChai);
-import { DOMParserImpl as dom } from 'xmldom-ts';
 import * as yargs from 'yargs';
 import * as memfs from 'memfs';
-import * as fs from 'fs';
 
 import * as testHelpers from '../test-helpers';
 import * as helpers from '../../lib/utils/helpers';
@@ -26,7 +24,7 @@ describe('command-line', () => {
 
       const commandLine = new CommandLine();
       let inputs: ct.ICommandLineInputs = commandLine.build(instance, mfs,
-        (yin: yargs.Argv): { [key: string]: any } => { // parseCallback
+        (yin: yargs.Argv): { [key: string]: any } => {
 
           return yin.parse(['zen', '--help']);
         });
@@ -39,7 +37,7 @@ describe('command-line', () => {
 
       const commandLine = new CommandLine();
       let inputs: ct.ICommandLineInputs = commandLine.build(instance, mfs,
-        (yin: yargs.Argv): { [key: string]: any } => { // parseCallback
+        (yin: yargs.Argv): { [key: string]: any } => {
 
           return yin.parse(['zen', 'jax',
             '--res', 'com',
@@ -54,7 +52,7 @@ describe('command-line', () => {
       expect(helpers.containsText(inputs.xmlContent)).to.be.true();
       expect(helpers.containsText(inputs.parseInfoContent)).to.be.true();
       expect(inputs.query).to.equal('/Application/Cli/Commands');
-      expect(inputs.output).to.equal('[CONSOLE]');
+      expect(inputs.output).to.equal(ct.ConsoleTag);
     });
   });
 });
