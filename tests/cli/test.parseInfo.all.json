@@ -3,7 +3,10 @@
     ["Commands",
       {
         "descendants": {
-          "id": "name"
+          "id": "name",
+          "by": "index",
+          "throwIfCollision": false,
+          "throwIfMissing": false
         }
       }
     ],
@@ -15,21 +18,27 @@
       }
     ],
     [
-      "Argument",
+      "Options",
       {
-        "id": "ref"
+        "descendants": {
+          "id": "name",
+          "by": "index",
+          "throwIfCollision": false,
+          "throwIfMissing": false
+        }
+      }
+    ],
+    [
+      "Option",
+      {
+        "id": "name"
+      }
+    ],
+    [
+      "OptionRef",
+      {
+        "id": "name"
       }
     ]
-  ],
-  "common": {
-    "discards": ["inherits", "abstract"],
-    "descendants": {
-      "by": "index",
-      "throwIfCollision": false,
-      "throwIfMissing": false
-    }
-  },
-  "def": {
-    "id": "none"
-  }
+  ]
 }

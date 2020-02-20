@@ -58,7 +58,7 @@ describe('Application', () => {
         xmlContent: xmlContent,
         query: '/Application/Cli/Commands',
         parseInfoContent: parseInfoContent,
-        out: ct.ConsoleTag,
+        output: ct.ConsoleTag,
         argv: {
           _: '["jax"]',
           '$0': 'zenobia-cli'

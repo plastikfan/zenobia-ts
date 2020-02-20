@@ -35,7 +35,7 @@ export interface ICommandLineInputs {
   query?: string;
   parseInfoContent?: string;
   //
-  out: string;
+  output: string;
   argv: {};
 }
 

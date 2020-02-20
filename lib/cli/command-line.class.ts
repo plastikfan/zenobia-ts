@@ -18,14 +18,14 @@ export class CommandLine { // TODO: change to just be a function so we don't hav
           .options(jax.Options)
           .usage('$0: -x/--xml')
           .help('--xml')
-          .demandOption(['xml'], 'Missing parameters, try again!');
+          .demandOption(['xml', '--parseinfo'], 'Missing parameters, try again!');
         },
         (argv: { [key: string]: any}) => { // handler
           // ENTRY-POINT
           console.log('>>> Handler entry point for jax command ...');
         });
 
-    const parseResult: any = parseCallback ? parseCallback(instance) : instance.argv;
+    const parseResult: { [key: string]: any } = parseCallback ? parseCallback(instance) : instance.argv;
 
     console.log('=============================================================================================');
 
@@ -40,9 +40,10 @@ export class CommandLine { // TODO: change to just be a function so we don't hav
     const inputs: ct.ICommandLineInputs = {
       applicationCommand: parseResult['_'][1] as ct.ApplicationCommand,
       xmlContent: xmlContent,
+      resource: parseResult.res,
       query: parseResult.query as string,
       parseInfoContent: parseInfoContent,
-      out: parseResult.output as string,
+      output: parseResult.output as string,
       argv: parseResult
     };
 

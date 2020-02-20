@@ -1,28 +1,16 @@
 
 import { functify } from 'jinxed';
-import { expect, assert, use } from 'chai';
+import { expect, use } from 'chai';
 import dirtyChai = require('dirty-chai'); use(dirtyChai);
 import { DOMParserImpl as dom } from 'xmldom-ts';
-import * as R from 'ramda';
-import * as path from 'path';
 import * as yargs from 'yargs';
-import * as jaxom from 'jaxom-ts';
 import * as memfs from 'memfs';
-import { patchFs } from 'fs-monkey';
 import * as fs from 'fs';
 
 import * as testHelpers from '../test-helpers';
-import * as types from '../../lib/types';
+import * as helpers from '../../lib/utils/helpers';
 import * as ct from '../../lib/cli/cli-types';
 import { CommandLine } from '../../lib/cli/command-line.class';
-const vol = memfs.vol;
-const parser = new dom();
-
-const patchedFS = {
-  writeFileSync: (path: fs.PathLike | number, data: any, options?: fs.WriteFileOptions): void => {
-    throw new Error(`Something went wrong writing file to ${path}`);
-  }
-};
 
 describe('command-line', () => {
   let instance: yargs.Argv;
@@ -42,25 +30,31 @@ describe('command-line', () => {
 
           return yin.parse(['zen', '--help']);
         });
-
-      console.log(`>>> inputs: ${JSON.stringify(inputs, null, 2)}`);
-      // yin.parse(['jax', '--xml']);
     });
   });
 
-  context('given: ', () => {
-    it('should: invoke with --xml option', () => {
+  context('given: jax command invoked', () => {
+    it('should: capture user defined options presented on command line', () => {
       mfs = testHelpers.setupFS(['./cli/commands.content.xml', './cli/test.parseInfo.all.json']);
 
       const commandLine = new CommandLine();
       let inputs: ct.ICommandLineInputs = commandLine.build(instance, mfs,
         (yin: yargs.Argv): { [key: string]: any } => { // parseCallback
 
-          return yin.parse(['zen', 'jax', '--xml', './cli/commands.content.xml']);
+          return yin.parse(['zen', 'jax',
+            '--res', 'com',
+            '--xml', './cli/commands.content.xml',
+            '--parseinfo', './cli/test.parseInfo.all.json',
+            '--query', '/Application/Cli/Commands',
+            '--output', '[CONSOLE]'
+          ]);
         });
 
-      console.log(`>>> inputs: ${JSON.stringify(inputs, null, 2)}`);
-      // yin.parse(['jax', '--xml']);
+      expect(inputs.resource).to.equal('com');
+      expect(helpers.containsText(inputs.xmlContent)).to.be.true();
+      expect(helpers.containsText(inputs.parseInfoContent)).to.be.true();
+      expect(inputs.query).to.equal('/Application/Cli/Commands');
+      expect(inputs.output).to.equal('[CONSOLE]');
     });
   });
 });

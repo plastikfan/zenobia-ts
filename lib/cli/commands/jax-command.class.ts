@@ -17,6 +17,7 @@ export const Options = {
     alias: 'res',
     describe: 'type of resource being built (command|option)',
     string: true,
+    default: 'com',
     choices: ['com', 'opt']
   },
   'q': {
@@ -28,13 +29,13 @@ export const Options = {
     alias: 'parseinfo',
     describe: 'path to json file containing parse info to apply to xml document',
     string: true,
-    normalize: true
+    normalize: true,
+    demandOption: true
   },
   'o': {
     alias: 'output',
     describe: 'output file name, if not specified, display result to console',
     string: true,
-    normalize: true,
     default: ct.ConsoleTag
   }
 };
@@ -43,28 +44,23 @@ export class JaxCommand extends CliCommand {
   constructor (executionContext: ct.IExecutionContext) {
     super(executionContext);
 
-    this.parseInfoContent = assign(executionContext.inputs.parseInfoContent, 'parseInfoContent');
-    this.xmlContent = assign(executionContext.inputs.xmlContent, 'xmlContent');
     this.query = assign(executionContext.inputs.query, 'query');
     this.resource = assign(executionContext.inputs.resource, 'resource');
   }
 
-  private readonly parseInfoContent: string;
-  private readonly xmlContent: string;
   private readonly query: string;
   private readonly resource: string;
 
   public exec ()
   : number {
-    console.log('====== [ JAX COMMAND ] ======');
-    let result = 0;
+    let execResult = 0;
     try {
-      const factory = this.executionContext.parseInfoFactory;
+      const parseInfoFactory = this.executionContext.parseInfoFactory;
       const document: Document = this.executionContext.parser.parseFromString(
         this.xmlContent, 'text/xml');
 
       const parseInfo: jaxom.IParseInfo = this.acquireParseInfo(
-        this.parseInfoContent, factory);
+        this.parseInfoContent, parseInfoFactory);
 
       let builder: types.ICommandBuilder = this.executionContext.builderFactory(
         this.executionContext.converter,
@@ -74,13 +70,14 @@ export class JaxCommand extends CliCommand {
 
       const options = this.buildOptions(document, parseInfo);
       const commands = this.buildCommands(document, builder, options);
+      const buildResult = this.resource === 'com' ? commands : options;
 
-      result = (this.out === ct.ConsoleTag) ? this.display(commands) : this.persist(commands);
+      execResult = (this.output === ct.ConsoleTag) ? this.display(buildResult) : this.persist(buildResult);
     } catch (error) {
-      result = 1;
+      execResult = 1;
     }
 
-    return result;
+    return execResult;
   }
 
   private buildOptions (document: Document, parseInfo: jaxom.IParseInfo)
@@ -96,11 +93,13 @@ export class JaxCommand extends CliCommand {
         : this.query.substr(0, this.query.indexOf('Commands')) + 'Options';
     }
 
-    // TODO: select the options node, and pass this into converter.build instead
-    // of the document.
-    //
+    const optionsNode = this.xpath.select(optionsQuery, document, true);
 
-    return this.executionContext.converter.build(document, parseInfo);
+    if (!(optionsNode instanceof Node)) {
+      throw new Error(`Bad options query: "${optionsQuery}", does not yield a Node instance`);
+    }
+
+    return this.executionContext.converter.build(optionsNode, parseInfo);
   }
 
   private buildCommands (document: Document, builder: types.ICommandBuilder,
@@ -125,7 +124,7 @@ export class JaxCommand extends CliCommand {
   }
 
   private persist (conversion: types.StringIndexableObj): number {
-    this.executionContext.vfs.writeFileSync(this.executionContext.inputs.out,
+    this.executionContext.vfs.writeFileSync(this.executionContext.inputs.output,
       JSON.stringify(conversion, null, 2), 'utf8');
 
     return 0;

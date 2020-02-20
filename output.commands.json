@@ -1,0 +1,159 @@
+[
+  {
+    "name": "rename",
+    "abstract": true,
+    "source": "filesystem-source",
+    "_": "Command",
+    "_children": [
+      {
+        "_": "Options",
+        "_children": {
+          "with": {
+            "name": "with",
+            "alias": "wi",
+            "describe": "New value.",
+            "_": "Option"
+          },
+          "put": {
+            "name": "put",
+            "alias": "pu",
+            "type": "switch",
+            "describe": "Insert new field if it doesn't exist. (Like put http verb)  switch.",
+            "_": "Option"
+          }
+        }
+      },
+      {
+        "_": "Options",
+        "_children": {
+          "loglevel": {
+            "name": "loglevel",
+            "_": "OptionRef"
+          },
+          "logfile": {
+            "name": "logfile",
+            "_": "OptionRef"
+          }
+        }
+      },
+      {
+        "_": "OptionGroups",
+        "_children": [
+          {
+            "_": "Conflicts",
+            "_children": [
+              {
+                "name": "loglevel",
+                "_": "OptionRef"
+              },
+              {
+                "name": "logfile",
+                "_": "OptionRef"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "_": "Options",
+        "_children": {
+          "name": {
+            "name": "name",
+            "_": "OptionRef"
+          },
+          "labelname": {
+            "name": "labelname",
+            "_": "OptionRef"
+          },
+          "incname": {
+            "name": "incname",
+            "_": "OptionRef"
+          },
+          "studioname": {
+            "name": "studioname",
+            "_": "OptionRef"
+          },
+          "header": {
+            "name": "header",
+            "_": "OptionRef"
+          },
+          "producer": {
+            "name": "producer",
+            "_": "OptionRef"
+          },
+          "director": {
+            "name": "director",
+            "_": "OptionRef"
+          }
+        }
+      },
+      {
+        "_": "OptionGroups",
+        "_children": [
+          {
+            "_": "Conflicts",
+            "_children": [
+              {
+                "name": "name",
+                "_": "OptionRef"
+              },
+              {
+                "name": "labelname",
+                "_": "OptionRef"
+              }
+            ]
+          },
+          {
+            "_": "Implies",
+            "_children": [
+              {
+                "name": "incname",
+                "_": "OptionRef"
+              },
+              {
+                "name": "studioname",
+                "_": "OptionRef"
+              }
+            ]
+          },
+          {
+            "_": "Conflicts",
+            "_children": [
+              {
+                "name": "header",
+                "_": "OptionRef"
+              },
+              {
+                "name": "producer",
+                "_": "OptionRef"
+              },
+              {
+                "name": "director",
+                "_": "OptionRef"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "_": "Options",
+        "_children": {
+          "path": {
+            "name": "path",
+            "_": "OptionRef"
+          },
+          "filesys": {
+            "name": "filesys",
+            "_": "OptionRef"
+          },
+          "tree": {
+            "name": "tree",
+            "_": "OptionRef"
+          }
+        }
+      }
+    ],
+    "describe": "Rename albums according to arguments specified (write).",
+    "inherits": "base-command,domain-command,uni-command"
+  }
+]
