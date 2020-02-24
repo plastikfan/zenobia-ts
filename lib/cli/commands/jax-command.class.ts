@@ -5,7 +5,10 @@ import * as ct from '../cli-types';
 import { CliCommand, assign } from './cli-command.class';
 import * as types from '../../types';
 
-export const Options = {
+export const command = 'jax';
+export const describe = 'invoke jaxom converter to build zenobia components on the fly';
+
+export const builder = {
   'x': {
     alias: 'xml',
     describe: 'path to xml file',
@@ -23,10 +26,11 @@ export const Options = {
   'q': {
     alias: 'query',
     describe: 'xpath query',
+    default: '/Application/Cli/Commands',
     string: true
   },
   'p': {
-    alias: 'parseinfo',
+    alias: 'parseInfo',
     describe: 'path to json file containing parse info to apply to xml document',
     string: true,
     normalize: true,
@@ -40,6 +44,10 @@ export const Options = {
   }
 };
 
+export const handler = (argv: ct.IZenobiaCli) => {
+  console.log('jax command ...');
+};
+
 export class JaxCommand extends CliCommand {
   constructor (executionContext: ct.IExecutionContext) {
     super(executionContext);
@@ -51,9 +59,12 @@ export class JaxCommand extends CliCommand {
   private readonly query: string;
   private readonly resource: string;
 
-  public exec ()
-  : number {
-    let execResult = 0;
+  public exec (): ct.ICommandExecutionResult {
+    let execResult: ct.ICommandExecutionResult = {
+      resultCode: 0,
+      payload: { }
+    };
+
     try {
       const parseInfoFactory = this.executionContext.parseInfoFactory;
       const document: Document = this.executionContext.parser.parseFromString(
@@ -62,7 +73,7 @@ export class JaxCommand extends CliCommand {
       const parseInfo: jaxom.IParseInfo = this.acquireParseInfo(
         this.parseInfoContent, parseInfoFactory);
 
-      let builder: types.ICommandBuilder = this.executionContext.builderFactory(
+      const builder: types.ICommandBuilder = this.executionContext.builderFactory(
         this.executionContext.converter,
         this.executionContext.specSvc,
         parseInfo,
@@ -72,9 +83,13 @@ export class JaxCommand extends CliCommand {
       const commands = this.buildCommands(document, builder, options);
       const buildResult = this.resource === 'com' ? commands : options;
 
-      execResult = (this.output === ct.ConsoleTag) ? this.display(buildResult) : this.persist(buildResult);
+      execResult = {
+        resultCode: (this.output === ct.ConsoleTag) ? this.display(buildResult) : this.persist(buildResult),
+        payload: this.resource === 'com' ? commands : options
+      };
+
     } catch (error) {
-      execResult = 1;
+      execResult.resultCode = 1;
     }
 
     return execResult;
@@ -85,13 +100,9 @@ export class JaxCommand extends CliCommand {
 
     // Options are always parallel to Commands
     //
-    let optionsQuery = this.query;
-
-    if (this.resource === 'com') {
-      optionsQuery = (R.endsWith('Commands')(this.query))
-        ? this.query.replace('Commands', 'Options')
-        : this.query.substr(0, this.query.indexOf('Commands')) + 'Options';
-    }
+    const optionsQuery = (R.endsWith('Commands')(this.query))
+      ? this.query.replace('Commands', 'Options')
+      : this.query.substr(0, this.query.indexOf('Commands')) + 'Options';
 
     const optionsNode = this.xpath.select(optionsQuery, document, true);
 

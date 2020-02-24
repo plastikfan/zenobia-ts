@@ -1,8 +1,5 @@
-import * as fs from 'fs';
-import * as memfs from 'memfs';
 import * as jaxom from 'jaxom-ts';
-import { VirtualFS, ICommandBuilder, ICommandBuilderFactory, ISelectors } from '../types';
-import * as yargs from 'yargs';
+import { VirtualFS, ICommandBuilderFactory, ISelectors } from '../types';
 
 // ===================================================================== CLI ===
 
@@ -18,6 +15,8 @@ export interface IParseInfoFactory {
   construct (source: string): jaxom.IParseInfo;
 }
 
+export const ZenobiaExecutable = 'zen';
+
 // ----------------------------------------------------- Command Line Inputs ---
 
 export type ResourceType = 'com' | 'opt';
@@ -29,26 +28,29 @@ export interface IYargsCli {
 }
 
 export interface IZenobiaCli extends IYargsCli {
-  xml?: string;
-  parseinfo?: string;
+  parseInfo: string;
+  query: string;
   resource?: ResourceType;
+  xml: string;
+  //
+  output?: string;
 }
 
 export type ApplicationCommand = 'jax' | 'default';
 
-export interface ICommandLineInputs { // THIS MUST BE A GENERIC, because of argv: IZenobiaCli
+export interface ICommandLineInputs {
   applicationCommand: ApplicationCommand;
   //
+  parseInfoContent?: string;
+  query?: string;
   resource?: ResourceType;
   xmlContent?: string;
-  query?: string;
-  parseInfoContent?: string;
   //
   output: string;
   argv: IZenobiaCli;
 }
 
-export interface IExecutionContext { // GENERIC
+export interface IExecutionContext {
   inputs: ICommandLineInputs;
   parseInfoFactory: IParseInfoFactory;
   //
@@ -62,10 +64,14 @@ export interface IExecutionContext { // GENERIC
   vfs: VirtualFS;
 }
 
-export interface IApplication { // GENERIC
+export interface ICommandExecutionResult {
+  resultCode: number;
+  payload: { [key: string]: unknown };
+}
+export interface IApplication {
   run (executionContext: IExecutionContext): number;
 }
 
-export interface ICliCommand { // GENERIC
-  exec (executionContext: IExecutionContext): number;
+export interface ICliCommand {
+  exec (executionContext: IExecutionContext): ICommandExecutionResult;
 }

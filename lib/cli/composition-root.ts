@@ -4,12 +4,14 @@ import * as jaxom from 'jaxom-ts';
 import * as types from '../types';
 import { IExecutionContext, ICommandLineInputs } from './cli-types';
 import { IApplicationConsole } from '../cli/cli-types';
-import { CommandLine } from './command-line.class';
+import * as commandLine from './command-line.class';
 import * as application from './application';
 import * as factory from '../zen-cli/builders/command-builder-factory';
 import { Selectors } from '../utils/helpers';
+import yargs = require('yargs');
 
-module.exports = (applicationConsole: IApplicationConsole, vfs: types.VirtualFS): number => {
+module.exports = (applicationConsole: IApplicationConsole, vfs: types.VirtualFS,
+  yin: yargs.Argv = require('yargs')): number => {
   // setup
   //
   const parseInfoFactory: jaxom.IParseInfoFactory = new jaxom.ParseInfoFactory();
@@ -17,11 +19,10 @@ module.exports = (applicationConsole: IApplicationConsole, vfs: types.VirtualFS)
   const converter: jaxom.IConverter = new jaxom.XpathConverter(spec);
   const specSvc: jaxom.ISpecService = new jaxom.SpecOptionService(spec);
   const parser: DOMParser = new dom();
-  const commandLine = new CommandLine();
 
   // acquire inputs
   //
-  const inputs: ICommandLineInputs = commandLine.build(require('yargs'), vfs);
+  const inputs: ICommandLineInputs = commandLine.build(yin, vfs);
 
   // inject dependencies
   //

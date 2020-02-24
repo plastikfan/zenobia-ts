@@ -1,8 +1,9 @@
-import * as ct from './cli-types';
+import { IExecutionContext, ICommandExecutionResult } from './cli-types';
 import * as factory from './commands/command-factory';
 
-export function run (executionContext: ct.IExecutionContext)
+export function run (executionContext: IExecutionContext)
 : number {
   const command = factory.construct(executionContext);
-  return command.exec(executionContext);
+  const executionResult: ICommandExecutionResult = command.exec(executionContext);
+  return executionResult.resultCode;
 }

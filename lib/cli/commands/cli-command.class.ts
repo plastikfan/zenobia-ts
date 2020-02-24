@@ -18,7 +18,7 @@ export abstract class CliCommand implements ct.ICliCommand {
   protected readonly xpath: types.ISelectors;
   protected output: string;
 
-  public abstract exec (): number;
+  public abstract exec (): ct.ICommandExecutionResult;
 
   protected acquireParseInfo (content: string, parseInfoFactory: ct.IParseInfoFactory)
   : jaxom.IParseInfo {

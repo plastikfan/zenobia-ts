@@ -2,37 +2,25 @@
 import { functify } from 'jinxed';
 import { expect, use } from 'chai';
 import dirtyChai = require('dirty-chai'); use(dirtyChai);
-import * as yargs from 'yargs';
 import * as memfs from 'memfs';
 
 import * as testHelpers from '../test-helpers';
 import * as helpers from '../../lib/utils/helpers';
 import * as ct from '../../lib/cli/cli-types';
-import { CommandLine } from '../../lib/cli/command-line.class';
+import * as commandLine from '../../lib/cli/command-line.class';
 
 describe('command-line', () => {
   let mfs: memfs.IFs;
-
-  context('given: ', () => {
-    it.skip('should: help should show user defined options', () => {
-      mfs = testHelpers.setupFS(['./cli/commands.content.xml', './cli/test.parseInfo.all.json']);
-
-      const commandLine = new CommandLine();
-      let inputs: ct.ICommandLineInputs = commandLine.build(
-        require('yargs')(['zen', '--help']), mfs);
-    });
-  });
 
   context('given: jax command invoked', () => {
     it('should: capture user defined options presented on command line', () => {
       mfs = testHelpers.setupFS(['./cli/commands.content.xml', './cli/test.parseInfo.all.json']);
 
-      const commandLine = new CommandLine();
-      let inputs: ct.ICommandLineInputs = commandLine.build(
-        require('yargs')(['zen', 'jax',
+      const inputs: ct.ICommandLineInputs = commandLine.build(
+        require('yargs')([ct.ZenobiaExecutable, 'jax',
           '--res', 'com',
           '--xml', './cli/commands.content.xml',
-          '--parseinfo', './cli/test.parseInfo.all.json',
+          '--parseInfo', './cli/test.parseInfo.all.json',
           '--query', '/Application/Cli/Commands',
           '--output', '[CONSOLE]'
         ]), mfs);
@@ -44,4 +32,24 @@ describe('command-line', () => {
       expect(inputs.output).to.equal(ct.ConsoleTag);
     });
   });
+
+  // This is what the argv looks like after being parsed:
+  //
+  const zenobiaArgv = {
+    '_': [
+      'jax'
+    ],
+    'q': '/Application/Cli/Commands',
+    'query': '/Application/Cli/Commands',
+    'r': 'com',
+    'res': 'com',
+    'x': 'tests/cli/commands.content.xml',
+    'xml': 'tests/cli/commands.content.xml',
+    'p': 'tests/cli/test.parseInfo.all.json',
+    'parseInfo': 'tests/cli/test.parseInfo.all.json',
+    'parse-info': 'tests/cli/test.parseInfo.all.json',
+    'o': '[CONSOLE]',
+    'output': '[CONSOLE]',
+    '$0': 'zenobia-cli'
+  };
 });

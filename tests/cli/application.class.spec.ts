@@ -12,6 +12,7 @@ import * as application from '../../lib/cli/application';
 import * as factory from '../../lib/zen-cli/builders/command-builder-factory';
 
 describe('Application', () => {
+  const commandsQuery = '/Application/Cli/Commands';
   const spec: jaxom.ISpec = jaxom.Specs.default;
   let parseInfoFactory: jaxom.ParseInfoFactory;
   let converter: jaxom.IConverter;
@@ -43,12 +44,15 @@ describe('Application', () => {
         applicationCommand: 'jax',
         resource: 'com',
         xmlContent: xmlContent,
-        query: '/Application/Cli/Commands',
+        query: commandsQuery,
         parseInfoContent: parseInfoContent,
         output: ct.ConsoleTag,
         argv: {
           _: ['jax'],
-          '$0': 'zenobia-cli'
+          '$0': 'zenobia-cli',
+          parseInfo: './cli/test.parseInfo.all.json',
+          query: commandsQuery,
+          xml: './cli/commands.content.xml'
         }
       };
 

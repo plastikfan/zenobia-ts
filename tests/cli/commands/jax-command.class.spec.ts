@@ -3,6 +3,7 @@ import { expect, use } from 'chai';
 import dirtyChai = require('dirty-chai'); use(dirtyChai);
 import * as jaxom from 'jaxom-ts';
 import * as memfs from 'memfs';
+import * as R from 'ramda';
 import * as fs from 'fs';
 import * as types from '../../../lib/types';
 import * as helpers from '../../../lib/utils/helpers';
@@ -13,6 +14,7 @@ import * as factory from '../../../lib/zen-cli/builders/command-builder-factory'
 const vol = memfs.vol;
 
 describe('jax-command', () => {
+  const commandsQuery = '/Application/Cli/Commands';
   const spec: jaxom.ISpec = jaxom.Specs.default;
   const xpath: types.ISelectors = helpers.Selectors;
   const builderFactory: types.ICommandBuilderFactory = factory.construct;
@@ -51,12 +53,15 @@ describe('jax-command', () => {
           applicationCommand: 'jax',
           resource: 'com',
           xmlContent: xmlContent,
-          query: '/Application/Cli/Commands',
+          query: commandsQuery,
           parseInfoContent: parseInfoContent,
           output: './output.commands.json',
           argv: {
             _: ['jax'],
-            '$0': 'zenobia-cli'
+            '$0': 'zenobia-cli',
+            parseInfo: './cli/test.parseInfo.all.json',
+            query: commandsQuery,
+            xml: './cli/commands.content.xml'
           }
         };
 
@@ -74,7 +79,7 @@ describe('jax-command', () => {
 
         const command = new JaxCommand(executionContext);
         const execResult = command.exec();
-        expect(execResult).to.equal(0);
+        expect(execResult.resultCode).to.equal(0);
 
         const exists = mfs.existsSync('./output.commands.json');
         expect(exists).to.be.true();
@@ -97,12 +102,15 @@ describe('jax-command', () => {
           applicationCommand: 'jax',
           resource: 'com',
           xmlContent: xmlContent,
-          query: '/Application/Cli/Commands',
+          query: commandsQuery,
           parseInfoContent: parseInfoContent,
           output: './output.commands.json',
           argv: {
             _: ['jax'],
-            '$0': 'zenobia-cli'
+            '$0': 'zenobia-cli',
+            parseInfo: './cli/test.parseInfo.all.json',
+            query: commandsQuery,
+            xml: './cli/commands.content.xml'
           }
         };
 
@@ -120,7 +128,7 @@ describe('jax-command', () => {
 
         const command = new JaxCommand(executionContext);
         const execResult = command.exec();
-        expect(execResult).to.equal(1);
+        expect(execResult.resultCode).to.equal(1);
       });
     });
   }); // persist to file
@@ -137,12 +145,15 @@ describe('jax-command', () => {
           applicationCommand: 'jax',
           resource: 'com',
           xmlContent: xmlContent,
-          query: '/Application/Cli/Commands',
+          query: commandsQuery,
           parseInfoContent: parseInfoContent,
           output: ct.ConsoleTag,
           argv: {
             _: ['jax'],
-            '$0': 'zenobia-cli'
+            '$0': 'zenobia-cli',
+            parseInfo: './cli/test.parseInfo.all.json',
+            query: commandsQuery,
+            xml: './cli/commands.content.xml'
           }
         };
 
@@ -160,8 +171,49 @@ describe('jax-command', () => {
 
         const command = new JaxCommand(executionContext);
         const execResult = command.exec();
-        expect(execResult).to.equal(0);
+        expect(execResult.resultCode).to.equal(0);
       });
     }); // given: writing to file
   }); // display to console
+
+  context('given: query = "opt"', () => {
+    it('should: only build the options', () => {
+      init(['./cli/commands.content.xml', './cli/test.parseInfo.all.json']);
+
+      const xmlContent: string = mfs.readFileSync('./cli/commands.content.xml').toString();
+      const parseInfoContent: string = mfs.readFileSync('./cli/test.parseInfo.all.json').toString();
+
+      const inputs: ct.ICommandLineInputs = {
+        applicationCommand: 'jax',
+        resource: 'opt',
+        xmlContent: xmlContent,
+        query: commandsQuery,
+        parseInfoContent: parseInfoContent,
+        output: ct.ConsoleTag,
+        argv: {
+          _: ['jax'],
+          '$0': 'zenobia-cli',
+          parseInfo: './cli/test.parseInfo.all.json',
+          query: commandsQuery,
+          xml: './cli/commands.content.xml'
+        }
+      };
+
+      const executionContext: ct.IExecutionContext = {
+        inputs: inputs,
+        parseInfoFactory: parseInfoFactory,
+        converter: converter,
+        specSvc: specSvc,
+        xpath: xpath,
+        builderFactory: builderFactory,
+        parser: parser,
+        applicationConsole: new testHelpers.FakeConsole(),
+        vfs: mfs
+      };
+
+      const command = new JaxCommand(executionContext);
+      const execResult = command.exec();
+      expect(R.view(R.lensProp('_'), execResult.payload)).to.equal('Options');
+    });
+  });
 }); // jax-command
