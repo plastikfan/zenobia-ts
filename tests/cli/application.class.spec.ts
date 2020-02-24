@@ -47,7 +47,7 @@ describe('Application', () => {
         parseInfoContent: parseInfoContent,
         output: ct.ConsoleTag,
         argv: {
-          _: '["jax"]',
+          _: ['jax'],
           '$0': 'zenobia-cli'
         }
       };

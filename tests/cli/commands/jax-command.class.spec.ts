@@ -10,6 +10,7 @@ import * as ct from '../../../lib/cli/cli-types';
 import * as testHelpers from '../../test-helpers';
 import { JaxCommand } from './../../../lib/cli/commands/jax-command.class';
 import * as factory from '../../../lib/zen-cli/builders/command-builder-factory';
+const vol = memfs.vol;
 
 describe('jax-command', () => {
   const spec: jaxom.ISpec = jaxom.Specs.default;
@@ -28,6 +29,10 @@ describe('jax-command', () => {
     specSvc = new jaxom.SpecOptionService(spec);
     parser = new DOMParser();
     applicationConsole = new testHelpers.FakeConsole();
+  });
+
+  afterEach(() => {
+    vol.reset();
   });
 
   function init (files: string[], patch?: {}): void {
@@ -50,7 +55,7 @@ describe('jax-command', () => {
           parseInfoContent: parseInfoContent,
           output: './output.commands.json',
           argv: {
-            _: '["jax"]',
+            _: ['jax'],
             '$0': 'zenobia-cli'
           }
         };
@@ -96,7 +101,7 @@ describe('jax-command', () => {
           parseInfoContent: parseInfoContent,
           output: './output.commands.json',
           argv: {
-            _: '["jax"]',
+            _: ['jax'],
             '$0': 'zenobia-cli'
           }
         };
@@ -136,7 +141,7 @@ describe('jax-command', () => {
           parseInfoContent: parseInfoContent,
           output: ct.ConsoleTag,
           argv: {
-            _: '["jax"]',
+            _: ['jax'],
             '$0': 'zenobia-cli'
           }
         };

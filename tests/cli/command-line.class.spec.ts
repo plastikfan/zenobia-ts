@@ -11,23 +11,15 @@ import * as ct from '../../lib/cli/cli-types';
 import { CommandLine } from '../../lib/cli/command-line.class';
 
 describe('command-line', () => {
-  let instance: yargs.Argv;
   let mfs: memfs.IFs;
-
-  beforeEach(() => {
-    instance = require('yargs');
-  });
 
   context('given: ', () => {
     it.skip('should: help should show user defined options', () => {
       mfs = testHelpers.setupFS(['./cli/commands.content.xml', './cli/test.parseInfo.all.json']);
 
       const commandLine = new CommandLine();
-      let inputs: ct.ICommandLineInputs = commandLine.build(instance, mfs,
-        (yin: yargs.Argv): { [key: string]: any } => {
-
-          return yin.parse(['zen', '--help']);
-        });
+      let inputs: ct.ICommandLineInputs = commandLine.build(
+        require('yargs')(['zen', '--help']), mfs);
     });
   });
 
@@ -36,17 +28,14 @@ describe('command-line', () => {
       mfs = testHelpers.setupFS(['./cli/commands.content.xml', './cli/test.parseInfo.all.json']);
 
       const commandLine = new CommandLine();
-      let inputs: ct.ICommandLineInputs = commandLine.build(instance, mfs,
-        (yin: yargs.Argv): { [key: string]: any } => {
-
-          return yin.parse(['zen', 'jax',
-            '--res', 'com',
-            '--xml', './cli/commands.content.xml',
-            '--parseinfo', './cli/test.parseInfo.all.json',
-            '--query', '/Application/Cli/Commands',
-            '--output', '[CONSOLE]'
-          ]);
-        });
+      let inputs: ct.ICommandLineInputs = commandLine.build(
+        require('yargs')(['zen', 'jax',
+          '--res', 'com',
+          '--xml', './cli/commands.content.xml',
+          '--parseinfo', './cli/test.parseInfo.all.json',
+          '--query', '/Application/Cli/Commands',
+          '--output', '[CONSOLE]'
+        ]), mfs);
 
       expect(inputs.resource).to.equal('com');
       expect(helpers.containsText(inputs.xmlContent)).to.be.true();
