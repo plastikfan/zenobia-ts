@@ -10,6 +10,14 @@ import * as factory from '../zen-cli/builders/command-builder-factory';
 import { Selectors } from '../utils/helpers';
 import yargs = require('yargs');
 
+/**
+ * @description Application composition root, composes application dependencies.
+ *
+ * @param {IApplicationConsole} applicationConsole
+ * @param {types.VirtualFS} vfs
+ * @param {yargs.Argv} [yin=require('yargs')]
+ * @returns {number}
+ */
 module.exports = (applicationConsole: IApplicationConsole, vfs: types.VirtualFS,
   yin: yargs.Argv = require('yargs')): number => {
   // setup

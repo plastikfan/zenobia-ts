@@ -48,6 +48,13 @@ export const handler = (argv: ct.IZenobiaCli) => {
   console.log('jax command ...');
 };
 
+/**
+ * @description The "jax" command invoked as zen jax ...
+ *
+ * @export
+ * @class JaxCommand
+ * @extends {CliCommand}
+ */
 export class JaxCommand extends CliCommand {
   constructor (executionContext: ct.IExecutionContext) {
     super(executionContext);
@@ -98,6 +105,15 @@ export class JaxCommand extends CliCommand {
     return execResult;
   }
 
+  /**
+   * @description builds all options
+   *
+   * @private
+   * @param {Document} document
+   * @param {jaxom.IParseInfo} parseInfo
+   * @returns {{ [key: string]: any }}
+   * @memberof JaxCommand
+   */
   private buildOptions (document: Document, parseInfo: jaxom.IParseInfo)
   : { [key: string]: any } {
 
@@ -117,6 +133,16 @@ export class JaxCommand extends CliCommand {
     return this.executionContext.converter.build(optionsNode, parseInfo);
   }
 
+  /**
+   * @description build all commands
+   *
+   * @private
+   * @param {Document} document
+   * @param {types.ICommandBuilder} builder
+   * @param {{ [key: string]: any }} optionDefs
+   * @returns {types.StringIndexableObj}
+   * @memberof JaxCommand
+   */
   private buildCommands (document: Document, builder: types.ICommandBuilder,
     optionDefs: { [key: string]: any })
     : types.StringIndexableObj {
@@ -137,6 +163,14 @@ export class JaxCommand extends CliCommand {
     return normalisedCommands;
   }
 
+  /**
+   * @description Write the build payload to a file
+   *
+   * @private
+   * @param {types.StringIndexableObj} conversion
+   * @returns {number}
+   * @memberof JaxCommand
+   */
   private persist (conversion: types.StringIndexableObj): number {
     this.executionContext.vfs.writeFileSync(this.executionContext.inputs.output,
       JSON.stringify(conversion, null, 2), 'utf8');
@@ -144,9 +178,17 @@ export class JaxCommand extends CliCommand {
     return 0;
   }
 
+  /**
+   * @description Displays build payload on console
+   *
+   * @private
+   * @param {types.StringIndexableObj} conversion
+   * @returns {number}
+   * @memberof JaxCommand
+   */
   private display (conversion: types.StringIndexableObj): number {
     this.executionContext.applicationConsole.log(JSON.stringify(conversion, null, 2));
 
     return 0;
   }
-}
+} // JaxCommand

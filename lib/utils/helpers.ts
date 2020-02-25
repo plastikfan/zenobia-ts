@@ -15,6 +15,13 @@ export const Selectors: types.ISelectors = {
   }
 };
 
+/**
+ * @description Determines if the provided value is a valid non empty string
+ *
+ * @export
+ * @param {(null | undefined | string)} str
+ * @returns {boolean}
+ */
 export function containsText (str: null | undefined | string): boolean {
   return !R.isNil(str) && (str.trim().length > 0);
 }

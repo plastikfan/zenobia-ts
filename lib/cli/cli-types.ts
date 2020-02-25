@@ -38,6 +38,13 @@ export interface IZenobiaCli extends IYargsCli {
 
 export type ApplicationCommand = 'jax' | 'default';
 
+/**
+ * @description Inputs derived from the command line after being preprocessed;
+ * eg, file name command line inputs are resolved and loaded.
+ *
+ * @export
+ * @interface ICommandLineInputs
+ */
 export interface ICommandLineInputs {
   applicationCommand: ApplicationCommand;
   //
@@ -50,6 +57,12 @@ export interface ICommandLineInputs {
   argv: IZenobiaCli;
 }
 
+/**
+ * @description Defines dependencies that need to be injected into the application
+ *
+ * @export
+ * @interface IExecutionContext
+ */
 export interface IExecutionContext {
   inputs: ICommandLineInputs;
   parseInfoFactory: IParseInfoFactory;

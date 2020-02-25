@@ -4,6 +4,14 @@ import * as ct from './cli-types';
 import * as types from '../types';
 import * as helpers from '../utils/helpers';
 
+/**
+ * @description builds the yargs cli
+ *
+ * @export
+ * @param {yargs.Argv} instance
+ * @param {types.VirtualFS} vfs
+ * @returns {ct.ICommandLineInputs}
+ */
 export function build (instance: yargs.Argv,
   vfs: types.VirtualFS)
   : ct.ICommandLineInputs {
