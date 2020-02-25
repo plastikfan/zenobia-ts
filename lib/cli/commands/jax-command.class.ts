@@ -105,10 +105,11 @@ export class JaxCommand extends CliCommand {
     //
     const optionsQuery = (R.endsWith('Commands')(this.query))
       ? this.query.replace('Commands', 'Options')
-      : this.query.substr(0, this.query.indexOf('Commands')) + 'Options';
+      : this.query; // this.query.substr(0, this.query.indexOf('Commands')) + 'Options';
 
     const optionsNode = this.xpath.select(optionsQuery, document, true);
 
+    /* istanbul ignore next */
     if (!(optionsNode instanceof Node)) {
       throw new Error(`Bad options query: "${optionsQuery}", does not yield a Node instance`);
     }
@@ -122,17 +123,15 @@ export class JaxCommand extends CliCommand {
 
     let normalisedCommands = {};
 
-    if (this.resource === 'com') {
-      const selectResult = xpath.select(this.query, document, true);
+    const selectResult = xpath.select(this.query, document, true);
 
-      /* istanbul ignore else */
-      if (selectResult instanceof Node) {
-        let commands = builder.buildCommands(selectResult);
+    /* istanbul ignore else */
+    if (selectResult instanceof Node) {
+      let commands = builder.buildCommands(selectResult);
 
-        normalisedCommands = builder.resolveCommandOptions(commands, {
-          commandOptions: optionDefs
-        });
-      }
+      normalisedCommands = builder.resolveCommandOptions(commands, {
+        commandOptions: optionDefs
+      });
     }
 
     return normalisedCommands;
