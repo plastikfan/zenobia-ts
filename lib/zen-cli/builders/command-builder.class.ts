@@ -40,16 +40,29 @@ export class CommandBuilder {
   public buildNamedCommand (commandName: string, commandsNode: Node)
     : types.StringIndexableObj[] {
 
+    let buildResult: types.StringIndexableObj;
     const commandNode = this.xpath.selectById(
       'Command', 'name', commandName, commandsNode);
 
     if (commandNode instanceof Node) {
       const command = this.converter.build(commandNode, this.parseInfo);
 
-      return [command];
+      const optionsNode = this.xpath.select('.//Options', commandsNode, true);
+
+      if (optionsNode instanceof Node) {
+        const optionDefs = this.impl.buildOptions(this.converter, this.parseInfo, optionsNode);
+
+        buildResult = this.impl.resolveOptions(command, {
+          commandOptions: optionDefs
+        });
+      } else {
+        throw new Error('Bad configuration: No Options found');
+      }
     } else {
       throw new Error(`Failed to find Command with name: "${commandName}"`);
     }
+
+    return [buildResult];
   }
 
   /**
@@ -71,6 +84,7 @@ export class CommandBuilder {
    */
   public buildCommands (commandsNode: Node)
     : types.StringIndexableObj[] {
+    let buildResult: types.StringIndexableObj[] = [];
     const concreteCommands = this.xpath.select('.//Command[not(@abstract)]', commandsNode);
 
     /* istanbul ignore next */
@@ -78,32 +92,24 @@ export class CommandBuilder {
       if (concreteCommands.length === 0) {
         throw new Error('Bad configuration: No Commands found');
       }
+      const optionsNode = this.xpath.select('.//Options', commandsNode, true);
 
-      const commands = R.map((commandNode: Node) => {
-        return this.converter.build(commandNode, this.parseInfo);
-      }, concreteCommands);
+      if (optionsNode instanceof Node) {
+        const optionDefs = this.impl.buildOptions(this.converter, this.parseInfo, optionsNode);
 
-      return commands;
+        const commands = R.map((commandNode: Node) => {
+          const command = this.converter.build(commandNode, this.parseInfo);
+          return this.impl.resolveOptions(command, {
+            commandOptions: optionDefs
+          });
+        }, concreteCommands);
+
+        buildResult = commands;
+      } else {
+        throw new Error('Bad configuration: No Options found');
+      }
     }
 
-    /* istanbul ignore next: type-guard */
-    return [];
-  }
-
-  /**
-   * @method resolveCommandOptions
-   * @description Any OptionRefs within the Command are resolved into Option's using
-   * the option definitions provided in info.
-   *
-   * @param {any[]} commands
-   * @param {*} info
-   * @returns {types.StringIndexableObj}
-   * @memberof CommandBuilder
-   */
-  public resolveCommandOptions (commands: any[], info: any)
-    : types.StringIndexableObj {
-    return R.map((command: any) => {
-      return this.impl.resolveOptions(command, info);
-    })(commands);
+    return buildResult;
   }
 } // CommandBuilder

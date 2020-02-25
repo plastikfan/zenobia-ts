@@ -91,26 +91,6 @@ describe('jax-command', () => {
       asserter: (result: ct.ICommandExecutionResult): void => {
         expect(result.resultCode).to.equal(0);
       }
-    },
-    {
-      given: 'resource = "opt"',
-      should: 'only build the options',
-      query: commandsQuery,
-      resource: 'opt',
-      output: ct.ConsoleTag,
-      asserter: (result: ct.ICommandExecutionResult): void => {
-        expect(R.view(R.lensProp('_'), result.payload)).to.equal('Options');
-      }
-    },
-    {
-      given: 'resource = "opt" and query selects Options',
-      should: 'only build the options',
-      query: '/Application/Cli/Options',
-      resource: 'opt',
-      output: ct.ConsoleTag,
-      asserter: (result: ct.ICommandExecutionResult): void => {
-        expect(R.view(R.lensProp('_'), result.payload)).to.equal('Options');
-      }
     }
   ];
 

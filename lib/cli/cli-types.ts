@@ -1,5 +1,5 @@
 import * as jaxom from 'jaxom-ts';
-import { VirtualFS, ICommandBuilderFactory, ISelectors } from '../types';
+import { VirtualFS, ICommandBuilderFactory, ISelectors, StringIndexableObj } from '../types';
 
 // ===================================================================== CLI ===
 
@@ -80,7 +80,7 @@ export interface IExecutionContext {
 export interface ICommandExecutionResult {
   resultCode: number;
   error?: string;
-  payload: { [key: string]: unknown };
+  payload: StringIndexableObj[];
 }
 export interface IApplication {
   run (executionContext: IExecutionContext): number;
