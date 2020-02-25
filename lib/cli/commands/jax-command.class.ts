@@ -16,13 +16,6 @@ export const builder = {
     demandOption: true,
     normalize: true
   },
-  'r': {
-    alias: 'res',
-    describe: 'type of resource being built (command|option)',
-    string: true,
-    default: 'com',
-    choices: ['com', 'opt']
-  },
   'q': {
     alias: 'query',
     describe: 'xpath query',
@@ -60,11 +53,9 @@ export class JaxCommand extends CliCommand {
     super(executionContext);
 
     this.query = assign(executionContext.inputs.query, 'query');
-    this.resource = assign(executionContext.inputs.resource, 'resource');
   }
 
   private readonly query: string;
-  private readonly resource: string;
 
   public exec (): ct.ICommandExecutionResult {
     let execResult: ct.ICommandExecutionResult = {

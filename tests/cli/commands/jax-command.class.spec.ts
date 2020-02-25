@@ -47,12 +47,10 @@ describe('jax-command', () => {
     mfs = testHelpers.setupFS(files, patch);
   }
 
-  // given, should, query, resource, asserter
   interface IUnitTest {
     given: string;
     should: string;
     query: string;
-    resource: ct.ResourceType;
     output: string;
     patch?: {};
     asserter: (result: ct.ICommandExecutionResult) => void;
@@ -63,7 +61,6 @@ describe('jax-command', () => {
       given: 'writing to file',
       should: 'persist output to file',
       query: commandsQuery,
-      resource: 'com',
       output: './output.commands.json',
       asserter: (result: ct.ICommandExecutionResult): void => {
         expect(result.resultCode).to.equal(0);
@@ -75,7 +72,6 @@ describe('jax-command', () => {
       given: 'an error occurs during write',
       should: 'return failure result',
       query: commandsQuery,
-      resource: 'com',
       output: './output.commands.json',
       patch: writeErrorFS,
       asserter: (result: ct.ICommandExecutionResult): void => {
@@ -86,7 +82,6 @@ describe('jax-command', () => {
       given: 'displaying to console',
       should: 'display to console',
       query: commandsQuery,
-      resource: 'com',
       output: ct.ConsoleTag,
       asserter: (result: ct.ICommandExecutionResult): void => {
         expect(result.resultCode).to.equal(0);
@@ -106,7 +101,6 @@ describe('jax-command', () => {
           applicationCommand: 'jax',
           parseInfoContent: parseInfoContent,
           query: t.query,
-          resource: t.resource,
           xmlContent: xmlContent,
           output: t.output,
           argv: {
@@ -114,7 +108,6 @@ describe('jax-command', () => {
             '$0': 'zenobia-cli',
             parseInfo: './cli/test.parseInfo.all.json',
             query: t.query,
-            resource: t.resource,
             xml: './cli/commands.content.xml'
           }
         };
