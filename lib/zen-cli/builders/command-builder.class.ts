@@ -34,11 +34,11 @@ export class CommandBuilder {
    *
    * @param {string} commandName
    * @param {Node} commandsNode
-   * @returns {Array<{}>}
+   * @returns {types.StringIndexableObj[]}
    * @memberof CommandBuilder
    */
   public buildNamedCommand (commandName: string, commandsNode: Node)
-    : Array<{}> {
+    : types.StringIndexableObj[] {
 
     const commandNode = this.xpath.selectById(
       'Command', 'name', commandName, commandsNode);
