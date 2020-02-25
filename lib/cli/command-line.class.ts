@@ -14,12 +14,12 @@ export function build (instance: yargs.Argv,
 
   const parseResult: ct.IZenobiaCli = instance.argv as ct.IZenobiaCli;
 
-  const xmlOption: string = parseResult.xml ?? '';
+  const xmlOption: string = parseResult.xml;
   const xmlContent = helpers.containsText(xmlOption)
     ? vfs.readFileSync(xmlOption).toString()
     : '';
 
-  const parseInfoOption = parseResult.parseInfo ?? '';
+  const parseInfoOption = parseResult.parseInfo;
   const parseInfoContent = helpers.containsText(parseInfoOption)
     ? vfs.readFileSync(parseInfoOption).toString()
     : '';

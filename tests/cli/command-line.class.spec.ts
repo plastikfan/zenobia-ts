@@ -33,6 +33,36 @@ describe('command-line', () => {
     });
   });
 
+  context('given: empty --xml option', () => {
+    it('should: do nothing', () => {
+      mfs = testHelpers.setupFS(['./cli/commands.content.xml', './cli/test.parseInfo.all.json']);
+
+      const inputs: ct.ICommandLineInputs = commandLine.build(
+        require('yargs')([ct.ZenobiaExecutable, 'jax',
+          '--res', 'com',
+          '--xml', '', // <-- empty
+          '--parseInfo', './cli/test.parseInfo.all.json',
+          '--query', '/Application/Cli/Commands',
+          '--output', '[CONSOLE]'
+        ]), mfs);
+    });
+  });
+
+  context('given: empty --parseInfo option', () => {
+    it('should: do nothing', () => {
+      mfs = testHelpers.setupFS(['./cli/commands.content.xml', './cli/test.parseInfo.all.json']);
+
+      const inputs: ct.ICommandLineInputs = commandLine.build(
+        require('yargs')([ct.ZenobiaExecutable, 'jax',
+          '--res', 'com',
+          '--xml', './cli/commands.content.xml',
+          '--parseInfo', '', // <-- empty
+          '--query', '/Application/Cli/Commands',
+          '--output', '[CONSOLE]'
+        ]), mfs);
+    });
+  });
+
   // This is what the argv looks like after being parsed:
   //
   const zenobiaArgv = {

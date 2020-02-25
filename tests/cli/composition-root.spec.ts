@@ -12,24 +12,40 @@ const compositionRoot = require('../../lib/cli/composition-root');
 const vol = memfs.vol;
 
 describe('composition-root', () => {
-  it('(coverage)', () => {
+  context('given: non default yargs instance', () => {
+    it('should: (coverage)', () => {
 
-    const fakeConsole = new testHelpers.FakeConsole();
-    const yin = require('yargs')([
-      'jax',
-      '--xml', path.resolve(__dirname, './commands.content.xml'),
-      '--query', '/Application/Cli/Commands',
-      '--res', 'com',
-      '--parseInfo', path.resolve(__dirname, './test.parseInfo.all.json'),
-      '--output', ct.ConsoleTag
-    ]);
+      const fakeConsole = new testHelpers.FakeConsole();
+      const yin = require('yargs')([
+        'jax',
+        '--xml', path.resolve(__dirname, './commands.content.xml'),
+        '--query', '/Application/Cli/Commands',
+        '--res', 'com',
+        '--parseInfo', path.resolve(__dirname, './test.parseInfo.all.json'),
+        '--output', ct.ConsoleTag
+      ]);
 
-    const virtualFS = testHelpers.setupFS([
-      path.resolve(__dirname, './commands.content.xml'),
-      path.resolve(__dirname, './test.parseInfo.all.json')
-    ]);
+      const virtualFS = testHelpers.setupFS([
+        path.resolve(__dirname, './commands.content.xml'),
+        path.resolve(__dirname, './test.parseInfo.all.json')
+      ]);
 
-    compositionRoot(fakeConsole, virtualFS, yin);
-    vol.reset();
+      compositionRoot(fakeConsole, virtualFS, yin);
+      vol.reset();
+    });
+  });
+
+  context('given: default yargs instance', () => {
+    it('should: (coverage)', () => {
+
+      const fakeConsole = new testHelpers.FakeConsole();
+      const virtualFS = testHelpers.setupFS([
+        path.resolve(__dirname, './commands.content.xml'),
+        path.resolve(__dirname, './test.parseInfo.all.json')
+      ]);
+
+      compositionRoot(fakeConsole, virtualFS);
+      vol.reset();
+    });
   });
 }); // composition-root

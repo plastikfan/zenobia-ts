@@ -80,16 +80,19 @@ export class JaxCommand extends CliCommand {
         this.executionContext.xpath);
 
       const options = this.buildOptions(document, parseInfo);
-      const commands = this.buildCommands(document, builder, options);
-      const buildResult = this.resource === 'com' ? commands : options;
+      const buildResult = this.resource === 'com'
+        ? this.buildCommands(document, builder, options)
+        : options;
 
       execResult = {
-        resultCode: (this.output === ct.ConsoleTag) ? this.display(buildResult) : this.persist(buildResult),
-        payload: this.resource === 'com' ? commands : options
+        resultCode: (this.output === ct.ConsoleTag)
+          ? this.display(buildResult) : this.persist(buildResult),
+        payload: buildResult
       };
 
     } catch (error) {
       execResult.resultCode = 1;
+      execResult.error = error.message;
     }
 
     return execResult;
@@ -122,6 +125,7 @@ export class JaxCommand extends CliCommand {
     if (this.resource === 'com') {
       const selectResult = xpath.select(this.query, document, true);
 
+      /* istanbul ignore else */
       if (selectResult instanceof Node) {
         let commands = builder.buildCommands(selectResult);
 

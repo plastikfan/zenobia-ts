@@ -66,6 +66,7 @@ export interface IExecutionContext {
 
 export interface ICommandExecutionResult {
   resultCode: number;
+  error?: string;
   payload: { [key: string]: unknown };
 }
 export interface IApplication {

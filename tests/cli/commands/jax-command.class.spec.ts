@@ -61,6 +61,7 @@ describe('jax-command', () => {
             '$0': 'zenobia-cli',
             parseInfo: './cli/test.parseInfo.all.json',
             query: commandsQuery,
+            resource: 'com',
             xml: './cli/commands.content.xml'
           }
         };
@@ -110,6 +111,7 @@ describe('jax-command', () => {
             '$0': 'zenobia-cli',
             parseInfo: './cli/test.parseInfo.all.json',
             query: commandsQuery,
+            resource: 'com',
             xml: './cli/commands.content.xml'
           }
         };
@@ -153,6 +155,7 @@ describe('jax-command', () => {
             '$0': 'zenobia-cli',
             parseInfo: './cli/test.parseInfo.all.json',
             query: commandsQuery,
+            resource: 'com',
             xml: './cli/commands.content.xml'
           }
         };
@@ -176,7 +179,7 @@ describe('jax-command', () => {
     }); // given: writing to file
   }); // display to console
 
-  context('given: query = "opt"', () => {
+  context('given: resource = "opt"', () => {
     it('should: only build the options', () => {
       init(['./cli/commands.content.xml', './cli/test.parseInfo.all.json']);
 
@@ -195,6 +198,7 @@ describe('jax-command', () => {
           '$0': 'zenobia-cli',
           parseInfo: './cli/test.parseInfo.all.json',
           query: commandsQuery,
+          resource: 'opt',
           xml: './cli/commands.content.xml'
         }
       };
@@ -213,6 +217,50 @@ describe('jax-command', () => {
 
       const command = new JaxCommand(executionContext);
       const execResult = command.exec();
+      expect(R.view(R.lensProp('_'), execResult.payload)).to.equal('Options');
+    });
+  });
+
+  context('given: resource = "opt and query selects Options"', () => {
+    it.skip('should: only build the options', () => {
+      init(['./cli/commands.content.xml', './cli/test.parseInfo.all.json']);
+
+      const xmlContent: string = mfs.readFileSync('./cli/commands.content.xml').toString();
+      const parseInfoContent: string = mfs.readFileSync('./cli/test.parseInfo.all.json').toString();
+      const optionsQuery = '/Application/Cli/Options';
+
+      const inputs: ct.ICommandLineInputs = {
+        applicationCommand: 'jax',
+        resource: 'opt',
+        xmlContent: xmlContent,
+        query: optionsQuery,
+        parseInfoContent: parseInfoContent,
+        output: ct.ConsoleTag,
+        argv: {
+          _: ['jax'],
+          '$0': 'zenobia-cli',
+          parseInfo: './cli/test.parseInfo.all.json',
+          query: optionsQuery,
+          resource: 'opt',
+          xml: './cli/commands.content.xml'
+        }
+      };
+
+      const executionContext: ct.IExecutionContext = {
+        inputs: inputs,
+        parseInfoFactory: parseInfoFactory,
+        converter: converter,
+        specSvc: specSvc,
+        xpath: xpath,
+        builderFactory: builderFactory,
+        parser: parser,
+        applicationConsole: new testHelpers.FakeConsole(),
+        vfs: mfs
+      };
+
+      const command = new JaxCommand(executionContext);
+      const execResult = command.exec();
+      console.log(`>>> ${JSON.stringify(execResult)}`);
       expect(R.view(R.lensProp('_'), execResult.payload)).to.equal('Options');
     });
   });
