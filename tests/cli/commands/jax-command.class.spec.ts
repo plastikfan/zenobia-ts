@@ -1,9 +1,7 @@
 
 import { expect, use } from 'chai';
-import dirtyChai = require('dirty-chai'); use(dirtyChai);
 import * as jaxom from 'jaxom-ts';
 import * as memfs from 'memfs';
-import * as R from 'ramda';
 import * as fs from 'fs';
 import * as types from '../../../lib/types';
 import * as helpers from '../../../lib/utils/helpers';
@@ -11,6 +9,7 @@ import * as ct from '../../../lib/cli/cli-types';
 import * as testHelpers from '../../test-helpers';
 import { JaxCommand } from './../../../lib/cli/commands/jax-command.class';
 import * as factory from '../../../lib/zen-cli/builders/command-builder-factory';
+import dirtyChai = require('dirty-chai'); use(dirtyChai);
 const vol = memfs.vol;
 
 const writeErrorFS = {
@@ -28,7 +27,6 @@ describe('jax-command', () => {
   let converter: jaxom.IConverter;
   let specSvc: jaxom.ISpecService;
   let parser: DOMParser;
-  let applicationConsole: ct.IApplicationConsole;
   let mfs: memfs.IFs;
 
   beforeEach(() => {
@@ -36,7 +34,6 @@ describe('jax-command', () => {
     converter = new jaxom.XpathConverter();
     specSvc = new jaxom.SpecOptionService(spec);
     parser = new DOMParser();
-    applicationConsole = new testHelpers.FakeConsole();
   });
 
   afterEach(() => {
@@ -105,7 +102,7 @@ describe('jax-command', () => {
           output: t.output,
           argv: {
             _: ['jax'],
-            '$0': 'zenobia-cli',
+            $0: 'zenobia-cli',
             parseInfo: './cli/test.parseInfo.all.json',
             query: t.query,
             xml: './cli/commands.content.xml'

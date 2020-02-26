@@ -1,4 +1,3 @@
-import * as R from 'ramda';
 import * as xpath from 'xpath-ts';
 import * as jaxom from 'jaxom-ts';
 import * as ct from '../cli-types';
@@ -9,27 +8,27 @@ export const command = 'jax';
 export const describe = 'invoke jaxom converter to build zenobia components on the fly';
 
 export const builder = {
-  'x': {
+  x: {
     alias: 'xml',
     describe: 'path to xml file',
     string: true,
     demandOption: true,
     normalize: true
   },
-  'q': {
+  q: {
     alias: 'query',
     describe: 'xpath query',
     default: '/Application/Cli/Commands',
     string: true
   },
-  'p': {
+  p: {
     alias: 'parseInfo',
     describe: 'path to json file containing parse info to apply to xml document',
     string: true,
     normalize: true,
     demandOption: true
   },
-  'o': {
+  o: {
     alias: 'output',
     describe: 'output file name, if not specified, display result to console',
     string: true,
@@ -38,7 +37,7 @@ export const builder = {
 };
 
 export const handler = (argv: ct.IZenobiaCli) => {
-  console.log('jax command ...');
+  console.log(`${argv._[0]} command ...`);
 };
 
 /**
@@ -84,7 +83,6 @@ export class JaxCommand extends CliCommand {
           ? this.display(buildResult) : this.persist(buildResult),
         payload: buildResult
       };
-
     } catch (error) {
       execResult.resultCode = 1;
       execResult.error = error.message;
@@ -106,7 +104,6 @@ export class JaxCommand extends CliCommand {
    */
   private buildCommands (document: Document, builder: types.ICommandBuilder)
     : types.StringIndexableObj[] {
-
     let buildResult: types.StringIndexableObj[] = [];
 
     const commandsNode = xpath.select(this.query, document, true);

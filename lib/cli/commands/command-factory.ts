@@ -14,9 +14,9 @@ export function construct (executionContext: ct.IExecutionContext): ct.ICliComma
   const applicationCommand: ct.ApplicationCommand = executionContext.inputs.applicationCommand;
 
   switch (applicationCommand) {
-    case 'jax': {
+    case 'jax':
       command = new JaxCommand(executionContext);
-    } break;
+      break;
 
     /* istanbul ignore next: string literal type prevents invalid values */
     default:

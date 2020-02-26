@@ -10,7 +10,6 @@ import { CommandBuilderImpl } from './command-builder.impl';
 export class CommandBuilder {
   constructor (private converter: jaxom.IConverter, private specSvc: jaxom.ISpecService,
     private parseInfo: jaxom.IParseInfo, private xpath: types.ISelectors) {
-
     // Control freak
     //
     this.impl = new CommandBuilderImpl(this.specSvc);
@@ -39,7 +38,6 @@ export class CommandBuilder {
    */
   public buildNamedCommand (commandName: string, commandsNode: Node)
     : types.StringIndexableObj[] {
-
     let buildResult: types.StringIndexableObj;
     const commandNode = this.xpath.selectById(
       'Command', 'name', commandName, commandsNode);

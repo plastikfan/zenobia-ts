@@ -15,7 +15,6 @@ import * as helpers from '../utils/helpers';
 export function build (instance: yargs.Argv,
   vfs: types.VirtualFS)
   : ct.ICommandLineInputs {
-
   instance = instance.scriptName('zenobia-cli')
     .help()
     .command(require('./commands/jax-command.class'));
@@ -33,12 +32,12 @@ export function build (instance: yargs.Argv,
     : '';
 
   const inputs: ct.ICommandLineInputs = {
-    applicationCommand: parseResult['_'][0] as ct.ApplicationCommand,
+    applicationCommand: parseResult._[0] as ct.ApplicationCommand,
     xmlContent: xmlContent,
     query: parseResult.query,
     parseInfoContent: parseInfoContent,
     output: parseResult.output ??
-      /* istanbul ignore next: defaulted arg so can't be undefined */ ct.ConsoleTag,
+    /* istanbul ignore next: defaulted arg so can't be undefined */ ct.ConsoleTag,
     argv: parseResult
   };
 
