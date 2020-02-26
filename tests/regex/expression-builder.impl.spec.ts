@@ -1,15 +1,16 @@
+/* eslint-disable no-useless-escape */
 
 import { expect, assert, use } from 'chai';
-import dirtyChai = require('dirty-chai'); use(dirtyChai);
-import sinonChai = require('sinon-chai'); use(sinonChai);
 import * as R from 'ramda';
-import { DOMParserImpl as dom } from 'xmldom-ts';
-const parser = new dom();
+import { DOMParserImpl as Parser } from 'xmldom-ts';
 import * as jaxom from 'jaxom-ts';
 import * as build from '../../lib/regex/expression-builder.class';
 import * as impl from '../../lib/regex/expression-builder.impl';
 import * as helpers from '../../lib/utils/helpers';
 import * as types from '../../lib/types';
+import dirtyChai = require('dirty-chai'); use(dirtyChai);
+import sinonChai = require('sinon-chai'); use(sinonChai);
+const parser = new Parser();
 
 const parseInfo: jaxom.IParseInfo = {
   elements: new Map<string, jaxom.IElementInfo>([

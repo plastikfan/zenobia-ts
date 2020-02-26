@@ -22,7 +22,6 @@ export class CommandBuilderImpl {
    */
   public resolveOptions (command: types.StringIndexableObj, info: types.StringIndexableObj)
     : types.StringIndexableObj {
-
     const { commandOptions } = info;
     const optionDefs = commandOptions[this.specSvc.descendantsLabel];
 
@@ -34,7 +33,7 @@ export class CommandBuilderImpl {
 
       if (optionRefsObj instanceof Object) {
         const optionRefs = optionRefsObj[this.specSvc.descendantsLabel];
-        const resolved = R.map((ref: { name: string; }) => optionDefs[ref['name']] ?? {
+        const resolved = R.map((ref: { name: string; }) => optionDefs[ref.name] ?? {
           // This marks out unresolved options so we can find them
           //
           $unresolved: ref.name

@@ -1,5 +1,5 @@
 
-import { DOMParserImpl as dom } from 'xmldom-ts';
+import { DOMParserImpl as Parser } from 'xmldom-ts';
 import * as jaxom from 'jaxom-ts';
 import * as types from '../types';
 import { IExecutionContext, ICommandLineInputs } from './cli-types';
@@ -26,7 +26,7 @@ module.exports = (applicationConsole: IApplicationConsole, vfs: types.VirtualFS,
   const spec: jaxom.ISpec = jaxom.Specs.default;
   const converter: jaxom.IConverter = new jaxom.XpathConverter(spec);
   const specSvc: jaxom.ISpecService = new jaxom.SpecOptionService(spec);
-  const parser: DOMParser = new dom();
+  const parser: DOMParser = new Parser();
 
   // acquire inputs
   //

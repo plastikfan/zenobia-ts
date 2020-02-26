@@ -17,7 +17,6 @@ export abstract class CliCommand implements ct.ICliCommand {
    * @memberof CliCommand
    */
   constructor (protected executionContext: ct.IExecutionContext) {
-
     this.parseInfoContent = assign(executionContext.inputs.parseInfoContent, 'parseInfoContent');
     this.xmlContent = assign(executionContext.inputs.xmlContent, 'xmlContent');
     this.xpath = executionContext.xpath;
@@ -42,7 +41,6 @@ export abstract class CliCommand implements ct.ICliCommand {
    */
   protected acquireParseInfo (content: string, parseInfoFactory: ct.IParseInfoFactory)
   : jaxom.IParseInfo {
-
     return parseInfoFactory.construct(content);
   }
 }

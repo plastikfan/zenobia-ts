@@ -1,7 +1,7 @@
 
 import { expect, use } from 'chai';
-import dirtyChai = require('dirty-chai'); use(dirtyChai);
 import * as helpers from '../../lib/utils/helpers';
+import dirtyChai = require('dirty-chai'); use(dirtyChai);
 
 describe('containsText', () => {
   context('given: a valid string', () => {

@@ -1,13 +1,12 @@
 
-import { functify } from 'jinxed';
 import { expect, use } from 'chai';
-import dirtyChai = require('dirty-chai'); use(dirtyChai);
 import * as memfs from 'memfs';
 
 import * as testHelpers from '../test-helpers';
 import * as helpers from '../../lib/utils/helpers';
 import * as ct from '../../lib/cli/cli-types';
 import * as commandLine from '../../lib/cli/command-line.class';
+import dirtyChai = require('dirty-chai'); use(dirtyChai);
 
 describe('command-line', () => {
   let mfs: memfs.IFs;
@@ -35,7 +34,7 @@ describe('command-line', () => {
     it('should: do nothing', () => {
       mfs = testHelpers.setupFS(['./cli/commands.content.xml', './cli/test.parseInfo.all.json']);
 
-      const inputs: ct.ICommandLineInputs = commandLine.build(
+      commandLine.build(
         require('yargs')([ct.ZenobiaExecutable, 'jax',
           '--xml', '', // <-- empty
           '--parseInfo', './cli/test.parseInfo.all.json',
@@ -49,7 +48,7 @@ describe('command-line', () => {
     it('should: do nothing', () => {
       mfs = testHelpers.setupFS(['./cli/commands.content.xml', './cli/test.parseInfo.all.json']);
 
-      const inputs: ct.ICommandLineInputs = commandLine.build(
+      commandLine.build(
         require('yargs')([ct.ZenobiaExecutable, 'jax',
           '--xml', './cli/commands.content.xml',
           '--parseInfo', '', // <-- empty
@@ -61,19 +60,20 @@ describe('command-line', () => {
 
   // This is what the argv looks like after being parsed:
   //
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const zenobiaArgv = {
-    '_': [
+    _: [
       'jax'
     ],
-    'q': '/Application/Cli/Commands',
-    'query': '/Application/Cli/Commands',
-    'x': 'tests/cli/commands.content.xml',
-    'xml': 'tests/cli/commands.content.xml',
-    'p': 'tests/cli/test.parseInfo.all.json',
-    'parseInfo': 'tests/cli/test.parseInfo.all.json',
+    q: '/Application/Cli/Commands',
+    query: '/Application/Cli/Commands',
+    x: 'tests/cli/commands.content.xml',
+    xml: 'tests/cli/commands.content.xml',
+    p: 'tests/cli/test.parseInfo.all.json',
+    parseInfo: 'tests/cli/test.parseInfo.all.json',
     'parse-info': 'tests/cli/test.parseInfo.all.json',
-    'o': '[CONSOLE]',
-    'output': '[CONSOLE]',
-    '$0': 'zenobia-cli'
+    o: '[CONSOLE]',
+    output: '[CONSOLE]',
+    $0: 'zenobia-cli'
   };
 });

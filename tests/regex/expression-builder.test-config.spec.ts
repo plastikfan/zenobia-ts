@@ -1,17 +1,15 @@
 import { functify } from 'jinxed';
-
 import { expect, assert, use } from 'chai';
-import dirtyChai = require('dirty-chai');
-use(dirtyChai);
-
 import * as path from 'path';
 import * as R from 'ramda';
 import * as Helpers from '../test-helpers';
-import { DOMParserImpl as dom } from 'xmldom-ts';
-const parser = new dom();
+import { DOMParserImpl as Parser } from 'xmldom-ts';
 import * as jaxom from 'jaxom-ts';
 import * as build from '../../lib/regex/expression-builder.class';
 import * as helpers from '../../lib/utils/helpers';
+import dirtyChai = require('dirty-chai');
+use(dirtyChai);
+const parser = new Parser();
 
 describe('expression-builder (test config)', () => {
   let xml: string;
@@ -64,8 +62,8 @@ describe('expression-builder (test config)', () => {
         const expressions: any = builder.buildExpressions(applicationNode);
 
         const keys = R.keys(expressions);
-        expect(keys.length).to.equal(34);
-        expect(keys).to.include('alpha-num-expression');
+        expect(keys.length).to.equal(34, `expressions: ${functify(expressions)}`);
+        expect(keys).to.include('alpha-num-expression', `expressions: ${functify(expressions)}`);
       } else {
         assert.fail('Couldn\'t get Application node.');
       }
@@ -84,10 +82,10 @@ describe('expression-builder (test config)', () => {
           const expression = builder.evaluate(expressionName, expressions);
 
           const regexpObj = expression.$regexp;
-          expect(regexpObj).to.be.a('regexp');
+          expect(regexpObj).to.be.a('regexp', `expression: ${functify(expression)}`);
 
           const source = regexpObj.source;
-          expect(source).to.be.a('string');
+          expect(source).to.be.a('string', `expression: ${functify(expression)}`);
         })(R.keys(expressions) as string[]);
       } else {
         assert.fail('Couldn\'t get Application node.');

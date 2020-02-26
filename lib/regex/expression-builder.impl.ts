@@ -2,6 +2,7 @@
 import * as R from 'ramda';
 import * as jaxom from 'jaxom-ts';
 import { functify } from 'jinxed';
+// eslint-disable-next-line no-unused-vars
 import * as types from '../types';
 
 /**
@@ -257,7 +258,6 @@ export class ExpressionBuilderImpl {
    */
   public normalise (expressionGroups: any)
     : types.StringIndexableObj {
-
     // Each expression sub-group is already in a normalised form of sorts. The only problem we
     // have to deal with here is the fact that there is a single map per expression group. We
     // have no need to for the sub-group structure, so effectively what we need to do is combine

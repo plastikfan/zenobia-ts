@@ -1,9 +1,9 @@
 
 import { expect, use } from 'chai';
-import dirtyChai = require('dirty-chai');
-use(dirtyChai);
 import * as jaxom from 'jaxom-ts';
 import { CommandBuilderImpl } from '../../../lib/zen-cli/builders/command-builder.impl';
+import dirtyChai = require('dirty-chai');
+use(dirtyChai);
 
 const ComplexNormalisedOptionDefs = {
   _: 'OptionDefs',

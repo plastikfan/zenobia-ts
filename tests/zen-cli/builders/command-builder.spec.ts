@@ -1,15 +1,15 @@
 import { expect, assert, use } from 'chai';
-import dirtyChai = require('dirty-chai');
-use(dirtyChai);
 import * as xp from 'xpath-ts';
 import * as R from 'ramda';
-import { DOMParserImpl as dom } from 'xmldom-ts';
-const parser = new dom();
+import { DOMParserImpl as Parser } from 'xmldom-ts';
 import * as jaxom from 'jaxom-ts';
 import { functify } from 'jinxed';
 import * as build from '../../../lib/zen-cli/builders/command-builder.class';
 import * as helpers from '../../../lib/utils/helpers';
 import * as types from '../../../lib/types';
+import dirtyChai = require('dirty-chai');
+use(dirtyChai);
+const parser = new Parser();
 
 describe('Command builder', () => {
   let converter: jaxom.IConverter;
@@ -401,7 +401,7 @@ describe('Command builder', () => {
 
         const commands = builder.buildNamedCommand('rename', commandsNode);
         const renameCommand = commands[0];
-        let result = R.where(
+        const result = R.where(
           {
             name: R.equals('rename'),
             _: R.equals('Command'),

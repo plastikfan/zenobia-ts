@@ -1,12 +1,12 @@
 
 import { use } from 'chai';
-import dirtyChai = require('dirty-chai');
-use(dirtyChai);
 import 'xmldom-ts';
 import * as path from 'path';
 import * as memfs from 'memfs';
 import * as ct from '../../lib/cli/cli-types';
 import * as testHelpers from '../test-helpers';
+import dirtyChai = require('dirty-chai');
+use(dirtyChai);
 
 const compositionRoot = require('../../lib/cli/composition-root');
 const vol = memfs.vol;
@@ -14,7 +14,6 @@ const vol = memfs.vol;
 describe('composition-root', () => {
   context('given: non default yargs instance', () => {
     it('should: (coverage)', () => {
-
       const fakeConsole = new testHelpers.FakeConsole();
       const yin = require('yargs')([
         'jax',
@@ -37,7 +36,6 @@ describe('composition-root', () => {
 
   context('given: default yargs instance', () => {
     it('should: (coverage)', () => {
-
       const fakeConsole = new testHelpers.FakeConsole();
       const virtualFS = testHelpers.setupFS([
         path.resolve(__dirname, './commands.content.xml'),

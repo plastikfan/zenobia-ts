@@ -1,8 +1,5 @@
-
-import { functify } from 'jinxed';
 import { expect, use } from 'chai';
-import dirtyChai = require('dirty-chai'); use(dirtyChai);
-import { DOMParserImpl as dom } from 'xmldom-ts';
+import { DOMParserImpl as Parser } from 'xmldom-ts';
 import * as jaxom from 'jaxom-ts';
 import * as memfs from 'memfs';
 import * as helpers from '../../lib/utils/helpers';
@@ -10,6 +7,7 @@ import * as testHelpers from '../test-helpers';
 import * as ct from '../../lib/cli/cli-types';
 import * as application from '../../lib/cli/application';
 import * as factory from '../../lib/zen-cli/builders/command-builder-factory';
+import dirtyChai = require('dirty-chai'); use(dirtyChai);
 
 describe('Application', () => {
   const commandsQuery = '/Application/Cli/Commands';
@@ -25,7 +23,7 @@ describe('Application', () => {
     parseInfoFactory = new jaxom.ParseInfoFactory();
     converter = new jaxom.XpathConverter();
     specSvc = new jaxom.SpecOptionService(spec);
-    parser = new dom();
+    parser = new Parser();
     applicationConsole = new testHelpers.FakeConsole();
   });
 
@@ -40,7 +38,7 @@ describe('Application', () => {
       const xmlContent: string = mfs.readFileSync('./cli/commands.content.xml').toString();
       const parseInfoContent: string = mfs.readFileSync('./cli/test.parseInfo.all.json').toString();
 
-      let inputs: ct.ICommandLineInputs = {
+      const inputs: ct.ICommandLineInputs = {
         applicationCommand: 'jax',
         xmlContent: xmlContent,
         query: commandsQuery,
@@ -48,7 +46,7 @@ describe('Application', () => {
         output: ct.ConsoleTag,
         argv: {
           _: ['jax'],
-          '$0': 'zenobia-cli',
+          $0: 'zenobia-cli',
           parseInfo: './cli/test.parseInfo.all.json',
           query: commandsQuery,
           xml: './cli/commands.content.xml'

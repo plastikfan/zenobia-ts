@@ -9,7 +9,6 @@ export function read (path: string): string {
 }
 
 export function setupFS (fileNames: string[], patch?: {}): memfs.IFs {
-
   const resultFS = R.reduce((acc: { [key: string]: any }, fileName: string): { [key: string]: any } => {
     const filePath = path.resolve(__dirname, fileName);
     const content: string = fs.readFileSync(filePath, 'utf8');
