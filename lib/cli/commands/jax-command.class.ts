@@ -16,13 +16,6 @@ export const builder = {
     demandOption: true,
     normalize: true
   },
-  'r': {
-    alias: 'res',
-    describe: 'type of resource being built (command|option)',
-    string: true,
-    default: 'com',
-    choices: ['com', 'opt']
-  },
   'q': {
     alias: 'query',
     describe: 'xpath query',
@@ -60,16 +53,14 @@ export class JaxCommand extends CliCommand {
     super(executionContext);
 
     this.query = assign(executionContext.inputs.query, 'query');
-    this.resource = assign(executionContext.inputs.resource, 'resource');
   }
 
   private readonly query: string;
-  private readonly resource: string;
 
   public exec (): ct.ICommandExecutionResult {
     let execResult: ct.ICommandExecutionResult = {
       resultCode: 0,
-      payload: { }
+      payload: []
     };
 
     try {
@@ -86,10 +77,7 @@ export class JaxCommand extends CliCommand {
         parseInfo,
         this.executionContext.xpath);
 
-      const options = this.buildOptions(document, parseInfo);
-      const buildResult = this.resource === 'com'
-        ? this.buildCommands(document, builder, options)
-        : options;
+      const buildResult = this.buildCommands(document, builder);
 
       execResult = {
         resultCode: (this.output === ct.ConsoleTag)
@@ -100,37 +88,10 @@ export class JaxCommand extends CliCommand {
     } catch (error) {
       execResult.resultCode = 1;
       execResult.error = error.message;
+      console.log(`Error occurred: ${error.message}`);
     }
 
     return execResult;
-  }
-
-  /**
-   * @description builds all options
-   *
-   * @private
-   * @param {Document} document
-   * @param {jaxom.IParseInfo} parseInfo
-   * @returns {{ [key: string]: any }}
-   * @memberof JaxCommand
-   */
-  private buildOptions (document: Document, parseInfo: jaxom.IParseInfo)
-  : { [key: string]: any } {
-
-    // Options are always parallel to Commands
-    //
-    const optionsQuery = (R.endsWith('Commands')(this.query))
-      ? this.query.replace('Commands', 'Options')
-      : this.query; // this.query.substr(0, this.query.indexOf('Commands')) + 'Options';
-
-    const optionsNode = this.xpath.select(optionsQuery, document, true);
-
-    /* istanbul ignore next */
-    if (!(optionsNode instanceof Node)) {
-      throw new Error(`Bad options query: "${optionsQuery}", does not yield a Node instance`);
-    }
-
-    return this.executionContext.converter.build(optionsNode, parseInfo);
   }
 
   /**
@@ -143,24 +104,19 @@ export class JaxCommand extends CliCommand {
    * @returns {types.StringIndexableObj}
    * @memberof JaxCommand
    */
-  private buildCommands (document: Document, builder: types.ICommandBuilder,
-    optionDefs: { [key: string]: any })
-    : types.StringIndexableObj {
+  private buildCommands (document: Document, builder: types.ICommandBuilder)
+    : types.StringIndexableObj[] {
 
-    let normalisedCommands = {};
+    let buildResult: types.StringIndexableObj[] = [];
 
-    const selectResult = xpath.select(this.query, document, true);
+    const commandsNode = xpath.select(this.query, document, true);
 
     /* istanbul ignore else */
-    if (selectResult instanceof Node) {
-      let commands = builder.buildCommands(selectResult);
-
-      normalisedCommands = builder.resolveCommandOptions(commands, {
-        commandOptions: optionDefs
-      });
+    if (commandsNode instanceof Node) {
+      buildResult = builder.buildCommands(commandsNode);
     }
 
-    return normalisedCommands;
+    return buildResult;
   }
 
   /**

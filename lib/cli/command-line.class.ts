@@ -35,7 +35,6 @@ export function build (instance: yargs.Argv,
   const inputs: ct.ICommandLineInputs = {
     applicationCommand: parseResult['_'][0] as ct.ApplicationCommand,
     xmlContent: xmlContent,
-    resource: parseResult.res as ct.ResourceType,
     query: parseResult.query,
     parseInfoContent: parseInfoContent,
     output: parseResult.output ??

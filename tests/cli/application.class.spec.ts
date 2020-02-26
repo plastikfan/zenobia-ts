@@ -42,7 +42,6 @@ describe('Application', () => {
 
       let inputs: ct.ICommandLineInputs = {
         applicationCommand: 'jax',
-        resource: 'com',
         xmlContent: xmlContent,
         query: commandsQuery,
         parseInfoContent: parseInfoContent,

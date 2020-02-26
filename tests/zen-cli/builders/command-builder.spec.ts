@@ -11,110 +11,6 @@ import * as build from '../../../lib/zen-cli/builders/command-builder.class';
 import * as helpers from '../../../lib/utils/helpers';
 import * as types from '../../../lib/types';
 
-const ComplexNormalisedOptionDefs = {
-  _: 'OptionDefs',
-  _children: {
-    name: {
-      name: 'name',
-      alias: 'n',
-      optional: 'true',
-      describe: 'Album name',
-      _: 'Option'
-    },
-    incname: {
-      name: 'incname',
-      alias: 'in',
-      optional: 'true',
-      describe: 'Incorporation name',
-      _: 'Option'
-    },
-    studioname: {
-      name: 'studioname',
-      alias: 'sn',
-      optional: 'true',
-      describe: 'Studio name',
-      _: 'Option'
-    },
-    labelname: {
-      name: 'labelname',
-      alias: 'ln',
-      optional: 'true',
-      describe: 'Record label name',
-      _: 'Option'
-    },
-    header: {
-      name: 'header',
-      alias: 'hdr',
-      optional: 'true',
-      describe: 'Header, has no influence on the naming of content.',
-      _: 'Option'
-    },
-    producer: {
-      name: 'producer',
-      alias: 'pn',
-      optional: 'true',
-      describe: 'Producer name',
-      _: 'Option'
-    },
-    director: {
-      name: 'director',
-      alias: 'dn',
-      optional: 'true',
-      describe: 'Director name',
-      _: 'Option'
-    },
-    filesys: {
-      name: 'filesys',
-      alias: 'fs',
-      optional: 'true',
-      describe: 'The file system as defined in config as FileSystem',
-      _: 'Option'
-    },
-    path: {
-      name: 'path',
-      alias: 'p',
-      optional: 'true',
-      describe: 'Full path.',
-      _: 'Option'
-    },
-    tree: {
-      name: 'tree',
-      alias: 't',
-      optional: 'true',
-      describe: 'File system tree',
-      _: 'Option'
-    },
-    with: {
-      name: 'with',
-      alias: 'w',
-      optional: 'true',
-      describe: 'replace with',
-      _: 'Option'
-    },
-    put: {
-      name: 'put',
-      alias: 'pu',
-      optional: 'true',
-      describe: 'update existing',
-      _: 'Option'
-    },
-    loglevel: {
-      name: 'loglevel',
-      alias: 'll',
-      optional: 'true',
-      describe: 'the logging level',
-      _: 'Option'
-    },
-    logfile: {
-      name: 'logfile',
-      alias: 'lf',
-      optional: 'true',
-      describe: 'the file full path',
-      _: 'Option'
-    }
-  }
-};
-
 describe('Command builder', () => {
   let converter: jaxom.IConverter;
   let document: Node;
@@ -123,30 +19,42 @@ describe('Command builder', () => {
   let specSvc: jaxom.ISpecService;
   const parseInfo: jaxom.IParseInfo = {
     elements: new Map<string, jaxom.IElementInfo>([
-      ['Commands', {
-        descendants: {
-          by: 'index',
-          id: 'name',
-          throwIfCollision: true,
-          throwIfMissing: true
+      [
+        'Commands',
+        {
+          descendants: {
+            by: 'index',
+            id: 'name',
+            throwIfCollision: true,
+            throwIfMissing: true
+          }
         }
-      }],
-      ['Command', {
-        id: 'name',
-        recurse: 'inherits',
-        discards: ['inherits', 'abstract']
-      }],
-      ['Options', {
-        descendants: {
-          by: 'index',
+      ],
+      [
+        'Command',
+        {
           id: 'name',
-          throwIfCollision: true,
-          throwIfMissing: true
+          recurse: 'inherits',
+          discards: ['inherits', 'abstract']
         }
-      }],
-      ['OptionRef', {
-        id: 'name'
-      }]
+      ],
+      [
+        'Options',
+        {
+          descendants: {
+            by: 'index',
+            id: 'name',
+            throwIfCollision: true,
+            throwIfMissing: true
+          }
+        }
+      ],
+      [
+        'OptionRef',
+        {
+          id: 'name'
+        }
+      ]
     ])
   };
 
@@ -156,55 +64,60 @@ describe('Command builder', () => {
 
   function init (d: string): void {
     document = parser.parseFromString(d);
-    const selectResult = xp.select(
-      '/Application/Cli/Commands',
-      document,
-      true
-    );
+    const selectResult = xp.select('/Application/Cli/Commands', document, true);
     if (selectResult instanceof Node) {
       commandsNode = selectResult;
     } else {
       assert.fail("Couldn't get Commands Node");
     }
     specSvc = new jaxom.SpecOptionService();
-    builder = new build.CommandBuilder(converter, specSvc, parseInfo,
-      helpers.Selectors);
+    builder = new build.CommandBuilder(
+      converter,
+      specSvc,
+      parseInfo,
+      helpers.Selectors
+    );
   }
 
-  context('resolveOptions', () => {
-    context('given: a built command with at least 1 unresolvable OptionRef', () => {
+  context(
+    'given: a built command with at least 1 unresolvable OptionRef',
+    () => {
       it('should: throw', () => {
         const data = `<?xml version="1.0"?>
-          <Application name="pez">
-            <Cli>
-              <Commands>
-                <Command name="base-command" abstract="true" source="filesystem-source">
-                  <Options>
-                    <OptionRef name="loglevel"/>
-                    <OptionRef name="logfile"/>
-                  </Options>
-                </Command>
-                <Command name="rename"
-                  describe="Rename albums according to options specified (write)."
-                  inherits="base-command">
-                  <Options>
-                    <OptionRef name="missing"/>
-                  </Options>
-                </Command>
-              </Commands>
-            </Cli>
-          </Application>`;
+        <Application name="pez">
+          <Cli>
+            <Options>
+              <Option name="loglevel" alias="lgl" optional="true"
+                describe="Level of logging to be performed. Valid settings: info,debug (... blah all the standard ones!)">
+              </Option>
+              <Option name="logfile" alias="lf" optional="true" default="~/pez/pez.log.<dd-mmm-yyyy>.log"
+                describe="Full path to the logfile name. Can include standard time/date variables inside.">
+              </Option>
+            </Options>
+            <Commands>
+              <Command name="base-command" abstract="true" source="filesystem-source">
+                <Options>
+                  <OptionRef name="loglevel"/>
+                  <OptionRef name="logfile"/>
+                </Options>
+              </Command>
+              <Command name="rename"
+                describe="Rename albums according to options specified (write)."
+                inherits="base-command">
+                <Options>
+                  <OptionRef name="missing"/>
+                </Options>
+              </Command>
+            </Commands>
+          </Cli>
+        </Application>`;
         init(data);
-
-        const commands = builder.buildCommands(commandsNode);
         expect(() => {
-          builder.resolveCommandOptions(commands, {
-            commandOptions: ComplexNormalisedOptionDefs
-          });
+          builder.buildCommands(commandsNode);
         }).to.throw();
       });
-    });
-  }); // command-builder.resolveOptions
+    }
+  );
 
   context('given: a command defined as abstract has a description', () => {
     it('should: throw', () => {
@@ -226,223 +139,212 @@ describe('Command builder', () => {
     });
   });
 
-  context('given: a rename command, inherits from 3 commands, OptionRefs and OptionGroups', () => {
-    it('should: return an object with children constituents normalised.', () => {
-      const data = `<?xml version="1.0"?>
-        <Application name="pez">
-          <Cli>
-            <Commands>
-              <Command name="base-command" abstract="true" source="filesystem-source">
-                <Options>
-                  <OptionRef name="loglevel"/>
-                  <OptionRef name="logfile"/>
+  context(
+    'given: a rename command, inherits from 3 commands, OptionRefs and OptionGroups',
+    () => {
+      it('should: return an object with children constituents normalised.', () => {
+        const data = `<?xml version="1.0"?>
+          <Application name="pez">
+            <Cli>
+              <Commands>
+                <Options type="string">
+                  <Option name="filesys" alias="fs" optional="true"
+                    describe="The file system as defined in config as FileSystem">
+                  </Option>
+
+                  <Option name="path" alias="p" optional="true"
+                    describe="Full path. The path specified has the highest priority.">
+                  </Option>
+
+                  <Option name="tree" alias="t" optional="true"
+                    describe="Tree as defined in config under a FileSystem as alias">
+                  </Option>
+
+                  <Option name="producer" alias="pr" optional="true"
+                    describe="Producer name">
+                  </Option>
+
+                  <Option name="director" alias="dn" optional="true"
+                    describe="Director name">
+                  </Option>
+
+                  <Option name="loglevel" alias="lgl" optional="true"
+                    describe="Level of logging to be performed. Valid settings: info,debug (... blah all the standard ones!)">
+                  </Option>
+
+                  <Option name="logfile" alias="lf" optional="true" default="~/pez/pez.log.<dd-mmm-yyyy>.log"
+                    describe="Full path to the logfile name. Can include standard time/date variables inside.">
+                  </Option>
+
+                  <Option name="with" alias="wi"
+                    describe="New value.">
+                  </Option>
+
+                  <Option name="put" alias="pu" type="switch"
+                    describe="Insert new field if it doesn't exist. (Like put http verb)  switch.">
+                  </Option>
                 </Options>
-                <OptionGroups>
-                  <Conflicts>
+                <Command name="base-command" abstract="true" source="filesystem-source">
+                  <Options>
                     <OptionRef name="loglevel"/>
                     <OptionRef name="logfile"/>
-                  </Conflicts>
-                </OptionGroups>
-              </Command>
-              <Command name="domain-command" abstract="true">
-                <Options>
-                  <OptionRef name="name"/>
-                  <OptionRef name="labelname"/>
-                  <OptionRef name="incname"/>
-                  <OptionRef name="studioname"/>
-                  <OptionRef name="header"/>
-                  <OptionRef name="producer"/>
-                  <OptionRef name="director"/>
-                </Options>
-                <OptionGroups>
-                  <Conflicts>
-                    <OptionRef name="name"/>
-                    <OptionRef name="labelname"/>
-                  </Conflicts>
-                  <Implies>
-                    <OptionRef name="incname"/>
-                    <OptionRef name="studioname"/>
-                  </Implies>
-                  <Conflicts>
-                    <OptionRef name="header"/>
+                  </Options>
+                  <OptionGroups>
+                    <Conflicts>
+                      <OptionRef name="loglevel"/>
+                      <OptionRef name="logfile"/>
+                    </Conflicts>
+                  </OptionGroups>
+                </Command>
+                <Command name="domain-command" abstract="true">
+                  <Options>
                     <OptionRef name="producer"/>
                     <OptionRef name="director"/>
-                  </Conflicts>
-                </OptionGroups>
-              </Command>
-              <Command name="uni-command" abstract="true">
-                <Options>
-                  <OptionRef name="path"/>
-                  <OptionRef name="filesys"/>
-                  <OptionRef name="tree"/>
-                </Options>
-              </Command>
-              <Command name="rename"
-                describe="Rename albums according to options specified (write)."
-                inherits="base-command,domain-command,uni-command">
-                <Options>
-                  <OptionRef name="with"/>
-                  <OptionRef name="put"/>
-                </Options>
-              </Command>
-            </Commands>
-          </Cli>
-        </Application>`;
-      init(data);
+                  </Options>
+                  <OptionGroups>
+                    <Implies>
+                      <OptionRef name="incname"/>
+                      <OptionRef name="studioname"/>
+                    </Implies>
+                    <Conflicts>
+                      <OptionRef name="producer"/>
+                      <OptionRef name="director"/>
+                    </Conflicts>
+                  </OptionGroups>
+                </Command>
+                <Command name="uni-command" abstract="true">
+                  <Options>
+                    <OptionRef name="path"/>
+                    <OptionRef name="filesys"/>
+                    <OptionRef name="tree"/>
+                  </Options>
+                </Command>
+                <Command name="rename"
+                  describe="Rename albums according to options specified (write)."
+                  inherits="base-command,domain-command,uni-command">
+                  <Options>
+                    <OptionRef name="with"/>
+                    <OptionRef name="put"/>
+                  </Options>
+                </Command>
+              </Commands>
+            </Cli>
+          </Application>`;
+        init(data);
 
-      const commands = builder.buildCommands(commandsNode);
-      const normalisedCommands = builder.resolveCommandOptions(commands, {
-        commandOptions: ComplexNormalisedOptionDefs
-      });
-      const normalisedRenameCommand = normalisedCommands[0];
-
-      expect(normalisedRenameCommand).to.deep.equal({
-        name: 'rename',
-        source: 'filesystem-source',
-        _: 'Command',
-        _children: [
-          {
-            _: 'Options',
-            _children: {
-              with: {
-                name: 'with',
-                alias: 'w',
-                optional: 'true',
-                describe: 'replace with',
-                _: 'Option'
-              },
-              put: {
-                name: 'put',
-                alias: 'pu',
-                optional: 'true',
-                describe: 'update existing',
-                _: 'Option'
-              },
-              loglevel: {
-                name: 'loglevel',
-                alias: 'll',
-                optional: 'true',
-                describe: 'the logging level',
-                _: 'Option'
-              },
-              logfile: {
-                name: 'logfile',
-                alias: 'lf',
-                optional: 'true',
-                describe: 'the file full path',
-                _: 'Option'
-              },
-              name: {
-                name: 'name',
-                alias: 'n',
-                optional: 'true',
-                describe: 'Album name',
-                _: 'Option'
-              },
-              labelname: {
-                name: 'labelname',
-                alias: 'ln',
-                optional: 'true',
-                describe: 'Record label name',
-                _: 'Option'
-              },
-              incname: {
-                name: 'incname',
-                alias: 'in',
-                optional: 'true',
-                describe: 'Incorporation name',
-                _: 'Option'
-              },
-              studioname: {
-                name: 'studioname',
-                alias: 'sn',
-                optional: 'true',
-                describe: 'Studio name',
-                _: 'Option'
-              },
-              header: {
-                name: 'header',
-                alias: 'hdr',
-                optional: 'true',
-                describe: 'Header, has no influence on the naming of content.',
-                _: 'Option'
-              },
-              producer: {
-                name: 'producer',
-                alias: 'pn',
-                optional: 'true',
-                describe: 'Producer name',
-                _: 'Option'
-              },
-              director: {
-                name: 'director',
-                alias: 'dn',
-                optional: 'true',
-                describe: 'Director name',
-                _: 'Option'
-              },
-              path: {
-                name: 'path',
-                alias: 'p',
-                optional: 'true',
-                describe: 'Full path.',
-                _: 'Option'
-              },
-              filesys: {
-                name: 'filesys',
-                alias: 'fs',
-                optional: 'true',
-                describe: 'The file system as defined in config as FileSystem',
-                _: 'Option'
-              },
-              tree: {
-                name: 'tree',
-                alias: 't',
-                optional: 'true',
-                describe: 'File system tree',
-                _: 'Option'
+        const commands = builder.buildCommands(commandsNode);
+        const renameCommand = commands[0];
+        expect(renameCommand).to.deep.equal({
+          name: 'rename',
+          source: 'filesystem-source',
+          _: 'Command',
+          _children: [
+            {
+              _: 'Options',
+              _children: {
+                with: {
+                  name: 'with',
+                  alias: 'wi',
+                  describe: 'New value.',
+                  _: 'Option'
+                },
+                put: {
+                  name: 'put',
+                  alias: 'pu',
+                  type: 'switch',
+                  describe:
+                    "Insert new field if it doesn't exist. (Like put http verb)  switch.",
+                  _: 'Option'
+                },
+                loglevel: {
+                  name: 'loglevel',
+                  alias: 'lgl',
+                  optional: true,
+                  describe:
+                    'Level of logging to be performed. Valid settings: info,debug (... blah all the standard ones!)',
+                  _: 'Option'
+                },
+                logfile: {
+                  name: 'logfile',
+                  alias: 'lf',
+                  optional: true,
+                  default: '~/pez/pez.log.<dd-mmm-yyyy>.log',
+                  describe:
+                    'Full path to the logfile name. Can include standard time/date variables inside.',
+                  _: 'Option'
+                },
+                producer: {
+                  name: 'producer',
+                  alias: 'pr',
+                  optional: true,
+                  describe: 'Producer name',
+                  _: 'Option'
+                },
+                director: {
+                  name: 'director',
+                  alias: 'dn',
+                  optional: true,
+                  describe: 'Director name',
+                  _: 'Option'
+                },
+                path: {
+                  name: 'path',
+                  alias: 'p',
+                  optional: true,
+                  describe:
+                    'Full path. The path specified has the highest priority.',
+                  _: 'Option'
+                },
+                filesys: {
+                  name: 'filesys',
+                  alias: 'fs',
+                  optional: true,
+                  describe:
+                    'The file system as defined in config as FileSystem',
+                  _: 'Option'
+                },
+                tree: {
+                  name: 'tree',
+                  alias: 't',
+                  optional: true,
+                  describe:
+                    'Tree as defined in config under a FileSystem as alias',
+                  _: 'Option'
+                }
               }
+            },
+            {
+              _: 'OptionGroups',
+              _children: [
+                {
+                  _: 'Conflicts',
+                  _children: [
+                    { name: 'loglevel', _: 'OptionRef' },
+                    { name: 'logfile', _: 'OptionRef' }
+                  ]
+                },
+                {
+                  _: 'Implies',
+                  _children: [
+                    { name: 'incname', _: 'OptionRef' },
+                    { name: 'studioname', _: 'OptionRef' }
+                  ]
+                },
+                {
+                  _: 'Conflicts',
+                  _children: [
+                    { name: 'producer', _: 'OptionRef' },
+                    { name: 'director', _: 'OptionRef' }
+                  ]
+                }
+              ]
             }
-          },
-          {
-            _: 'OptionGroups',
-            _children: [
-              {
-                _: 'Conflicts',
-                _children: [
-                  { name: 'loglevel', _: 'OptionRef' },
-                  { name: 'logfile', _: 'OptionRef' }
-                ]
-              },
-              {
-                _: 'Conflicts',
-                _children: [
-                  { name: 'name', _: 'OptionRef' },
-                  { name: 'labelname', _: 'OptionRef' }
-                ]
-              },
-              {
-                _: 'Implies',
-                _children: [
-                  { name: 'incname', _: 'OptionRef' },
-                  { name: 'studioname', _: 'OptionRef' }
-                ]
-              },
-              {
-                _: 'Conflicts',
-                _children: [
-                  { name: 'header', _: 'OptionRef' },
-                  { name: 'producer', _: 'OptionRef' },
-                  { name: 'director', _: 'OptionRef' }
-                ]
-              }
-            ]
-          }
-        ],
-        describe: 'Rename albums according to options specified (write).'
+          ],
+          describe: 'Rename albums according to options specified (write).'
+        });
       });
-    });
-  });
+    }
+  );
 
   describe('command-builder: buildCommands', () => {
     context('given: a command defined as abstract has a description', () => {
@@ -499,12 +401,17 @@ describe('Command builder', () => {
 
         const commands = builder.buildNamedCommand('rename', commandsNode);
         const renameCommand = commands[0];
-        let result = R.where({
-          name: R.equals('rename'),
-          _: R.equals('Command'),
-          _children: R.is(Array)
-        }, renameCommand);
-        expect(result).to.be.true(`Failed "rename" command: "${functify(renameCommand)}"`);
+        let result = R.where(
+          {
+            name: R.equals('rename'),
+            _: R.equals('Command'),
+            _children: R.is(Array)
+          },
+          renameCommand
+        );
+        expect(result).to.be.true(
+          `Failed "rename" command: "${functify(renameCommand)}"`
+        );
       });
     });
   }); // command-builder: buildNamedCommand (single)
@@ -532,6 +439,76 @@ describe('Command builder', () => {
       }).to.throw();
     });
   }); // a command with an unknown "name"
+
+  context('Error handling', () => {
+    interface IUnitTestInfo {
+      given: string;
+      data: string;
+    }
+
+    const tests: IUnitTestInfo[] = [
+      {
+        given: 'Option definition with duplicated entry',
+        data: `<?xml version="1.0"?>
+          <Application name="pez">
+            <Cli>
+              <Commands>
+                <Options>
+                  <Option name="path" alias="p" optional="true"
+                    describe="Full path">
+                  </Option>
+                  <Option name="path" alias="p" optional="true"
+                    describe="Full path (DUPLICATE)">
+                  </Option>
+                </Options>
+                <Command name="rename"
+                  describe="Rename albums according to arguments specified (write).">
+                  <Options>
+                    <OptionRef name="path"/>
+                  </Options>
+                </Command>
+              </Commands>
+            </Cli>
+          </Application>`
+      },
+      {
+        given: 'missing @name attribute',
+        data: `<?xml version="1.0"?>
+          <Application name="pez">
+            <Cli>
+              <Commands>
+                <Options>
+                  <Option alias="p" optional="true"
+                    describe="Full path">
+                  </Option>
+                </Options>
+              </Commands>
+            </Cli>
+          </Application>`
+      }
+    ];
+
+    tests.forEach((t: IUnitTestInfo) => {
+      context(`given: ${t.given}`, () => {
+        it('should: throw', () => {
+          const document = parser.parseFromString(t.data);
+          const commandsNode = xp.select(
+            '/Application/Cli/Commands',
+            document,
+            true
+          );
+
+          if (commandsNode instanceof Node) {
+            expect(() => {
+              builder.buildCommands(commandsNode);
+            }).to.throw();
+          } else {
+            assert.fail("Couldn't get Commands node.");
+          }
+        });
+      });
+    });
+  });
 }); // Command builder
 
 function invoke (xpath: types.ISelectors): void {
@@ -561,9 +538,6 @@ function invoke (xpath: types.ISelectors): void {
 
   xpath.select(query, document);
   xpath.selectById('Command', 'name', 'rename', document);
-
-  // select(query, document);
-  // select('Command', 'name', 'rename', document);
 }
 
 describe('dual fn interface', () => {

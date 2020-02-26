@@ -1,5 +1,5 @@
 import * as jaxom from 'jaxom-ts';
-import { VirtualFS, ICommandBuilderFactory, ISelectors } from '../types';
+import { VirtualFS, ICommandBuilderFactory, ISelectors, StringIndexableObj } from '../types';
 
 // ===================================================================== CLI ===
 
@@ -19,8 +19,6 @@ export const ZenobiaExecutable = 'zen';
 
 // ----------------------------------------------------- Command Line Inputs ---
 
-export type ResourceType = 'com' | 'opt';
-
 export interface IYargsCli {
   [x: string]: unknown;
   _: string[] | string;
@@ -30,7 +28,6 @@ export interface IYargsCli {
 export interface IZenobiaCli extends IYargsCli {
   parseInfo: string;
   query: string;
-  resource?: ResourceType;
   xml: string;
   //
   output?: string;
@@ -50,7 +47,6 @@ export interface ICommandLineInputs {
   //
   parseInfoContent?: string;
   query?: string;
-  resource?: ResourceType;
   xmlContent?: string;
   //
   output: string;
@@ -80,7 +76,7 @@ export interface IExecutionContext {
 export interface ICommandExecutionResult {
   resultCode: number;
   error?: string;
-  payload: { [key: string]: unknown };
+  payload: StringIndexableObj[];
 }
 export interface IApplication {
   run (executionContext: IExecutionContext): number;

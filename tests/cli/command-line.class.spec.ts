@@ -18,14 +18,12 @@ describe('command-line', () => {
 
       const inputs: ct.ICommandLineInputs = commandLine.build(
         require('yargs')([ct.ZenobiaExecutable, 'jax',
-          '--res', 'com',
           '--xml', './cli/commands.content.xml',
           '--parseInfo', './cli/test.parseInfo.all.json',
           '--query', '/Application/Cli/Commands',
           '--output', '[CONSOLE]'
         ]), mfs);
 
-      expect(inputs.resource).to.equal('com');
       expect(helpers.containsText(inputs.xmlContent)).to.be.true();
       expect(helpers.containsText(inputs.parseInfoContent)).to.be.true();
       expect(inputs.query).to.equal('/Application/Cli/Commands');
@@ -39,7 +37,6 @@ describe('command-line', () => {
 
       const inputs: ct.ICommandLineInputs = commandLine.build(
         require('yargs')([ct.ZenobiaExecutable, 'jax',
-          '--res', 'com',
           '--xml', '', // <-- empty
           '--parseInfo', './cli/test.parseInfo.all.json',
           '--query', '/Application/Cli/Commands',
@@ -54,7 +51,6 @@ describe('command-line', () => {
 
       const inputs: ct.ICommandLineInputs = commandLine.build(
         require('yargs')([ct.ZenobiaExecutable, 'jax',
-          '--res', 'com',
           '--xml', './cli/commands.content.xml',
           '--parseInfo', '', // <-- empty
           '--query', '/Application/Cli/Commands',
@@ -71,8 +67,6 @@ describe('command-line', () => {
     ],
     'q': '/Application/Cli/Commands',
     'query': '/Application/Cli/Commands',
-    'r': 'com',
-    'res': 'com',
     'x': 'tests/cli/commands.content.xml',
     'xml': 'tests/cli/commands.content.xml',
     'p': 'tests/cli/test.parseInfo.all.json',

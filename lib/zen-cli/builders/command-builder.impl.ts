@@ -56,4 +56,20 @@ export class CommandBuilderImpl {
 
     return command;
   }
+
+  /**
+   * @method buildOptions
+   * @description: builds <Option> definitions. There are used by the command
+   * builder to resolve the <OptionRef>'s found.
+   *
+   * @param {jaxom.IConverter} converter
+   * @param {jaxom.IParseInfo} parseInfo
+   * @param {Node} optionsNode
+   * @returns {types.StringIndexableObj}
+   * @memberof CommandBuilderImpl
+   */
+  public buildOptions (converter: jaxom.IConverter, parseInfo: jaxom.IParseInfo, optionsNode: Node)
+    : types.StringIndexableObj {
+    return converter.build(optionsNode, parseInfo);
+  }
 } // CommandBuilderImpl

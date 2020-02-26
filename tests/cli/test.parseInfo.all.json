@@ -14,7 +14,8 @@
       "Command",
       {
         "id": "name",
-        "recurse": "inherits"
+        "recurse": "inherits",
+        "discards": ["inherits", "abstract"]
       }
     ],
     [
