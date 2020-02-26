@@ -49,6 +49,7 @@ export class CommandBuilder {
 
       const optionsNode = this.xpath.select('.//Options', commandsNode, true);
 
+      /* istanbul ignore next: TODO ... */
       if (optionsNode instanceof Node) {
         const optionDefs = this.impl.buildOptions(this.converter, this.parseInfo, optionsNode);
 
@@ -56,6 +57,7 @@ export class CommandBuilder {
           commandOptions: optionDefs
         });
       } else {
+        /* istanbul ignore next: TODO ... */
         throw new Error('Bad configuration: No Options found');
       }
     } else {

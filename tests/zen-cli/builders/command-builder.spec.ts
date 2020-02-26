@@ -503,7 +503,7 @@ describe('Command builder', () => {
               builder.buildCommands(commandsNode);
             }).to.throw();
           } else {
-            assert.fail("Couldn't get Options node.");
+            assert.fail("Couldn't get Commands node.");
           }
         });
       });
