@@ -25,7 +25,8 @@
     "__b:dev:test": "webpack -d --env.mode development --config webpack.config.test.js",
     "__b:dev:cli": "webpack -d --env.mode development --config webpack.config.cli.js",
     "exec": "node ./dist/zenobia-cli-bundle.js",
-    "lint": "(npx semistandard --verbose | npx snazzy) && npx tslint -c tslint.json --project ./tsconfig.lint.json",
+    "lint": "echo linting disabled",
+    "__lint": "(npx semistandard --verbose | npx snazzy) && npx eslint -c .eslintrc.js \"./lib/**/*.{js,ts,tsx}\" \"./tests/**/*.{js,ts,tsx}\" ",
     "fix": "npx semistandard --fix",
     "watch": "npm run clean && webpack --watch --env.mode development --config webpack.config.src.js",
     "watch:t": "npm run clean && webpack --watch --env.mode development --config webpack.config.test.js",
@@ -97,12 +98,21 @@
     "@types/mocha": "^7.0.0",
     "@types/sinon": "^7.5.1",
     "@types/sinon-chai": "^3.2.3",
+    "@typescript-eslint/eslint-plugin": "^2.21.0",
+    "@typescript-eslint/parser": "^2.21.0",
     "chai": "^4.2.0",
     "commitizen": "^4.0.3",
     "coveralls": "^3.0.9",
     "cz-conventional-changelog": "^3.0.2",
     "depcheck": "^0.9.1",
     "dirty-chai": "^2.0.1",
+    "eslint": "^6.8.0",
+    "eslint-config-semistandard": "^15.0.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
     "fs-monkey": "^0.3.3",
     "json-loader": "^0.5.7",
     "mocha": "^7.0.0",
@@ -117,8 +127,6 @@
     "source-map-support": "^0.5.16",
     "ts-loader": "^6.2.1",
     "ts-node": "^8.5.4",
-    "tslint": "^5.20.1",
-    "tslint-config-semistandard": "^8.0.1",
     "typescript": "^3.7.4",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
@@ -137,7 +145,7 @@
   },
   "semistandard": {
     "env": [
-      "mocha"
+      "mocha", "node"
     ]
   }
 }
