@@ -6,7 +6,9 @@ export const Selectors: types.ISelectors = {
   select: (query: string, doc?: Node, single?: boolean): types.Nodes => {
     const selectResult: string | number | boolean | Node | Node[] = xp.select(query, doc, single);
 
+    /* istanbul ignore next: don't know how to test this */
     if (!(selectResult instanceof Node) && !(selectResult instanceof Array)) {
+      /* istanbul ignore next */
       throw new Error('');
     }
     return selectResult;
