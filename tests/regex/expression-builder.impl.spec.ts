@@ -1,17 +1,35 @@
+/* eslint-disable no-useless-escape */
 
 import { expect, assert, use } from 'chai';
-import dirtyChai = require('dirty-chai');
-use(dirtyChai);
 import * as R from 'ramda';
-import { DOMParserImpl as dom } from 'xmldom-ts';
-const parser = new dom();
+import { DOMParserImpl as Parser } from 'xmldom-ts';
 import * as jaxom from 'jaxom-ts';
-import * as xp from 'xpath-ts';
-
-import * as builder from '../../lib/regex/expression-builder';
+import * as build from '../../lib/regex/expression-builder.class';
 import * as impl from '../../lib/regex/expression-builder.impl';
+import * as helpers from '../../lib/utils/helpers';
+import * as types from '../../lib/types';
+import dirtyChai = require('dirty-chai'); use(dirtyChai);
+import sinonChai = require('sinon-chai'); use(sinonChai);
+const parser = new Parser();
 
-describe('Expression Builder', () => {
+const parseInfo: jaxom.IParseInfo = {
+  elements: new Map<string, jaxom.IElementInfo>([
+    ['Expressions', {
+      id: 'name',
+      descendants: {
+        by: 'index',
+        id: 'name',
+        throwIfCollision: true,
+        throwIfMissing: true
+      }
+    }],
+    ['Expression', {
+      id: 'name'
+    }]
+  ])
+};
+
+describe('Expression Builder Impl', () => {
   context('evaluate', () => {
     interface IUnitTestInfo {
       given: string;
@@ -178,13 +196,15 @@ describe('Expression Builder', () => {
         it('should: evaluate regular expression text successfully', () => {
           const converter = new jaxom.XpathConverter();
           const document: Document = parser.parseFromString(t.data);
-          const applicationNode = xp.select('/Application', document, true);
+          const xpath = helpers.Selectors;
+          const applicationNode = xpath.select('/Application', document, true);
 
           if (applicationNode instanceof Node) {
-            const expressions = builder.buildExpressions(converter, applicationNode);
-
-            const expression = impl.evaluate(t.expressionName, expressions);
-            // expressionObject: Record<string, ?>
+            const specSvc = new jaxom.SpecOptionService();
+            const builder = new build.ExpressionBuilder(converter, specSvc, parseInfo,
+              xpath);
+            const expressions = builder.buildExpressions(applicationNode);
+            const expression = builder.evaluate(t.expressionName, expressions);
             const expressionObject: { source: string } = R.prop('$regexp')(expression);
             expect(expressionObject.source).to.equal(t.expectedRegexText);
 
@@ -227,22 +247,8 @@ describe('Expression Builder', () => {
               </Expression>
             </Expressions>
           </Application>`,
-        expressionName: '',
+        expressionName: '', // <-- *
         expectedRegexText: 'THIS IS A REG EX'
-      },
-      {
-        given: 'evaluate invoked with options without an "id"',
-        data: `<?xml version="1.0"?>
-          <Application name="pez">
-            <Expressions name="test-expressions">
-              <Expression name="forename-expression" eg="Ted">
-                <Pattern><![CDATA[THIS IS A REG EX]]></Pattern>
-              </Expression>
-            </Expressions>
-          </Application>`,
-        expressionName: '',
-        expectedRegexText: 'THIS IS A REG EX',
-        elementInfo: { description: 'missing id' }
       },
       {
         given: 'evaluate invoked with an expression name that is undefined',
@@ -254,15 +260,27 @@ describe('Expression Builder', () => {
               </Expression>
             </Expressions>
           </Application>`,
-        expressionName: 'this-expression-does-not-exist',
+        expressionName: 'this-expression-does-not-exist', // <-- *
         expectedRegexText: 'THIS IS A REG EX'
       },
       {
-        given: 'evaluate invoked with empty expression name',
+        given: 'evaluate invoked with empty Expression element',
+        data: `<?xml version="1.0"?>
+          <Application name="pez">
+            <Expressions name="test-expressions">
+              <Expression name="forename-expression" eg="Ted"/>
+            </Expressions>
+          </Application>`,
+        expressionName: 'forename-expression',
+        expectedRegexText: 'THIS IS A REG EX'
+      },
+      {
+        given: 'evaluate invoked with Expression element with no Patterns',
         data: `<?xml version="1.0"?>
           <Application name="pez">
             <Expressions name="test-expressions">
               <Expression name="forename-expression" eg="Ted">
+                <Dummy desc="this is a child which is not a Pattern"/>
               </Expression>
             </Expressions>
           </Application>`,
@@ -346,23 +364,22 @@ describe('Expression Builder', () => {
       }
     ];
 
-    const expressionInfo = {
-      id: 'name'
-    };
-
     tests.forEach((t: IUnitTestInfo) => {
       context(`given: ${t.given}`, () => {
         it('should: throw', () => {
           const converter = new jaxom.XpathConverter();
           const document: Document = parser.parseFromString(t.data);
-          const applicationNode = xp.select('/Application', document, true);
+          const xpath = helpers.Selectors;
+          const applicationNode = xpath.select('/Application', document, true);
+          const specSvc = new jaxom.SpecOptionService();
+          const builder = new build.ExpressionBuilder(converter, specSvc,
+            parseInfo, xpath);
 
           if (applicationNode instanceof Node) {
-            const expressions = builder.buildExpressions(converter, applicationNode);
+            const expressions = builder.buildExpressions(applicationNode);
 
             expect(() => {
-              const ei: any = R.has('elementInfo', t) ? t.elementInfo : expressionInfo;
-              impl.evaluate(t.expressionName, expressions, ei);
+              builder.evaluate(t.expressionName, expressions);
             }).to.throw();
           } else {
             assert.fail('Couldn\'t get Application node.');
@@ -371,4 +388,210 @@ describe('Expression Builder', () => {
       });
     });
   }); // evaluate (error handling)
-}); // Expression Builder
+}); // Expression Builder Impl
+
+describe('Expression Builder Impl Error handling (custom)', () => {
+  let converter: jaxom.XpathConverter;
+  let document: Document;
+  let builderImpl: impl.ExpressionBuilderImpl;
+  // let xpath: types.ISelector;
+
+  beforeEach(() => {
+    converter = new jaxom.XpathConverter();
+  });
+
+  function init (d: string,
+    pi: jaxom.IParseInfo = {
+      elements: new Map<string, jaxom.IElementInfo>([
+        ['Expressions', {
+          id: 'name',
+          descendants: {
+            by: 'index',
+            id: 'name',
+            throwIfCollision: true,
+            throwIfMissing: true
+          }
+        }],
+        ['Expression', {
+          id: 'name'
+        }]
+      ])
+    },
+    xpath: types.ISelectors = helpers.Selectors)
+    : void {
+    document = parser.parseFromString(d);
+
+    builderImpl = new impl.ExpressionBuilderImpl(
+      converter,
+      new jaxom.SpecOptionService(),
+      pi,
+      xpath
+    );
+  }
+
+  context('buildExpressionGroup', () => {
+    context('given: no <Expressions>', () => {
+      it('should: throw', () => {
+        const data = `<?xml version="1.0"?>
+          <Application name="pez"/>`;
+        init(data);
+
+        expect(() => {
+          builderImpl.buildExpressionGroup(document, 'no group');
+        }).to.throw();
+      });
+    });
+
+    context('given: undefined Expression group', () => {
+      it('should: throw', () => {
+        const data = `<?xml version="1.0"?>
+          <Application name="pez">
+            <Expressions name="test-expressions">
+              <Expression name="forename-expression" eg="Ted">
+                <Pattern><![CDATA[THIS IS A REG EX]]></Pattern>
+              </Expression>
+            </Expressions>
+          </Application>`;
+        init(data);
+
+        const expressionsNode = helpers.Selectors.selectById(
+          'Expressions', 'name', 'test-expressions', document);
+
+        if (expressionsNode instanceof Node) {
+          expect(() => {
+            builderImpl.buildExpressionGroup(expressionsNode, 'unicorns');
+          }).to.throw();
+        } else {
+          assert.fail('Couldn\'t get Expressions Node');
+        }
+      });
+    });
+
+    context('given: empty Expressions', () => {
+      it('should: throw', () => {
+        const data = `<?xml version="1.0"?>
+          <Application name="pez">
+            <Expressions name="test-expressions"/>
+          </Application>`;
+        init(data);
+
+        const expressionsNode = helpers.Selectors.selectById(
+          'Expressions', 'name', 'test-expressions', document);
+
+        if (expressionsNode instanceof Node) {
+          expect(() => {
+            builderImpl.buildExpressionGroup(expressionsNode, 'unicorns');
+          }).to.throw();
+        } else {
+          assert.fail('Couldn\'t get Expressions Node');
+        }
+      });
+    });
+  }); // buildExpressionGroup
+
+  context('evaluate', () => {
+    context('given: pattern with empty link', () => {
+      it('should: throw', () => {
+        const data = `<?xml version="1.0"?>
+          <Application name="pez">
+            <Expressions name="test-expressions">
+              <Expression name="forename-expression">
+                <Pattern link=""/>
+              </Expression>
+            </Expressions>
+          </Application>`;
+        init(data);
+
+        const expressionsNode = helpers.Selectors.selectById(
+          'Expressions', 'name', 'test-expressions', document);
+
+        if (expressionsNode instanceof Node) {
+          expect(() => {
+            builderImpl.buildExpressionGroup(expressionsNode, 'unicorns');
+          }).to.throw();
+        } else {
+          assert.fail('Couldn\'t get Expressions Node');
+        }
+      });
+    });
+
+    context('given: invoked with options without an "id"', () => {
+      it('should: throw', () => {
+        const info: jaxom.IParseInfo = {
+          elements: new Map<string, jaxom.IElementInfo>([
+            ['Expressions', {
+              id: 'name',
+              descendants: {
+                by: 'index',
+                id: 'name',
+                throwIfCollision: true,
+                throwIfMissing: true
+              }
+            }],
+            ['Expression', {
+              id: 'name'
+            }]
+          ])
+        };
+        const data = `<?xml version="1.0"?>
+          <Application name="pez">
+            <Expressions name="test-expressions">
+              <Expression name="forename-expression" eg="Ted">
+                <Pattern><![CDATA[THIS IS A REG EX]]></Pattern>
+              </Expression>
+            </Expressions>
+          </Application>`;
+        init(data, info);
+      });
+    });
+  }); // evaluate
+
+  context('validateId', () => {
+    context('given: empty element array', () => {
+      it('should: do nothing', () => {
+        const data = `<?xml version="1.0"?>
+          <Application name="pez">
+          </Application>`;
+        init(data);
+        builderImpl.validateId(document, []);
+      });
+    });
+
+    context('given: element with empty id', () => {
+      it('should: throw', () => {
+        const info: jaxom.IParseInfo = {
+          elements: new Map<string, jaxom.IElementInfo>([
+            ['Expression', {
+              id: ''
+            }]
+          ])
+        };
+        const data = `<?xml version="1.0"?>
+          <Application name="pez"/>`;
+        init(data, info);
+
+        expect(() => {
+          builderImpl.validateId(document, ['Expression']);
+        }).to.throw();
+      });
+    });
+
+    context('given: element without an id', () => {
+      it('should: throw', () => {
+        const data = `<?xml version="1.0"?>
+          <Application name="pez">
+            <Expressions name="field-type-expressions">
+              <Expression missing="person's-name-expression" eg="Ted O'Neill">
+                <Pattern><![CDATA[[a-zA-Z\s']+]]></Pattern>
+              </Expression>
+            </Expressions>
+          </Application>`;
+        init(data);
+
+        expect(() => {
+          builderImpl.validateId(document, ['Expressions', 'Expression']);
+        }).to.throw();
+      });
+    });
+  }); // validateId
+}); // Expression Builder Impl Error handling (custom)

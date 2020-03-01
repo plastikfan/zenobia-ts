@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<Application name="pez">
+  <Cli>
+    <Commands>
+      <Options type="string">
+        <Option name="filesys" alias="fs" optional="true"
+          describe="The file system as defined in config as FileSystem">
+        </Option>
+
+        <Option name="path" alias="p" optional="true"
+          describe="Full path. The path specified has the highest priority.">
+        </Option>
+
+        <Option name="tree" alias="t" optional="true"
+          describe="Tree as defined in config under a FileSystem as alias">
+        </Option>
+
+        <Option name="name" alias="n" optional="true"
+          describe="Full name">
+        </Option>
+
+        <Option name="incname" alias="in" optional="true"
+          describe="Incorporation name">
+        </Option>
+
+        <Option name="studioname" alias="sn" optional="true"
+          describe="Studio name">
+        </Option>
+
+        <Option name="producer" alias="pr" optional="true"
+          describe="Producer name">
+        </Option>
+
+        <Option name="director" alias="dn" optional="true"
+          describe="Director name">
+        </Option>
+
+        <Option name="header" alias="hdr" optional="true"
+          describe="Header, has no influence on the naming of content.">
+        </Option>
+
+        <Option name="loglevel" alias="lgl" optional="true"
+          describe="Level of logging to be performed. Valid settings: info,debug (... blah all the standard ones!)">
+        </Option>
+
+        <Option name="logfile" alias="lf" optional="true" default="~/pez/pez.log.<dd-mmm-yyyy>.log"
+          describe="Full path to the logfile name. Can include standard time/date variables inside.">
+        </Option>
+
+        <Option name="with" alias="wi"
+          describe="New value.">
+        </Option>
+
+        <Option name="put" alias="pu" type="switch"
+          describe="Insert new field if it doesn't exist. (Like put http verb)  switch.">
+        </Option>
+      </Options>
+      <Command name="base-command" abstract="true" source="filesystem-source">
+        <Options>
+          <OptionRef name="loglevel"/>
+          <OptionRef name="logfile"/>
+        </Options>
+        <OptionGroups>
+          <Conflicts>
+            <OptionRef name="loglevel"/>
+            <OptionRef name="logfile"/>
+          </Conflicts>
+        </OptionGroups>
+      </Command>
+      <Command name="domain-command" abstract="true">
+        <Options>
+          <OptionRef name="name"/>
+          <OptionRef name="incname"/>
+          <OptionRef name="studioname"/>
+          <OptionRef name="header"/>
+          <OptionRef name="producer"/>
+          <OptionRef name="director"/>
+        </Options>
+        <OptionGroups>
+          <Implies>
+            <OptionRef name="incname"/>
+            <OptionRef name="studioname"/>
+          </Implies>
+          <Conflicts>
+            <OptionRef name="header"/>
+            <OptionRef name="producer"/>
+            <OptionRef name="director"/>
+          </Conflicts>
+        </OptionGroups>
+      </Command>
+      <Command name="uni-command" abstract="true">
+        <Options>
+          <OptionRef name="path"/>
+          <OptionRef name="filesys"/>
+          <OptionRef name="tree"/>
+        </Options>
+      </Command>
+      <Command name="rename"
+        describe="Rename albums according to arguments specified (write)."
+        inherits="base-command,domain-command,uni-command">
+        <Options>
+          <OptionRef name="with"/>
+          <OptionRef name="put"/>
+        </Options>
+      </Command>
+    </Commands>
+  </Cli>
+</Application>

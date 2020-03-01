@@ -1,0 +1,45 @@
+{
+  "elements": [
+    ["Commands",
+      {
+        "descendants": {
+          "id": "name",
+          "by": "index",
+          "throwIfCollision": false,
+          "throwIfMissing": false
+        }
+      }
+    ],
+    [
+      "Command",
+      {
+        "id": "name",
+        "recurse": "inherits",
+        "discards": ["inherits", "abstract"]
+      }
+    ],
+    [
+      "Options",
+      {
+        "descendants": {
+          "id": "name",
+          "by": "index",
+          "throwIfCollision": false,
+          "throwIfMissing": false
+        }
+      }
+    ],
+    [
+      "Option",
+      {
+        "id": "name"
+      }
+    ],
+    [
+      "OptionRef",
+      {
+        "id": "name"
+      }
+    ]
+  ]
+}
