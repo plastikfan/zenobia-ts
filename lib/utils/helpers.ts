@@ -3,8 +3,13 @@ import * as xp from 'xpath-ts';
 import * as types from '../types';
 
 export const Selectors: types.ISelectors = {
-  select: (query: string, doc?: Node, single?: boolean): string | number | boolean | Node | Node[] => {
-    return xp.select(query, doc, single);
+  select: (query: string, doc?: Node, single?: boolean): types.Nodes => {
+    const selectResult: string | number | boolean | Node | Node[] = xp.select(query, doc, single);
+
+    if (!(selectResult instanceof Node) && !(selectResult instanceof Array)) {
+      throw new Error('');
+    }
+    return selectResult;
   },
   selectById: (elementName: string, id: string, name: string, parentNode: Node): types.NullableNode => {
     const query = `.//${elementName}[@${id}="${name}"]`;
