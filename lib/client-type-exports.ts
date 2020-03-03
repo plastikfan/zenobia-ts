@@ -2,6 +2,9 @@ import * as fs from 'fs';
 import * as memfs from 'memfs';
 import * as jaxom from 'jaxom-ts';
 
+// This file should only contain types; but should not import from types
+//
+
 export type NullableNode = Node | null;
 export type Nodes = Node | Node[];
 
@@ -58,7 +61,7 @@ export type StringIndexableObj = { [key: string]: any };
  * @export
  * @interface ICommandBuilder
  */
-export interface ICommandBuilder {
+export interface ICommandBuilder { // THIS SHOULD BE CHANGED TO ICommander
   buildNamedCommand(commandName: string, commandsNode: Node): StringIndexableObj[];
   buildCommands(commandsNode: Node): StringIndexableObj[];
 }
@@ -71,4 +74,8 @@ export interface ICommandBuilder {
 export interface ICommandBuilderFactory {
   (converter: jaxom.IConverter, specSvc: jaxom.ISpecService, parseInfo: jaxom.IParseInfo,
     xpath: ISelectors): ICommandBuilder;
+}
+
+export interface IDynamicCli {
+  (document: Node): ICommandBuilder;
 }

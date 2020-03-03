@@ -1,7 +1,8 @@
 import * as xpath from 'xpath-ts';
 import * as jaxom from 'jaxom-ts';
 import * as ct from '../cli-types';
-import { CliCommand, assign } from './cli-command.class';
+import { CliCommand } from './cli-command.class';
+import { assign } from '../../utils/helpers';
 import * as types from '../../types';
 
 export const command = 'jax';

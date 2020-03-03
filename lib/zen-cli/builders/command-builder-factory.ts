@@ -10,9 +10,9 @@ import { CommandBuilder } from './command-builder.class';
  * @param {jaxom.ISpecService} specSvc
  * @param {jaxom.IParseInfo} parseInfo
  * @param {types.ISelectors} xpath
- * @returns {*}
+ * @returns {types.ICommandBuilder}
  */
 export function construct (converter: jaxom.IConverter, specSvc: jaxom.ISpecService,
-  parseInfo: jaxom.IParseInfo, xpath: types.ISelectors): any {
+  parseInfo: jaxom.IParseInfo, xpath: types.ISelectors): types.ICommandBuilder {
   return new CommandBuilder(converter, specSvc, parseInfo, xpath);
 }

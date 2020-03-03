@@ -1,7 +1,7 @@
 
 import * as jaxom from 'jaxom-ts';
 import * as ct from '../cli-types';
-import * as helpers from '../../utils/helpers';
+import { assign } from '../../utils/helpers';
 import * as types from '../../types';
 
 /**
@@ -43,25 +43,4 @@ export abstract class CliCommand implements ct.ICliCommand {
   : jaxom.IParseInfo {
     return parseInfoFactory.construct(content);
   }
-}
-
-/**
- * @description performs a safe assignment of a string value, only allowing
- * not-empty valid string values.
- *
- * @export
- * @param {(null | undefined | string)} stringValue
- * @param {string} name
- * @returns {string}
- */
-export function assign (stringValue: null | undefined | string, name: string)
-: string {
-  let result: string;
-  if (helpers.containsText(stringValue)) {
-    result = stringValue!;
-  } else {
-    throw new Error(`"${name} is not a valid string value"`);
-  }
-
-  return result;
 }
