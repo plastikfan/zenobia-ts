@@ -81,7 +81,7 @@
     "@types/ramda": "^0.26.39",
     "@types/yargs": "^15.0.3",
     "jaxom-ts": "^0.0.18",
-    "jinxed": "0.0.2",
+    "jinxed": "0.0.3",
     "memfs": "^3.0.4",
     "ramda": "^0.27.0",
     "xmldom-ts": "^0.3.1",
