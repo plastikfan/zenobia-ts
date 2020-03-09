@@ -10,4 +10,4 @@ export {
 
 export * from './utils/helpers';
 
-export { DynamicCli } from './zen-cli/yargs/dynamic-cli';
+export * from './zen-cli/yargs/dynamic-cli';

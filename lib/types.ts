@@ -15,7 +15,7 @@ export type Nodes = Node | Node[];
  * @interface ISelect
  */
 export interface ISelect {
-  (e: string, doc?: Node, single?: boolean): string | number | boolean | Node | Node[];
+  (e: string, doc?: Node, single?: boolean): Nodes;
 }
 
 /**
@@ -76,13 +76,30 @@ export interface ICommandBuilderFactory {
     xpath: ISelectors): ICommandBuilder;
 }
 
-export interface IDynamicCli<C> {
-  peek(args: string[]): string;
-  create(factory: ICommandBuilderFactory, converter: jaxom.IConverter,
-    specSvc: jaxom.ISpecService, xpath: ISelectors,
-    parseInfo?: jaxom.IParseInfo): ICommandBuilder;
+/*
+YargsBuilder(
+  instance,
+  aeSchema,
+  defaultHandlers
+)
+*/
+export interface IYargsBuilder {
 
-  argv(): C;
 }
 
-// export * from './client-type-exports';
+/**
+ *
+ *
+ * @export
+ * @interface IDynamicCli
+ * @template C: represents the cli interface as defined by the user
+ * @template I: represent the cli API being used
+ */
+export interface IDynamicCli<C, I> {
+  load(applicationConfig: string): string;
+  peek(processArgv?: string[]): string;
+  create(): ICommandBuilder;
+  build(xmlContent: string, converter: jaxom.IConverter, processArgv?: string[]): I;
+  argv(): C;
+  instance: I;
+}
