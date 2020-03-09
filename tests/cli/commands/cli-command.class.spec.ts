@@ -1,5 +1,5 @@
 
-import { assign } from './../../../lib/cli/commands/cli-command.class';
+import { assign } from './../../../lib/utils/helpers';
 import { expect } from 'chai';
 
 describe('assign', () => { // assign should be replaced with ow/predicates
