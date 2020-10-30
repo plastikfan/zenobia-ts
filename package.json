@@ -80,7 +80,7 @@
   "homepage": "https://github.com/plastikfan/zenobia-ts#readme",
   "dependencies": {
     "@types/yargs": "^15.0.4",
-    "@types/ramda": "^0.27.5",
+    "@types/ramda": "^0.27.23",
     "jaxom-ts": "^0.0.18",
     "jinxed": "0.0.3",
     "memfs": "^3.1.2",
